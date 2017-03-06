@@ -33,8 +33,7 @@ Data attributes benefit in that they're almost effortless to implement (compared
 
 So let's pretend we've got a form. When the user updates one select we need to grab some data based on that select, tack it onto the end of a data URI that the back end dev has provided and use that to grab some JSON data from AEM which we can then toss into a different select, with an authorable prefix.
 
-{% highlight html %}
-<!--/* component.html */-->
+```html component.html
 <div class="namespace-component js-component"
     data-form-trigger=".js-trigger-field"
     data-form-field=".js-data-field"
@@ -42,12 +41,11 @@ So let's pretend we've got a form. When the user updates one select we need to g
     data-form-uri="${component.formUri}">
     <!-- your markup -->
 </div>
-{% endhighlight %}
+```
 
 We've added the element selectors for our elements onto our main component as data attributes, along with the data URI and option prefix that AEM has graciously given us after being configured by our content author. We now have direct access to all of these and can use them directly in our Javascript by accessing the data attributes of our component container via the `.data()` method with jQuery, or `.dataset` property with vanilla JS.
 
-{% highlight javascript %}
-/* component.js */
+```javascript component.js
 var $component  = $('.js-component'),
     $trigger    = $component.find($component.data('form-trigger')),
     $field      = $component.find($component.data('form-field')),
@@ -67,7 +65,7 @@ $trigger.on('change', function() {
         $field.html(result);
     });
 });
-{% endhighlight %}
+```
 
 Simple and effective. We're not hardcoding anything that shouldn't be hardcoded, and we've given the user the ability to configure something that is dynamic and would have previously been un-configurable. Furthermore, implementation was incredibly simple as data attributes are a 1:1 in both the markup and JS, so grabbing them from the markup was as easy as grabbing any other elements property. Plus we don't have to hardcode in a URL, given the back end developer has created a Sightly-retrievable property containing the proper URL.
 
@@ -87,8 +85,7 @@ This allows us to only run/trigger the components we actually need for this page
 
 ### The Markup
 
-{% highlight html %}
-<!--/* component.html */-->
+```html component.html
 <sly data-sly-use.component="path.to.backing.class.of.Component" />
 
 <div class="namespace-component" id="${resource.name}">
@@ -104,7 +101,7 @@ namespace.loadComponent('component-name', {
     jsonData: '${component.optionData @ context="scriptString"}'
 });
 </script>
-{% endhighlight %}
+```
 
 Pretty spiffy. In this instance we've gone with a very similar setup to our last demo where we're manipulating a select field based on another select, except this time we're passing in all of our options as a giant JSON object (`${component.optionData}`) so we don't have to deal with Ajax calls. Instead, all our JS has to do is switch properties of a cached object to get new data. The only real bummer here is that to make sure we're targeting the correct instance of this component, we have to add an ID or some other identifier that matches up with only this DOM element (`${resource.name}`), which is not something we have to do when it comes to data attributes.
 
@@ -112,8 +109,8 @@ Pretty spiffy. In this instance we've gone with a very similar setup to our last
 
 Now that we know the syntax of our loader, it's time to write the loader itself. Because it needs to be instantiated and ready to go before the components begin getting parsed, we need our loader to be created very early on, so somewhere in our `<head></head>`. We'll also need to establish a global namespace, initialization method, and a queue for our components.
 
-{% highlight javascript linenos %}
-/*! Global Namespace Setup / namespace.headlibs.js */
+```javascript namespace.headlibs.js
+/*! Global Namespace Setup */
 (function (window) {
     var namespace = function () {
         // Create our queue
@@ -159,7 +156,7 @@ Now that we know the syntax of our loader, it's time to write the loader itself.
 
     window.namespace = namespace();
 })(window, undefined);
-{% endhighlight %}
+```
 
 Let's go over what's going on in this snippet:
 
@@ -172,8 +169,8 @@ In terms of code complexity, there really isn't much going on aside from array t
 
 As you can see from the snippet, this depends on storing your components inside of an accessible object and using some sort of initialization function with each component. This really shines when used in tandem with something like [Browserify](http://browserify.org/), where you can just require the component modules to generate your components object. Implementing via [Browserify](http://browserify.org/) does require having an external [Gulp](http://gulpjs.com/) build though, although if you're working on an increasingly intricate project this may already be implemented. You can see an example of what this coupled with Browserify would look like below.
 
-{% highlight javascript %}
-/* namespace.components.js, with Browserify */
+```javascript namespace.components.js
+/* Component namespace with Browserify */
 // These are not strictly necessary in this instance, but are still good to
 // include if something for some reason is being included manually elsewhere.
 window.namespace = namespace || {};
@@ -190,12 +187,11 @@ var linkedList = function (data) {
 };
 
 module.exports = linkedList;
-{% endhighlight %}
+```
 
 If you're ditching the added complexity of something like Browserify, this still works really well and is pretty straightforward. The only difference is you'll be adding the components to the components object manually in your scripts.
 
-{% highlight javascript %}
-/* linkedlist.js */
+```javascript linkedlist.js
 window.namespace = namespace || {};
 window.namespace.components = namespace.components || {};
 
@@ -204,13 +200,13 @@ var linkedList = function (data) {
 };
 
 namespace.components.linkedList = linkedList;
-{% endhighlight %}
+```
 
 The structures are very similar, but in one instance (Browserify) you're leaving the component scripts strictly module-related and bulk-importing them, where the standard method you're having to also verify existence of the globals then manually add the component to them. Technically speaking as long as we have the global declaration in the head, the globals verification is not strictly necessary (at least, the main `window.namespace = namespace || {}` part) but it's always a good idea to include it just to be safe. If one thing somehow tweaks the order it can lead to a lot of really awful debugging time.
 
 Another thing to note is that even though in the example the components are functions, you're not absolutely tied down to this pattern. If you're more into the type of pattern where you have a plain object with tons of methods including an `.init()` method, that's totally doable as well it would just require the instantiation of the components in the `runComponents` declaration to be updated with the new pattern:
 
-{% highlight javascript %}
+```javascript
 this.activeComponents = queue.map(function iterateQueue (c) {
     // If the component name provided exists..
     if (ns.components.hasOwnProperty(c.name)) {
@@ -221,7 +217,7 @@ this.activeComponents = queue.map(function iterateQueue (c) {
         console.error('Component Loader: The "'+ c.name +'" component was not found.');
     }
 });
-{% endhighlight %}
+```
 
 From there, all that's left to do is fire our `runComponents()` method somewhere in the footer, after all of our components have been loaded into the queue. As an added bonus, if you toss it into an on DOM ready event, all of the components loaded via the component loader will initialize.... well, on DOM ready. One less thing to worry about in your components!
 
@@ -233,8 +229,7 @@ So this method is extremely similar to the component loader and takes queues fro
 
 First up we'll look at the markup we're going for. This will just need to be a JSON object with all of the data tossed into it. This works best for large amounts of data passed into the front end as JSON then dumped straight into the script tag, ideally to be used as a data store once it makes its way into whatever JS function will be taking care of it. This works for smaller amounts of data being used for different things, but it's maybe not as clean when used in that way.
 
-{% highlight html %}
-<!--/* component.html */-->
+```html component.html
 <sly data-sly-use.component="path.to.your.component.Class" />
 
 <div class="namespace-component">
@@ -254,7 +249,7 @@ First up we'll look at the markup we're going for. This will just need to be a J
 <script class="js-scraper-data" data-component="linkedList" type="application/json">
 ${component.storeData @ context='unsafe'}
 </script>
-{% endhighlight %}
+```
 
 As mentioned earlier, it's pretty similar to the loader markup just sort of a different interpretation of it. The only bummer is that since we're already specifying this as JSON, we can't set the context of the JSON objects we're passing in to `scriptString` otherwise we'll run into parsing errors. This leaves us with only the `unsafe` context, which isn't ideal but it works.
 
@@ -264,8 +259,7 @@ In this case we're using the class `js-scraper-data` as our identifier so we can
 
 Our scraper, similar to our loader, is going to be made up by two parts: the data scraper and the component runner, and it differs in that it can be placed outside of the head in the main JS file and it will fire off the components as it gets them, rather than adding them to a queue.
 
-{% highlight javascript linenos %}
-// namespace.js
+```javascript namespace.js
 window.namespace = window.namespace || {};
 namespace.components = window.namespace.components || {};
 
@@ -305,9 +299,9 @@ $(document).on('ready', function() {
     namespace.scrapeComponents();
     // Do other cool global stuff
 });
-{% endhighlight %}
+```
 
-The functions themselves should look similar by now, but as noted earlier the main way we get the components  has been swapped. We no longer have a queue, and while iterating through each instance of our identifier we immediately parse and hand it off to be initialized (lines #15-19).
+The functions themselves should look similar by now, but as noted earlier the main way we get the components  has been swapped. We no longer have a queue, and while iterating through each instance of our identifier we immediately parse and hand it off to be initialized (lines #14-18).
 
 This sort of adjustment does mean we have to make sure that we call our `namespace.scrapeComponents()` method **AFTER** we've stored all of our components accessibly. You _could_ keep this in the head and follow a similar structure to the component loader, but that would mean you would have to include the methods and namespace setup separately and in the headlibs rather than with the rest of your code.
 

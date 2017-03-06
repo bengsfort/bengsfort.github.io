@@ -27,7 +27,7 @@ First I had to actually write in the player respawn scripts, which turned out to
 
 Aside from updating positions, it turns out you also need to zero out the objects [velocity](http://docs.unity3d.com/ScriptReference/Rigidbody-velocity.html) so they don't respawn and continue to fly through the air at supersonic speeds. Furthermore, it turns out Unity has a quirk where you also have to deactivate / activate the [Rigidbody](http://docs.unity3d.com/ScriptReference/Rigidbody.html). Without this hard reset the rigidbody can experience some really bizarre and jerky movement patterns after it's been repositioned absolutely via transform rather than physics.
 
-{% highlight javascript %}
+```javascript
 // Pause the object
 rb.velocity = Vector3.zero;
 rb.angularVelocity = Vector3.zero;
@@ -43,11 +43,11 @@ gameObject.SetActive(false);
 gameObject.SetActive(true);
 rb.useGravity = true;
 rb.isKinematic = false;
-{% endhighlight %}
+```
 
 It's not the prettiest code, but it works flawlessly. Plus as an added bonus I didn't really have to do any more legwork for the camera and player origin since they're directly relational to the position of the player object. I wound up breaking these blocks up into their own separate public functions so I could also re-use them for when I implement pausing the game (which is already implemented in a very rudimentary state as a result of this).
 
-{% highlight javascript %}
+```javascript
 public function pause() {
 	// pause the object
 	rb.velocity = Vector3.zero;
@@ -73,7 +73,7 @@ public function respawn() {
 
 	unpause();
 }
-{% endhighlight %}
+```
 
 ## Freezing the camera until respawn
 Getting the detached camera functionality wound up being far easier than I anticipated, however it required quite a bit of refactoring of my main camera script. I ended up creating a state property that would dictate what the camera should be doing at that moment; then created methods for each state. Detaching is essentially just unbinding the position from the players position and continuing to fire [LookAt](http://docs.unity3d.com/ScriptReference/Transform.LookAt.html) so the camera will maintain its gaze on the user as he plummets to certain doom.
@@ -117,7 +117,7 @@ Since this is all pretty cut and dry and taking easy functionality and tossing i
 
 Whenever the player hits the out of bounds collision trigger, I made the object fire off the `playerFell()` method of the Level Controller, which is as follows:
 
-{% highlight javascript %}
+```javascript
 public function playerFell() {
 	// Freeze the camera and pause the timer
 	cameraController.freezeCamera();
@@ -136,7 +136,7 @@ public function playerFell() {
 	cameraController.unfreezeCamera();
 	gameTimer.Restart();
 }
-{% endhighlight %}
+```
 
 Essentially, we're freezing the state of the game for 3.5 seconds to load and show the "you failed" overlay then resetting everything back to the original positions/values when the level started. As we saw up when we were fooling with the player controller above, there's quite a bit more going on however since everything is isolated into their own public methods it makes the main script a lot more easy to comprehend. The most interesting thing here is that I decided to load the overlay as a prefabbed resource. This is because [resources don't take up memory on mobile devices until instantiated](https://youtu.be/vnF9YEm_pxk?t=29m28s), so the overlay isn't hogging any necessary memory when it's not active.
 

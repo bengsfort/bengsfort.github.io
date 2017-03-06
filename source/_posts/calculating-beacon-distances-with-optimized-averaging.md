@@ -21,7 +21,7 @@ It's no real secret that beacons are most certainly still an "emerging technolog
 ## The problem
 When you're detecting your beacons via an app that's listening for them (using the [Proximity Beacon Plugin](https://github.com/petermetz/cordova-plugin-ibeacon) for [Cordova](https://cordova.apache.org/)/[Ionic](http://ionicframework.com/), for example) you receive a constant bombardment of objects representing that beacon that you can do with as you please, including an estimated distance _(referred to as Accuracy)_. Here's an example object you could expect to see back:
 
-{% highlight javascript linenos %}
+```javascript
 // Example beacon object
 {
     proximity: 'ProximityNear',
@@ -32,7 +32,7 @@ When you're detecting your beacons via an app that's listening for them (using t
     rssi: 50,
     tx: 1
 }
-{% endhighlight %}
+```
 
 Now, when I say you get bombarded by these objects I mean it. To circumvent this and spare the users phone my team and I have a throttling service that only allows us to submit the beacon data for location calculation every 3 seconds or so, however we noticed a major issue crop up every so often which involved our distance (accuracy, line 4) being incredibly inaccurate. We're talking upwards of 4 meters off from where we knew we were standing, which when the end result gets compared to a set of boundaries to determine whether or not the device is in a specified zone is a pretty big deal.
 
@@ -43,7 +43,7 @@ After lots of research and lots of data logging, we discovered two things:
 
 Number 2 isn't too big of an issue as it just involves storing beacon data in beacon-unique arrays then calculating the average of the stored distances for each array, which if the distances are stored as an array would be an extremely simple procedure:
 
-{% highlight javascript linenos %}
+```javascript
 // Example averaging of a beacon array
 var averages = [];
 
@@ -56,7 +56,7 @@ for (key in beacons) {
 }
 
 // submit `averages` for calculation
-{% endhighlight %}
+```
 
 So that leaves us with tricky number 1, which would fall short when it comes to regular averaging if there were enough inaccurate distances; therefore requiring a more intricate solution. 
 
@@ -67,8 +67,7 @@ The solution I decided to go with was to create a simple utility that would iter
 
 I first decided to scaffold out the utility so I could get an idea of exactly what it was it would need to do. This is generally where I start with everything that I make, as I just find it easier to go through at a high level then start to dive in deeper where necessary.
 
-{% highlight javascript linenos %}
-// optimizedAverages.js
+```javascript optimizedAverages.js
 /**
  * Optimized Average calculation
  * Takes an array of numbers, then throws away unreliable numbers
@@ -97,12 +96,11 @@ var optimizedAverage = function optimizeDistanceAverage( Numbers ) {
 // Expose Utility to whatever needs it
 if ( typeof module === "object" && module.exports ) module.exports = optimizedAverage;
 if ( typeof window !== "undefined" ) window.optimizedAverage = optimizedAverage;
-{% endhighlight %}
+```
 
 Let's start by writing some helpers that will come in handy for the rest, like an averaging function as well as a rounding function.
 
-{% highlight javascript linenos %}
-// optimizedAverages.js
+```javascript optimizedAverages.js
 . . .
 var optimizedAverage = function optimizeDistanceAverage( Numbers ) {
   /**
@@ -127,14 +125,13 @@ var optimizedAverage = function optimizeDistanceAverage( Numbers ) {
   . . .
 };
 . . .
-{% endhighlight %}
+```
 
-The averaging function (`getAverage()`, _lines 8 - 12_) is essentially the same as the block shown in the last section that averaged the array, so nothing new there. The rounding function (`roundResult()`, _lines 19 - 21_) isn't anything too special either, they're just some math calculations that would be extremely annoying to write more than once.
+The averaging function (`getAverage()`, _lines 7 - 11_) is essentially the same as the block shown in the last section that averaged the array, so nothing new there. The rounding function (`roundResult()`, _lines 18 - 20_) isn't anything too special either, they're just some math calculations that would be extremely annoying to write more than once.
 
 From there we can start getting into the real meat-and-potatoes of the utility, namely the function that iterates through the distance array and tallies up how popular each whole number is. Since it's JavaScript and this involves iterating through an array, there are obviously 8 million and four ways to write it however on this occasion I'm feeling the humble `for(;;) {}` loop, particularly because I've got to be able to declare keys to properly track each number.
 
-{% highlight javascript linenos %}
-// optimizedAverages.js
+```javascript optimizedAverages.js
 /**
  * Tallies up the amount of times a whole number occurs in the array.
  * @param {number[]} numbers - Array of numbers to iterate over.
@@ -156,24 +153,23 @@ var countNums = function countNums( numbers ) {
 
   return count;
 }( Numbers ); // Self-invoke the function with the `Numbers` array
-{% endhighlight %}
+```
 
 As for loops go it's a pretty basic one, but I'll walk you through what we're doing just in case:
 
-1. Creating an empty array to hold our number tallies. _(line 7)_
-2. Iterating through the passed in array, storing the active whole number as we go. _(lines 9, 11)_
-3. Checking to see if the number already has a tally, if not we start it off at 1 and if so we increment it by 1. _(lines 13 - 17)_
-4. Returning the array containing our tallies, then self-invoking the function with the array of distances passed into the utility. _(lines 20, 21)_
+1. Creating an empty array to hold our number tallies. _(line 6)_
+2. Iterating through the passed in array, storing the active whole number as we go. _(lines 8, 10)_
+3. Checking to see if the number already has a tally, if not we start it off at 1 and if so we increment it by 1. _(lines 12 - 16)_
+4. Returning the array containing our tallies, then self-invoking the function with the array of distances passed into the utility. _(lines 19, 20)_
 
 From there we're on the home stretch, as now we have an array telling us how many times each distance present in the array appears, so we can easily determine the most probable distance and use that to create a buffer zone of distances we'll still accept for our final average.
 
-{% highlight javascript linenos %}
-// optimizedAverages.js
+```javascript optimizedAverages.js
 // Determine the most reliable number (the number that appears most)
 var mostReliable = countNums.reduce(function reduceMostReliable(prev, cur, i, arr) {
   return arr[prev] > cur ? prev : i;
 }, 0);
-{% endhighlight %}
+```
 
 Since we're saving our array containing our tally [reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) can come to the rescue and _reduce_ our array down to a single, probable distance. This could be done a little bit more readable, but I'll break down the logic so it's a little bit easier to understand what's going on. 
 
@@ -190,8 +186,7 @@ A little bit confusing, I know, but the second it clicks it makes all the sense 
 
 There are a couple different ways to write this, so I'll start with the easy to read version then show the more compact version.
 
-{% highlight javascript linenos %}
-// optimizedAverages.js
+```javascript optimizedAverages.js
 /** 
  * Create a new array with the provided numbers that are:
  *  1. Less than double the most probable distance,
@@ -206,7 +201,7 @@ var reliableList = Numbers.filter(function( num ) {
 var reliableAverage = getAverage( reliableList );
 // Return the rounded average
 return roundResult( reliableAverage );
-{% endhighlight %}
+```
 
 Here all we're doing is filtering through our original list and picking out any numbers that are over or under a certain threshold, that way we can keep our data pool small and accurate and get a better average. I've got it set at double and half, as I noticed that was a good buffer when reviewing the range of inconsistency in our data logs. 
 
@@ -214,7 +209,7 @@ By setting it at double and half we provide a larger buffer for the higher dista
 
 Like I said though, this final block can be written a little bit more concise as well:
 
-{% highlight javascript linenos %}
+```javascript
 /** 
  * Create a new array with the provided numbers that are:
  *  1. Less than double the most probable distance,
@@ -223,7 +218,7 @@ Like I said though, this final block can be written a little bit more concise as
 return roundResult( getAverage( Numbers.filter( function( num ) {
   return Math.ceil( num ) > ( mostReliable / 2 ) && Math.floor( num ) < ( mostReliable * 2 );
 }) ) );
-{% endhighlight %}
+```
 
 Yummy, what was previously 8 lines is now 3! This is another benefit of us adding our helpers in earlier, instead of having to toss all of those calculations inline we can just call them in our return on the fly after calculating our new reliableList.
 

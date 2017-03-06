@@ -83,8 +83,7 @@ Since the workflows needs are pretty well laid out, the Gulp tasks can efficient
 ### Getting a testable Gulpfile set up
 To make sure the tasks are easy to test, a very basic Gulpfile needs to be in place. Two must-use modules I use all the time and absolutely adore make super quick work of this: [gulp-auto-task](https://www.npmjs.com/package/gulp-auto-task) which automagically turns standard node modules into gulp tasks, and [require-dir](https://www.npmjs.com/package/require-dir) which will include all files within the specified folder, removing the possibility of having a giant mess of requires.
 
-{% highlight javascript linenos %}
-/** gulpfile.js */
+```javascript gulpfile.js
 var gulp          = require('gulp'),
     /** Utils */
     requireDir    = require('require-dir'),
@@ -100,14 +99,13 @@ gulpAutoTask('{*,**/*}.js', {
   base: paths.tasks,
   gulp: gulp
 });
-{% endhighlight %}
+```
 
 Technically, `require-dir` is not necessary at this stage, but it's easy enough to include now and it saves having to include it later. With this in place, any _*.js_ files placed within the _./gulp-tasks/_ directory will not only get automatically required into the `utils` object, but they will also be turned into tasks without any `gulp.task` declarations. Some benefits to this include tasks becoming true modules, more readable files/file structure and **tasks become reusable**, which is very important for the Jekyll build task.
 
 I'm also including a portion of _package.json_ that I use to hold all of my paths. One quirk to working with tasks that are spread across different files is that globals can very quickly become very repetitive, so to solve this and to stay __DRY__ I tossed a a `paths` object into my _package.json_ file, so I can just require that object directly and keep all of my paths in one place.
 
-{% highlight json linenos %}
-/** package.json */
+```json package.json
 {
   ...
   "paths": {
@@ -137,14 +135,13 @@ I'm also including a portion of _package.json_ that I use to hold all of my path
   },
   ...
 }
-{% endhighlight %}
+```
 
 ### Utility Tasks
 Since the Gulpfile is ready to accept tasks in the form of modules, the utility tasks can begin to take shape. As the modules are added they'll automatically be available to test via `gulp <fileName>`, which is extremely helpful from a testing standpoint. For the sake of progress, I like to start with the easiest ones to get them knocked out first and foremost; in this case that's the asset utilities as they are extremely simple and straight forward gulp tasks.
 
 #### CSS Build
-{% highlight javascript linenos %}
-/** gulp-tasks/buildCss.js */
+```javascript gulp-tasks/buildCss.js
 var gulp        = require('gulp'),
     /** Utilities */
     rename      = require('gulp-rename'),
@@ -171,31 +168,30 @@ module.exports = function buildCss () {
     .pipe(size()) // Logs the minified file size to the console
     .pipe(gulp.dest(paths.css.dest));
 };
-{% endhighlight %}
+```
 
 The CSS task is a pretty straightforward, so there's not too much in it that's very special. There are two quirks that should be noted:
 
-- Pass the path to the __sass/_ folder to the compiler so Sass knows where to look for files that get imported via `import();` (line 17)
+- Pass the path to the __sass/_ folder to the compiler so Sass knows where to look for files that get imported via `import();` (line 16)
 - Surrender the handling of styles completely from Jekyll to avoid Sass compilation errors.
 
 The former is easy enough and handled within our `sass()` function, but the latter requires messing with a couple more files.
 
 - Tell Jekyll to exclude the _css/_ directory by adding it to the excludes array within the __config.yml_ file:
-  {% highlight yaml %}
+  ```yaml
   exclude: [css/]
-  {% endhighlight %}
+  ```
 - Remove the YAML front matter from the _main.scss_ file:
-  {% highlight scss %}
+  ```scss
   // ---
 // # Only the main Sass file needs front matter (the dashes are enough)
 // ---
-  {% endhighlight %}
+  ```
 
 #### JavaScript Build
 Again, there isn't really anything super special about the JavaSript build that differs from any other run-of-the-mill Gulp JavaScript builds. I gather the vendor files from my _js/lib_ directory and compile them to their own file, then similarly concatenate the regular _js/*.js_ files and build them together. Since Jekyll doesn't provide much in terms of JavaScript support out of the box, there's no extra configuration required.
 
-{% highlight javascript linenos %}
-/** gulp-tasks/buildJs.js */
+```javascript gulp-tasks/buildJs.js
 var gulp        = require('gulp'),
   /** Utilities */
     rename      = require('gulp-rename'),
@@ -237,12 +233,12 @@ module.exports = function buildJs() {
     .pipe(gulp.dest(paths.js.dest));
 
 };
-{% endhighlight %}
+```
 
 #### Image Optimization
 After having discovered the importance of image optimization while working at a marketing firm and embarking on a giant performance optimization crusade, I try to include it in all of my projects. Luckily, basic image optimization with gulp is a cake walk with [gulp-imagemin](https://www.npmjs.com/package/gulp-imagemin).
-{% highlight javascript linenos %}
-/** gulp-tasks/optimizeImg.js */
+
+```javascript gulp-tasks/optimizeImg.js
 var gulp        = require('gulp'),
     /** Images */
     imagemin    = require('gulp-imagemin'),
@@ -267,7 +263,7 @@ module.exports = function optimizeImg() {
     .pipe(gulp.dest(paths.img.dest));
 
 };
-{% endhighlight %}
+```
 At this point I'm pretty happy with the results of the implementation on this site, however as noted in my @todo below I need to determine a better way of handling inline SVG's, which I currently have as includes. One option I've been considering is tossing all of my SVG's into __assets/svg_, then updating this task to minify and optimize all SVG's within that folder and toss them into my __includes/svg_ folder so they can easily be inlined via `{% raw %}{% include svg/icon-name.svg %}{% endraw %}`.
 
 #### Jekyll Build
@@ -276,8 +272,7 @@ While the Jekyll build is the real meat and potatoes of the workflow, it's relat
 Spawn and exec both do the same thing, but in different ways: spawn returns a stream, is asynchronously asynchronous and meant for streaming large amounts of data back to node, while exec returns a buffer and is synchronously asynchronous and meant for returning small data such as status messages. While both work, I personally prefer and am currently using exec for handling Jekyll builds.
 
 **Jekyll Build using `child_process.exec`**
-{% highlight javascript linenos %}
-/** gulp-tasks/buildJekyll.js */
+```javascript gulp-tasks/buildJekyll.js
 var exec          = require('child_process').exec,
     /** Utilities */
     gutil         = require('gulp-util');
@@ -294,10 +289,10 @@ module.exports = function buildJekyll(callback, env) {
     return callback(error !== null ? 'ERROR: Jekyll process exited with code: '+error.code : null);
   });
 };
-{% endhighlight %}
+```
 
 **Jekyll Build using `child_process.spawn`**
-{% highlight javascript linenos %}
+```javascript gulp-tasks/buildJekyll.js
 /** gulp-tasks/buildJekyll.js */
 var spawn         = require('child_process').spawn;
 
@@ -320,7 +315,7 @@ module.exports = function buildJekyll(callback, env) {
     return callback(code === 0 ? null : 'ERROR: Jekyll process exited with code: '+code);
   });
 };
-{% endhighlight %}
+```
 
 Having used both spawn and exec, I personally prefer exec due to the cleanliness and compactness of the resulting file and I've noticed better consistency with how quick the process has been ending, allowing the following queued tasks to start quicker.
 
@@ -329,8 +324,7 @@ With the utility tasks completed, the entire workflow could be emulated by manua
 
 Since these helper tasks are pretty much exclusively batch task runners, they can just get tossed into the Gulpfile after the task importation.
 
-{% highlight javascript linenos %}
-/** gulpfile.js, cont */
+```javascript gulpfile.js
 /** Helper Tasks */
 gulp.task('build', function(callback) {
   return utils.buildJekyll(callback, 'serve');
@@ -341,19 +335,18 @@ gulp.task('build:prod', function(callback) {
 });
 
 gulp.task('build:assets', ['buildCss', 'buildJs', 'optimizeImg']);
-{% endhighlight %}
+```
 
-On lines 3 - 5 the `build` task is getting declared, which just returns the `buildJekyll` utility function with the Gulp callback and non-`prod` environment passed in. On 7 - 9 the same is being done for the `build:prod` task but with the `prod` environment passed in as the second argument to dictate the use of the production build file. This duplication is a bummer, but it's unfortunately necessary so the environment can get passed in. Since the `buildJekyll` call is being returned and the completed buffer returns by calling the Gulp callback, the task is also able to be used in sequence which is very important while making the main build tasks.
+On lines 2 - 4 the `build` task is getting declared, which just returns the `buildJekyll` utility function with the Gulp callback and non-`prod` environment passed in. On 6 - 8 the same is being done for the `build:prod` task but with the `prod` environment passed in as the second argument to dictate the use of the production build file. This duplication is a bummer, but it's unfortunately necessary so the environment can get passed in. Since the `buildJekyll` call is being returned and the completed buffer returns by calling the Gulp callback, the task is also able to be used in sequence which is very important while making the main build tasks.
 
-On line 10 the `build:assets` call isn't anything super special, it's just a simple Gulp task that is calling all of our asset build tasks. This isn't super necessary but it's nice being able to call just one task rather than three whenever a full asset build needs to be run.
+On line 9 the `build:assets` call isn't anything super special, it's just a simple Gulp task that is calling all of our asset build tasks. This isn't super necessary but it's nice being able to call just one task rather than three whenever a full asset build needs to be run.
 
 ### Implementing BrowserSync
 Since the entire build system is being handle by Gulp, it makes sense to have Gulp handle the local server as well. Rather than somehow hacking the the `jekyll serve` command into our watch command, tossing the blame to Gulp requires a lot less legwork; especially when integrating something like [BrowserSync][], which is my personal favorite. Not only is BrowserSync super easy to set up but it has some super cool features such as device syncing (which is incredibly fun to play with).
 
 While the tasks being so small is reason enough to toss them into the Gulpfile after our helpers, the initialization of the server and the reload task need to be within the same file for them to know each other exist, making throwing these into the Gulpfile a necessity.
 
-{% highlight javascript linenos %}
-/** gulpfile.js, cont */
+```javascript gulpfile.js
 // BrowserSync needs to get required at the top of the file
 var browserSync   = require('browser-sync').create('jekyll');
 
@@ -371,15 +364,14 @@ gulp.task('browser', function() {
 gulp.task('browser:reload', function() {
   browserSync.reload();
 });
-{% endhighlight %}
+```
 
 Luckily BrowserSync is super easy to implement, so there isn't a whole lot of bloat added to the Gulpfile. The module gets required and the server gets created with the name _Jekyll_, then the `browser` task actually initializes the server using the build path specified in the _package.json_ file and finally the `browser:reload` task takes the initialized server and sends it a notice to refresh. Piece of cake.
 
 ### Creating the Main Build tasks
 So far all of the tasks required to actually fully build the site are completely scaffolded out, and the build could actually be used by manually running `gulp build && gulp build:assets` in the command line. That's all great, but personally I would find that super annoying, plus it wouldn't turn on the BrowserSync server. Since the whole point of this is complete automation, some build tasks are in order.
 
-{% highlight javascript linenos %}
-/** gulpfile.js, cont */
+```javascript gulpfile.js
 var watch         = require('gulp-watch'),
     runSequence   = require('run-sequence');
 
@@ -426,9 +418,9 @@ gulp.task('serve', ['browser'], function() {
 gulp.task('deploy', function() {
   runSequence('build:prod', ['build:assets']);
 });
-{% endhighlight %}
+```
 
-The `gulp deploy` task (lines 45 - 47) is nothing special, so I won't really get into that as it's essentially that I mentioned in the first part of this section, just a batch task. The `gulp serve` task (lines 8 - 43) however looks like quite the stinker, especially due to my use of the [gulp-watch](https://www.npmjs.com/package/gulp-watch) module rather than the built in `gulp.watch` function; the former taking an endless stream approach, which I prefer.
+The `gulp deploy` task (lines 44 - 46) is nothing special, so I won't really get into that as it's essentially that I mentioned in the first part of this section, just a batch task. The `gulp serve` task (lines 7 - 42) however looks like quite the stinker, especially due to my use of the [gulp-watch](https://www.npmjs.com/package/gulp-watch) module rather than the built in `gulp.watch` function; the former taking an endless stream approach, which I prefer.
 
 #### The `gulp serve` task, explained
 While the task looks like an absolute monster, it's actually pretty simple. On a very high level, it just sets up some listeners for each type of file that should trigger some sort of rebuild, and is broken down by type:

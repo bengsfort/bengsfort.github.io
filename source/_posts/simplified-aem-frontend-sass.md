@@ -70,7 +70,7 @@ I've tried a few different Maven plugins for Sass compilation, and so far my fav
 
 All we have to do is add the plugin to our UI pom and configure it to use the correct files and paths.
 
-{% highlight xml %}
+```xml
 <!-- /(namespace)-ui/pom.xml -->
 <build>
   <plugins>
@@ -99,7 +99,7 @@ All we have to do is add the plugin to our UI pom and configure it to use the co
   <!-- . . . -->
   </plugins>
 </build>
-{% endhighlight %}
+```
 
 It's a pretty typical plugin definition until we get to the configuration block, which is where the magic happens. We're doing the following:
 
@@ -120,7 +120,7 @@ I won't go too much in detail in this section, but rather go over some caveats a
 #### The globals/sass source directory
 We'll start out with the `etc/designs/namespace/sass` directory, or our actual _Sass source_. Since every project I implement Bootstrap on it winds up getting heavily extended and customized, I prefer to include the actual Bootstrap source so I can hand pick exactly what gets built and what gets ignored. The source would get tossed into the _Sass source_ directory into a directory `bootstrap/`. Along with the source code of our framework of choice we'd create some global/utility sass files that we can use for general Sass environment setup and shared or utility classes. Here's an example of what this directory may look like after this:
 
-{% highlight javascript %}
+```javascript
 bootstrap/          // The source code for our framework of choice.
 _variables.scss     // Site-wide Sass variables.
 _mixins.scss        // Any custom mixins your code requires.
@@ -131,25 +131,25 @@ icons.scss          // Custom icon declarations.
 forms.scss          // Global form styles.
 typography.scss     // Global typography such as headers, color options, links, etc.
 globals.scss        // Global styles that don't really fit in anywhere else.
-{% endhighlight %}
+```
 
 By far and away the most important file in the above example is `components.scss`, which bulk-`@import`'s all component styles for inclusion in the style sheet. This makes important use of that `includePath` property we set in the Sass compiler plugin so that the `@import` declarations are far more readable than they would be otherwise:
 
-{% highlight css %}
+```css
 // etc/designs/namespace/sass/components.scss
 
 /* . . . */
 @import "content/carousel/carousel.scss";
 @import "content/linkedlist/linkedlist.scss";
 /* . . . */
-{% endhighlight %}
+```
 
 Since we set that include path, we can request the component files relative to the component content. Super cool! One observation I will note from the last project using this structure was that sometimes I would find this file somewhat inconvenient to get to all the way over here in designs. Semantically it works great, but if I didn't already have the file open in my editor I was always a bit annoyed to have to go all the way over to the designs directory to open it up and add a new component. That being said, you could probably move it somewhere closer to the components and it would be totally fine, such as `apps/namespace/components/components.scss`.
 
 #### The main file
 Now we'll add our main file that will be used by the compiler to compile our stylesheet. This is in that `etc/designs/namespace/styles` directory, and can be named whatever you want. I have a habit of naming it `main.scss` so I can expect the resulting css file to be `main.css`. This file is essentially just a bulk-importing file that will go through and import all of globals and framework files, followed by all of the components. If you chose to have the compiler generate a Source Map this file will also need a comment of the URL of the compiled source map added to the bottom of it.
 
-{% highlight css %}
+```css
 // etc/designs/namespace/styles/main.scss
 
 // Custom Variables and mixins
@@ -182,7 +182,7 @@ Now we'll add our main file that will be used by the compiler to compile our sty
 @import "components";
 
 /*!# sourceMappingURL=namespace/css/main.css.map */
-{% endhighlight %}
+```
 
 The file is a pretty standard main file, with the exception of the source map URL declaration at the very bottom. I tried to remove as much of the Bootstrap stuff as I could to save space, but I left some to show how you'd include them thanks to the relative include paths.
 
@@ -190,24 +190,24 @@ The file is a pretty standard main file, with the exception of the source map UR
 
 Now I'll just show some dummy components to give you the idea of how you'll import them. Let's say we have a super complex component we need to create called the List component, back end has already finished the backing class for it and it just needs front end now. First we'll go in and add that file to our `components.scss` file:
 
-{% highlight css %}
+```css
 // etc/designs/namespace/sass/components.scss
 
 @import "content/carousel/carousel.scss";
 @import "content/linkedlist/linkedlist.scss";
 @import "content/list/list.scss";   // Our new component
-{% endhighlight %}
+```
 
 Then we'd just create the `.scss` file in it's component folder. Easy peazy.
 
-{% highlight css %}
+```css
 // apps/namespace/components/content/list/list.scss
 
 ul.namespace-list {
   list-style: none;
   padding-left: 0;
 }
-{% endhighlight %}
+```
 
 ## Creating clientlibs
 
@@ -222,7 +222,7 @@ We're going to wind up having 3 different clientlib categories:
 ### Our main clientlib
 We'll start with the `namespace-frontend.designs` clientlib since that's our main clientlib that will be included in our templates. We embed the components clientlib category in this one
 
-{% highlight xml %}
+```xml
 <!-- etc/designs/namespace/.content.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
@@ -232,7 +232,7 @@ We'll start with the `namespace-frontend.designs` clientlib since that's our mai
     embed="[namespace-frontend.components]"
     categories="[namespace-frontend.design]"
   />
-{% endhighlight %}
+```
 
 With that in our design root we'll then just set our main compiled CSS file to be included in this clientlib as well as any javascript files we need. The only thing of note here is that we're embedding our component category into this clientlib so that it will be included whenever we inject this clientlib into our templates.
 
@@ -256,7 +256,7 @@ This should be pretty standard for anybody who has made clientlibs before, all w
 
 Chances are you're going to need to include some sort of JavaScript or CSS library on your project, so that's where our vendor clientlib comes into play. This is going to be a separate category than our main design clientlib, so we're tossing this into the `vendor/` directory of our design directory.
 
-{% highlight xml %}
+```xml
 <!-- etc/designs/namespace/vendor/.content.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
@@ -265,7 +265,7 @@ Chances are you're going to need to include some sort of JavaScript or CSS libra
     sling:resourceType="widgets/clientlib"
     categories="[namespace-frontend.vendor]"
   />
-{% endhighlight %}
+```
 
 In typical AEM fashion, the libraries going in the `vendor/` directory get split up into `css/` and `js/` directories, which we'll just include via the `css.txt` and `js.txt` files in the vendor root.
 
@@ -282,7 +282,7 @@ jquery.validate.js
 
 Now we've got all of our vendor libraries set up, our main scripts and all of our styles ready to go, but now it's time to get component-specific javascript hooked into everything. This is where we're going to make use of that `namespace-frontend.components` clientlib category.  Each component that requires a script will have it's own clientlib declaration that mates it to that category, which if you'll remember from earlier is being embedded into our main designs clientlib.
 
-{% highlight xml %}
+```xml
 <!-- apps/namespace/components/content/linkedlist/js/.content.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
@@ -291,7 +291,7 @@ Now we've got all of our vendor libraries set up, our main scripts and all of ou
     sling:resourceType="widgets/clientlib"
     categories="[namespace-frontend.components]"
   />
-{% endhighlight %}
+```
 
 <pre>
 # apps/namespace/components/content/linkedlist/js/js.txt
@@ -325,16 +325,16 @@ The concept is the same, so use whichever structure works for you and your proje
 
 This should be pretty trivial to anyone who is already well-versed in clientlibs in AEM, so I won't go into extreme detail on this. All you need to do is include the main design clientlib category and our vendor clientlib. I generally have my vendor libraries included before my main designs.
 
-{% highlight html %}
+```html
 <!-- apps/namespace/components/page/global/head.html -->
 <head data-sly-use.clientLib="${'/libs/granite/sightly/templates/clientlib.html'}">
 
   <sly data-sly-unwrap data-sly-call="${clientLib.css @ categories='namespace-frontend.vendor'}" />
   <sly data-sly-unwrap data-sly-call="${clientLib.css @ categories='namespace-frontend.design'}" />
 </head>
-{% endhighlight %}
+```
 
-{% highlight html %}
+```html
 <!-- apps/namespace/components/page/global/body.html -->
 <body data-sly-use.clientLib="${'/libs/granite/sightly/templates/clientlib.html'}">
   <div id="wrapper">
@@ -347,7 +347,7 @@ This should be pretty trivial to anyone who is already well-versed in clientlibs
   <sly data-sly-unwrap data-sly-call="${clientLib.js @ categories='namespace-frontend.vendor'}" />
   <sly data-sly-unwrap data-sly-call="${clientLib.js @ categories='namespace-frontend.design'}" />
 </body>
-{% endhighlight %}
+```
 
 Now we have a working Sass build via Maven, component styles/scripts in predictable locations, connected global/utility styles/scripts and vendor libraries. If you have no need for Gulp automation for quicker builds and code deployment to AEM you should be ready to start developing. If not, all that's left is setting up our optional Gulp build.
 
@@ -359,7 +359,7 @@ For the bare minimum all you really need as far as [npm][npm] packages go is [gu
 
 If you're interested in an example gulp file, we'll set up one with sass compilation, [jslinting](http://jshint.com/) and auto-slinging whenever a style, script, or template is updated. First off we need to install some [npm][npm] packages in our absolute project root and initialize our npm project:
 
-{% highlight bash %}
+```bash
 npm init
 
 # utils
@@ -373,11 +373,11 @@ npm install --save-dev jshint gulp-jshint
 
 # aem related
 npm install --save-dev gulp-slang
-{% endhighlight %}
+```
 
 From there we can start on our `gulpfile.js` by requiring everything we need up at the top of the file:
 
-{% highlight javascript %}
+```javascript
 // gulpfile.js
 /* Requires */
 var gulp        = require('gulp'),
@@ -392,11 +392,11 @@ var gulp        = require('gulp'),
     sourcemaps  = require('gulp-sourcemaps'),
     // Scripts
     jshint      = require('gulp-jshint');
-{% endhighlight %}
+```
 
 We then want to specify the paths that we need. This helps readability and maintainability, as namespaces can sometimes change mid-project and if you don't have relative paths this can be a _nightmare_ to refactor.
 
-{% highlight javascript %}
+```javascript
 // gulpfile.js, continued
 /* Requires */
 // . . .
@@ -418,11 +418,11 @@ var root        = 'namespace-ui/src/main/content/jcr_root/',
 
     // Images
     imgPath     = designs + 'img/';
-{% endhighlight %}
+```
 
 I generally like my console nice and colorful, so before any tasks I usually include some sort of colorful event notification utility function:
 
-{% highlight javascript %}
+```javascript
 // gulpfile.js, continued
 /* Requires */
 // . . .
@@ -441,11 +441,11 @@ I generally like my console nice and colorful, so before any tasks I usually inc
 function changeNotification(fType, eType, msg) {
   gutil.log(gutil.colors.cyan.bold(fType), 'was', gutil.colors.yellow.bold(eType) + '.', msg);
 }
-{% endhighlight %}
+```
 
 Now we need to set up our sass builds. The key here is to try to replicate the sass build that the Maven build does as closely as possible so there are no noticeable differences between the Gulp build and Maven build. We do this by configuring sass with the same settings we authored in our pom file, creating a task that we can reference in other tasks as well as fire off ourselves when needed, then setting up a task to sling the shiny new files to AEM.
 
-{% highlight javascript %}
+```javascript
 // gulpfile.js, continued
 /* Requires */
 // . . .
@@ -492,11 +492,11 @@ gulp.task('sass:sling', ['sass:build'], function () {
  * Runs the sass build and slings the results to AEM.
  */
 gulp.task('sass', ['sass:build', 'sass:sling']);
-{% endhighlight %}
+```
 
 Next up our JavaScript task, which in this particular instance is extremely light. All we'll be doing is setting up some simple jslinting to keep silly errors at bay in our JS. We won't be minifying the JS as that can be done by AEM out of the box, and we want to make sure this Gulp build is complementary to the Maven build, not a pre-requisite.
 
-{% highlight javascript %}
+```javascript
 // gulpfile.js, continued
 /* Requires */
 // . . .
@@ -516,11 +516,11 @@ gulp.task('js:lint', function () {
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
 });
-{% endhighlight %}
+```
 
 Last up will be our watch task, which will monitor all template files, scripts and styles for changes so that it can kick off builds immediately. We're going to set up a watch stream for each type of file, which will then kick off a build or deployment for that particular type of code.
 
-{% highlight javascript %}
+```javascript
 // gulpfile.js, continued
 /* Requires */
 // . . .
@@ -578,7 +578,7 @@ gulp.task('watch', function () {
       .pipe(slang(ev.path));
   });
 });
-{% endhighlight %}
+```
 
 So a quick recap on the commands this gulp build provides:
 
