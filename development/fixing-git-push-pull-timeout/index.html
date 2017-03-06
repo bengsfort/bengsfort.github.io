@@ -3,17 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives | Code &amp; Stuff</title>
+  <title>Fixing git push/pull timing out | Code &amp; Stuff</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="A dive into app, indie game dev and pixel art with Matt Bengston.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Code & Stuff">
-<meta property="og:url" content="http://aesinv.com/archives/index.html">
+  <meta name="description" content="There’s nothing worse than losing precious development time thanks to some random sporadic tooling error. It’s amazing how difficult it was to find an actual fix for this, although due to the network-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fixing git push/pull timing out">
+<meta property="og:url" content="http://aesinv.com/development/fixing-git-push-pull-timeout/index.html">
 <meta property="og:site_name" content="Code & Stuff">
-<meta property="og:description" content="A dive into app, indie game dev and pixel art with Matt Bengston.">
+<meta property="og:description" content="There’s nothing worse than losing precious development time thanks to some random sporadic tooling error. It’s amazing how difficult it was to find an actual fix for this, although due to the network-">
+<meta property="og:updated_time" content="2017-03-06T13:40:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Code & Stuff">
-<meta name="twitter:description" content="A dive into app, indie game dev and pixel art with Matt Bengston.">
+<meta name="twitter:title" content="Fixing git push/pull timing out">
+<meta name="twitter:description" content="There’s nothing worse than losing precious development time thanks to some random sporadic tooling error. It’s amazing how difficult it was to find an actual fix for this, although due to the network-">
   
     <link rel="alternate" href="/atom.xml" title="Code &amp; Stuff" type="application/atom+xml">
   
@@ -62,192 +63,81 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/uncategorized/hello-world/" class="archive-article-date">
-  <time datetime="2017-03-06T09:09:19.000Z" itemprop="datePublished">Mar 6</time>
+        <section id="main"><article id="post-fixing-git-push-pull-timeout" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/development/fixing-git-push-pull-timeout/" class="article-date">
+  <time datetime="2016-05-26T12:02:30.000Z" itemprop="datePublished">26 May, 2016</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/development/">development</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/uncategorized/hello-world/">Hello World</a>
+    <h1 class="article-title" itemprop="name">
+      Fixing git push/pull timing out
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
+    <div class="article-entry" itemprop="articleBody">
       
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/development/fixing-git-push-pull-timeout/" class="archive-article-date">
-  <time datetime="2016-05-26T12:02:30.000Z" itemprop="datePublished">May 26</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/development/fixing-git-push-pull-timeout/">Fixing git push/pull timing out</a>
-    </h1>
-  
+        <p>There’s nothing worse than losing precious development time thanks to some random sporadic tooling error. It’s amazing how difficult it was to find an actual fix for this, although due to the network-related nature of the issue I can imagine there are at least 400 million different fixes and causes.</p>
+<p>Out of the blue I was unable to pull or push to any repos. Since I use SSH with Github, I was able to circumvent the issue briefly by changing the origin to https then providing my user/pass when pushing and pulling but all of a sudden that stopped working completely as well. What gives?</p>
+<p>So first up, the error. After remaining idle for quite a while, the command would fail with the following:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git push</div><div class="line">ssh: connect to host github.com port 22: Operation timed out</div><div class="line">fatal: Could not read from remote repository.</div><div class="line"></div><div class="line">Please make sure you have the correct access rights</div><div class="line">and the repository exists.</div></pre></td></tr></table></figure>
+<p>Alright… After some Googlin’ I was able to find a <a href="http://stackoverflow.com/questions/15589682/ssh-connect-to-host-github-com-port-22-connection-timed-out" target="_blank" rel="external">Stack overflow post</a> mentioning the same issue, with the accepted answer saying to change the repo URL from SSH to https. That was a no-go, but the first command to double check came in handy:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ssh -T git@github.com</div></pre></td></tr></table></figure>
+<p>The post mentioned that should timeout, and it did. However with my repo already on https and it still not working, I had to explore other avenues to fix it. After restarting 4 times with no luck I did more searching and found myself on the following page on <a href="https://help.github.com" target="_blank" rel="external">Github Help</a>: <a href="https://help.github.com/articles/using-ssh-over-the-https-port/" target="_blank" rel="external">Using SSH over the HTTPS port</a>.</p>
+<p>Hot. More things to try. The first was an altered version of the first command that essentially ran the same check but through a different port. I was supposed to receive a friendly success message back, so I went ahead and gave it a go:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ssh -T -p 443 git@ssh.github.com</div><div class="line">Hi aesinv! You&apos;ve successfully authenticated, but GitHub does not provide shell access.</div></pre></td></tr></table></figure>
+<p>It was like finding a radio linked directly to the forrest rangers after being lost in the forrest for 2 weeks, it was absolutely beautiful. I went ahead and followed the second step listed on the article, which was to update my ssh config to route github connections through the HTTPS port.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># ~/.ssh/config</div><div class="line">Host github.com</div><div class="line">    Hostname ssh.github.com</div><div class="line">    Port 443</div></pre></td></tr></table></figure>
+<p>Now for the moment of truth. To test the routing was complete I ran the same command I had run before, <code>$ ssh -T git@github.com</code>, and saw the same friendly greeting I had before. Hope swelled throughout my being. Then I tried pushing the changes that were waiting politely to be transported safely over to the repository, and what I was greeted with was a truly incredibly sight to behold.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git push</div><div class="line">Warning: Permanently added the RSA host key for IP address &apos;[192.30.252.151]:443&apos; to the list of known hosts.</div><div class="line">Counting objects: 59, done.</div><div class="line">Delta compression using up to 8 threads.</div><div class="line">Compressing objects: 100% (48/48), done.</div><div class="line">Writing objects: 100% (59/59), 6.54 KiB | 0 bytes/s, done.</div><div class="line">Total 59 (delta 28), reused 0 (delta 0)</div><div class="line">To git@github.com:Organization/repo.git</div><div class="line">   2a7b8b5..0c8a46c  feature-hero -&gt; feature-hero</div></pre></td></tr></table></figure>
+<p>I may have cried a tear of happiness.</p>
+<p>Hopefully this can help someone else who gets tormented by this awful issue. I still am not sure what exactly caused it as things were working just great yesterday, but I’m glad I was able to find a fix. It took nearly 3 hours, but we can gloss over that.</p>
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/development/passing-data-from-aem6-to-javascript/" class="archive-article-date">
-  <time datetime="2016-05-15T08:15:10.000Z" itemprop="datePublished">May 15</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/development/passing-data-from-aem6-to-javascript/">Different ways to pass data from AEM6 to Javascript</a>
-    </h1>
-  
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://aesinv.com/development/fixing-git-push-pull-timeout/" data-id="cizy4qye80004ahpg2sumway5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/crying-yourself-to-sleep/">crying yourself to sleep</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git-issues/">git issues</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li></ul>
 
-    </header>
+    </footer>
   </div>
-</article>
   
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/development/simplified-aem-frontend-sass/" class="archive-article-date">
-  <time datetime="2016-05-04T08:15:10.000Z" itemprop="datePublished">May 4</time>
-</a>
-      
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/development/simplified-aem-frontend-sass/">A simplified front end architecture solution for AEM</a>
-    </h1>
+    <a href="/uncategorized/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
   
+  
+    <a href="/development/passing-data-from-aem6-to-javascript/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Different ways to pass data from AEM6 to Javascript</div>
+    </a>
+  
+</nav>
 
-    </header>
-  </div>
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/game-dev/keeping-the-user-entertained-when-they-fail/" class="archive-article-date">
-  <time datetime="2016-04-30T18:22:31.000Z" itemprop="datePublished">Apr 30</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/game-dev/keeping-the-user-entertained-when-they-fail/">Game Dev Log: Keeping the player entertained when they fail</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2015" class="archive-year">2015</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/development/calculating-beacon-distances-with-optimized-averaging/" class="archive-article-date">
-  <time datetime="2015-12-29T09:30:48.000Z" itemprop="datePublished">Dec 29</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/development/calculating-beacon-distances-with-optimized-averaging/">Calculating iBeacon distances with optimized averaging</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/development/making-a-js-game-part-1-game-engine/" class="archive-article-date">
-  <time datetime="2015-11-27T07:45:48.000Z" itemprop="datePublished">Nov 27</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/development/making-a-js-game-part-1-game-engine/">Building a simple JavaScript game - 1. A basic game engine</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/development/building-a-gulp-workflow-around-jekyll/" class="archive-article-date">
-  <time datetime="2015-08-29T14:16:21.000Z" itemprop="datePublished">Aug 29</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/development/building-a-gulp-workflow-around-jekyll/">Building a Gulp workflow wrapped around Jekyll</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
 </section>
         
