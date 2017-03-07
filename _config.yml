@@ -62,8 +62,13 @@ pagination_dir: page
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
+node_sass:
+  outputStyle: nested
+  precision: 5
+  sourceComments: true
+
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: bengsfort
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html

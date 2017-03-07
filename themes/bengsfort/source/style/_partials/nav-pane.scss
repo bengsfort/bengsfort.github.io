@@ -1,0 +1,10 @@
+.nav-pane {
+	@extend .blue;
+	@extend .lighten-4;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: $nav-pane-size;
+	height: 100%;
+}
