@@ -1,1 +1,34 @@
-index page bruh
+<section class="intro-text">
+	<h1 class="headline"><%- config.title %></h1>
+	<% if (config.description) { %>
+		<span class="subtitle"><%- config.description %></span>
+	<% } %>
+</section>
+
+<section>
+	<ul class="latest-posts-list collection">
+
+	<%
+	var toSort = [];
+	site.posts.each(function(post, i) {
+		toSort.push(post);
+	});
+
+	toSort.sort(function(a, b) {
+		var aDate = date(a.date, 'X');
+		var bDate = date(b.date, 'X');
+		if (aDate < bDate) return 1;
+		if (aDate > bDate) return -1;
+		return 0;
+	}).map(function(post, i) { %>
+		<li class="collection-item avatar">
+			<img src="http://placehold.it/200/09f/fff.png" class="circle" />
+			<a href="<%= url_for(post.path) %>" class="title"><%- post.title %></a>
+			<p><%- date(post.date) %></p>
+			<p><%- Array.isArray(site.posts) %></p>
+			<p><%- post.description %></p>
+		</li>
+	<% }) %>
+	</ul>
+</section>
+

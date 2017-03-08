@@ -11,10 +11,10 @@
 	title = page.tag;
 	}
 	var mainTitle = title
-	? title + ' ' + theme.title_separator
+	? title + ' / '
 	: '';
 	%>
-	<title><%= mainTitle + theme.title_suffix %></title>
+	<title><%= mainTitle + config.title %></title>
 
 	<!--// Metadata //-->
 	<%- open_graph({

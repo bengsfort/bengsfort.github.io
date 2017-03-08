@@ -2,7 +2,7 @@
 layout: post
 title:  "A simplified front end architecture solution for AEM"
 date:   2016-5-4 11:15:10
-category: development
+category: Articles
 tags:
   - gulp
   - aem
@@ -13,7 +13,7 @@ tags:
 feature: aem-fe/feature.png
 featureico: aem-fe/thumbnail.png
 featurealt: A code editor along with two project structure diagrams.
-excerpt: Here's a simplified front end architecture that makes development in AEM easier for front end devs without complicating things for the back end devs.
+description: Here's a simplified front end architecture that makes development in AEM easier for front end devs without complicating things for the back end devs.
 ---
 
 ## Tl;dr

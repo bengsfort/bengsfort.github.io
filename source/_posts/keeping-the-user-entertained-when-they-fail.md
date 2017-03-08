@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Game Dev Log: Keeping the player entertained when they fail"
+title:  "Keeping the player entertained when they fail"
 date:   2016-04-30 21:22:31
-category: game dev
+category: Dev Log
 tags:
   - unity
   - javascript
@@ -15,7 +15,7 @@ featureVidSlugs: entertaining-player-when-they-fail
 feature: entertaining-player-when-they-fail.png
 featureico: entertaining-player-when-they-fail.gif
 featurealt: The completed respawn overlay.
-excerpt: I really want to polish off this game as much as possible, so today we're taking a look at what happens when the user falls off the current stage into the oblivion.
+description: I really want to polish off this game as much as possible, so today we're taking a look at what happens when the user falls off the current stage into the oblivion.
 ---
 
 I'm quickly discovering that games are just like really complex or unmaintained websites: as you progress you quickly find that there are a lot more scenarios and screens you need to deal with that never even crossed your mind when you started. For me one of these was _"Wait, what happens when the player falls off a platform?"_ I knew it was always something that was going to happen, especially considering the game is inspired by _Super Monkey Ball_, but I had never actually taken the time to figure out what would happen on the screen.

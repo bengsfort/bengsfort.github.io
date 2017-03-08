@@ -2,7 +2,7 @@
 layout: post
 title:  "Different ways to pass data from AEM6 to Javascript"
 date:   2016-5-15 11:15:10
-category: development
+category: Articles
 tags:
   - aem6
   - adobe cq
@@ -11,7 +11,7 @@ tags:
 feature: js-data-aem-feature.png
 featureico: js-data-aem-thumb.png
 featurealt: AEM trying to make a sweet deal with JavaScript.
-excerpt: As dynamic experiences become more popular, data will need to find its way from AEM to front end Javascript. Here are some good options for passing data along without headaches.
+description: As dynamic experiences become more popular, data will need to find its way from AEM to front end Javascript. Here are some good options for passing data along without headaches.
 ---
 
 ## Tl;dr

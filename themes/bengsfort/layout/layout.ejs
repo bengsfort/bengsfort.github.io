@@ -4,16 +4,15 @@
 
 	<body>
 		<%- partial('_partials/nav-pane') %>
-		<div class="row">
-
-			<div class="col s12 m8 l9">
+		<main class="main-wrapper">
+			<div class="container">
 				<%- body %>
 			</div>
-		</div>
+		</main>
 
 		<%- partial('_partials/svg-defs') %>
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script type="text/javascript" src="js/bin/materialize.min.js"></script>
+		<script type="text/javascript" src="/js/bin/materialize.min.js"></script>
 		<%- partial('_partials/google-analytics') %>
 	</body>
 </html>

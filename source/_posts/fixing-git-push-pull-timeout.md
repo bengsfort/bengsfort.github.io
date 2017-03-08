@@ -2,7 +2,7 @@
 layout: post
 title:  "Fixing git push/pull timing out"
 date:   2016-5-26 15:02:30
-category: development
+category: Articles
 tags:
   - git
   - github
@@ -11,7 +11,7 @@ tags:
 feature: git-timeout/feature.png
 featureico: git-timeout/thumbnail.png
 featurealt: The trauma. The despair.
-excerpt: Here's what I did to fix a random git timeout that prevented me from pushing or pulling code for hours.
+description: Here's what I did to fix a random git timeout that prevented me from pushing or pulling code for hours.
 ---
 
 There's nothing worse than losing precious development time thanks to some random sporadic tooling error. It's amazing how difficult it was to find an actual fix for this, although due to the network-related nature of the issue I can imagine there are at least 400 million different fixes and causes.

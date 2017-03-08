@@ -1,0 +1,26 @@
+.nav-footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	border-top: 1px solid $site-nav-border-color;
+	padding: 18px;
+
+	&> span {
+		display: block;
+		margin-bottom: 6px;
+	}
+
+	.material-icons {
+		position: relative;
+		top: 2px;
+	}
+
+	.source-info {
+		a {
+			color: #000;
+			font-weight: 700;
+		}
+	}
+}

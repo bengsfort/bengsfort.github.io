@@ -1,0 +1,14 @@
+.intro-text {
+	margin-bottom: 48px;
+	 
+	.headline {
+		@extend .blue-text;
+		@extend .text-accent-4;
+		font-weight: 300;
+		margin-bottom: 0;
+	}
+
+	.subtitle {
+		font-size: 1.5rem;
+	}
+}

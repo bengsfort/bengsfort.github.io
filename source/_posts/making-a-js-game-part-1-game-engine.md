@@ -2,7 +2,7 @@
 layout: post
 title:  "Building a simple JavaScript game - 1. A basic game engine"
 date:   2015-11-27 9:45:48
-category: development
+category: Articles
 tags:
   - javascript
   - games
@@ -12,7 +12,7 @@ tags:
 feature: js-game-p1-feature.png
 featureico: js-game-p1-feature-icon.png
 featurealt: The start of our fantastic vidja-game.
-excerpt: Playing video games is fun. JavaScript is fun. So..... Why not both? In this episode, we'll be building a basic game engine as a foundation to build on.
+description: Playing video games is fun. JavaScript is fun. So..... Why not both? In this episode, we'll be building a basic game engine as a foundation to build on.
 ---
 
 Once I started getting into web development my desire to be a game developer got put on the back burner while I continued to explore and build my skills as a web developer. As my experience grew and I began to understand the underlying concepts behind what makes a game it started to come back around again, but instead of using traditional languages I've been having a lot of fun experimenting with video game development with JavaScript.

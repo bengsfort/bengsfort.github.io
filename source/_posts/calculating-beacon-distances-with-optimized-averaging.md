@@ -2,7 +2,7 @@
 layout: post
 title:  "Calculating iBeacon distances with optimized averaging"
 date:   2015-12-29 11:30:48
-category: development
+category: Articles
 tags:
   - javascript
   - ibeacon
@@ -13,7 +13,7 @@ tags:
 feature: average-optimizer-feature.png
 featureico: average-optimizer-thumb.png
 featurealt: Optimized averages from arrays of numbers.
-excerpt: The past few weeks I've been working a lot with calculating user/device location via signal strength from iBeacons, and 90% of the time it feels like playing Russian Roulette with an Imperial Blaster. Here's how I got rid of the guess work via optimizing data averaging.
+description: The past few weeks I've been working a lot with calculating user/device location via signal strength from iBeacons, and 90% of the time it feels like playing Russian Roulette with an Imperial Blaster. Here's how I got rid of the guess work via optimizing data averaging.
 ---
 
 It's no real secret that beacons are most certainly still an "emerging technology" with some growing pains. Unfortunately when you're working on a hybrid app that depends on them, you kind of have to figure out a way to make things work. In this instance, it's trying to weed-out the distance/signal strength inconsistencies so user location can be calculated correctly and accurately. 

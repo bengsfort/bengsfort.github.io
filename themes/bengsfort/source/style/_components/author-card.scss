@@ -2,8 +2,8 @@ $author-avatar-size: 100px;
 $author-card-padding: 6px;
 
 .author-card {
+	@extend .blue;
 	position: relative;
-	background: #fefefe;
 	box-shadow: 0px 3px 17px rgba(0, 0, 0, 0.1);
 
 	.author-card-top {
@@ -16,7 +16,7 @@ $author-card-padding: 6px;
 	.author-card-body {
 		padding: 0 $author-card-padding $author-card-padding;
 		text-align: center;
-		color: #383838;
+		color: #f8f8f8;
 	}
 
 	.author-avatar-wrapper {
@@ -40,16 +40,14 @@ $author-card-padding: 6px;
 	}
 	.author-position {
 		display: block;
-		color: #000;
+		color: #fff;
 	}
 	.author-employer {
-		@extend .blue-text;
-		@extend .text-darken-2;
 		font-weight: 700;
+		color: #fff;
 		transition: color 255ms;
 		&:hover {
-			@extend .blue-text;
-			@extend .text-darken-1;
+			color: #f8f8f8;
 		}
 	}
 
@@ -63,12 +61,12 @@ $author-card-padding: 6px;
 	.icon {
 		height: 1.25rem;
 		width: 1.25rem;
-		fill: map-get($blue , "accent-4");
+		fill: #ebebeb;
 		border-radius: $author-avatar-size;
 		box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 		transition: all 255ms;
 		&:hover {
-			fill: map-get($blue, "accent-3");
+			fill: #fff;
 			box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
 			transition: all 255ms;
 		}

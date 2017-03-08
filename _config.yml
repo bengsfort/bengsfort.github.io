@@ -3,9 +3,9 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Code & Stuff
+title: Developmental Pixels
 subtitle: 
-description: A dive into app, indie game dev and pixel art with Matt Bengston.
+description: A dive into app dev, indie game dev and pixel art with Matt Bengston.
 author: Matt Bengston
 language: en
 timezone: Europe/Helsinki
@@ -22,7 +22,7 @@ source_dir: source
 public_dir: public
 tag_dir: tags
 archive_dir: archives
-category_dir: categories
+category_dir: /
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:

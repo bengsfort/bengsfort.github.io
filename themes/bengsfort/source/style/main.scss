@@ -8,8 +8,19 @@
 @import "variables";
 @import "icons";
 
-/** Partials */
+/** Navigation / Side bar */
 @import "_partials/nav-pane";
-
-/** Components */
 @import "_components/author-card";
+@import "_components/nav-menu";
+@import "_components/nav-footer";
+
+/** Main / Body */
+@import "_components/intro-text";
+
+html, body {
+	background: #f8f8f8;
+}
+
+.main-wrapper {
+	margin-left: $nav-pane-size;
+}

@@ -2,7 +2,7 @@
 layout: post
 title:  "Building a Gulp workflow wrapped around Jekyll"
 date:   2015-8-29 17:16:21
-category: development
+category: Articles
 tags:
   - gulp
   - jekyll
@@ -11,7 +11,7 @@ tags:
 feature: gulp-feature.png
 featureico: gulp-feature-icon.png
 featurealt: A command prompt with the Jekyll build command and the Sublime Text editor with this sites project.
-excerpt: An attempt at adding more dynamism to Jekyll via a workflow revamp using Gulp as a task runner and BrowserSync as a local server.
+description: An attempt at adding more dynamism to Jekyll via a workflow revamp using Gulp as a task runner and BrowserSync as a local server.
 ---
 
 ## Tl;dr
