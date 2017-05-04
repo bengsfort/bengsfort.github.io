@@ -1,0 +1,8 @@
+<section class="intro-text">
+	<h1 class="headline"><%- page.category %></h1>
+	<% if (config.description) { %>
+		<span class="subtitle">Category page: <%= page.category %> <%- config.description %></span>
+	<% } %>
+</section>
+
+<%- partial('_partials/posts-list.ejs', { category: page.category, count: -1 }) %>

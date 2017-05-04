@@ -1,0 +1,14 @@
+<% var post_url = url_for(post.path) %>
+<li class="latest-posts-item">
+	<a href="<%= post_url %>" class="latest-posts-title"><%- post.title %></a>
+	<div class="latest-posts-meta">
+		Posted on <span class="latest-posts-date"><%- date(post.date) %></span> to
+		<div class="latest-posts-category">
+			<%- list_categories(post.categories, {
+				show_count: false,
+				transform: function(cat) { return '#' + cat },
+			}) %>
+		</div>
+	</div>
+	<!-- <p class="latest-posts-description"><%- post.description %></p> -->
+</li>
