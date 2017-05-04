@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: post.html
 title:  "Keeping the player entertained when they fail"
 date:   2016-04-30 21:22:31
-category: Dev Log
+collection: Dev Logs
 tags:
   - unity
   - javascript

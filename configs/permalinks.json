@@ -1,0 +1,16 @@
+{
+	"linksets": [
+		{
+			"match": {
+				"collection": "Articles"
+			},
+			"pattern": "articles/:title"
+		},
+		{
+			"match": {
+				"collection": "Dev Logs"
+			},
+			"pattern": "devlogs/:title"
+		}
+	]
+}

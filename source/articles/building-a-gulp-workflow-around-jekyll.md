@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: post.html
 title:  "Building a Gulp workflow wrapped around Jekyll"
 date:   2015-8-29 17:16:21
-category: Articles
+collection: Articles
 tags:
   - gulp
   - jekyll

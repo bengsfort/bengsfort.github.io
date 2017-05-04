@@ -1,0 +1,6 @@
+{
+	"engine": "ejs",
+	"directory": "views/layouts",
+	"partials": "views/partials",
+	"partialExtension": ".ejs"
+}

@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: post.html
 title:  "A simplified front end architecture solution for AEM"
 date:   2016-5-4 11:15:10
-category: Articles
+collection: Articles
 tags:
   - gulp
   - aem

@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: post.html
 title:  "Fixing git push/pull timing out"
 date:   2016-5-26 15:02:30
-category: Articles
+collection: Articles
 tags:
   - git
   - github

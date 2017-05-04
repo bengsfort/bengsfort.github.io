@@ -1,0 +1,38 @@
+{
+  "name": "bengsfort.github.io",
+  "version": "0.0.1",
+  "description": "A metalsmith blog",
+  "main": "metalsmith.js",
+  "devDependencies": {
+    "ejs": "^2.5.6",
+    "metalsmith": "^2.3.0",
+    "metalsmith-assets": "^0.1.0",
+    "metalsmith-branch": "0.0.5",
+    "metalsmith-drafts": "0.0.1",
+    "metalsmith-filter": "^1.0.2",
+    "metalsmith-layouts": "^1.8.1",
+    "metalsmith-markdown": "^0.2.1",
+    "metalsmith-metallic": "^2.0.1",
+    "metalsmith-permalinks": "^0.5.0",
+    "metalsmith-sass": "^1.4.0"
+  },
+  "scripts": {
+    "build": "node ./metalsmith.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bengsfort/bengsfort.github.io.git"
+  },
+  "keywords": [
+    "Metalsmith",
+    "blog",
+    "Static Site Generator"
+  ],
+  "author": "Matt Bengston <bengston.matthew@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bengsfort/bengsfort.github.io/issues"
+  },
+  "homepage": "https://github.com/bengsfort/bengsfort.github.io#readme"
+}

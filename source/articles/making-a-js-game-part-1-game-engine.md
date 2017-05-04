@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: post.html
 title:  "Building a simple JavaScript game - 1. A basic game engine"
 date:   2015-11-27 9:45:48
-category: Articles
+collection: Articles
 tags:
   - javascript
   - games

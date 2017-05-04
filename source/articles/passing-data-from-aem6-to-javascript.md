@@ -1,8 +1,8 @@
 ---
-layout: post
+layout: post.html
 title:  "Different ways to pass data from AEM6 to Javascript"
 date:   2016-5-15 11:15:10
-category: Articles
+collection: Articles
 tags:
   - aem6
   - adobe cq
