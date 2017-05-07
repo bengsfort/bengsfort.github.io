@@ -9,8 +9,14 @@
 			<div class="container">
 				{{> components/page-intro header=title description=description }}
 				{{{ contents }}}
-				{{#if listPosts }}
-					{{> posts-list collection=listPosts }}
+				{{#if listPosts }}					
+					{{> posts-list collection=posts }}
+				{{/if}}
+				{{#if listArticles }}
+					{{> posts-list collection=articles }}
+				{{/if}}
+				{{#if listDevLogs }}
+					{{> posts-list collection=dev-logs}}
 				{{/if}}
 			</div>
 		</main>

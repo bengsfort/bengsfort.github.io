@@ -5,6 +5,20 @@
 		"language": "en",
 		"google_analytics_id": "UA-66600710-1"
 	},
+	"navigation": [
+		{
+			"label": "Articles",
+			"path": "/articles/"
+		},
+		{
+			"label": "Dev Logs",
+			"path": "/dev-logs/"
+		},
+		{
+			"label": "Pixel Art",
+			"path": "/pixel-art/"
+		}
+	],
 	"author": {
 		"name": "Matt Bengston",
 		"avatar": "/assets/avatar.png",

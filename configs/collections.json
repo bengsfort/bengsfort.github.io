@@ -1,7 +1,13 @@
 {
+	"posts": {
+		"sortBy": "date",
+		"reverse": true,
+		"pattern": ["articles/*.md", "dev-logs/*.md"]
+	},
 	"articles": {
 		"sortBy": "date",
 		"reverse": true,
+		"pattern": "articles/*.md",
 		"metadata": {
 			"name": "Articles",
 			"description": "Compiled thoughts and walkthroughs on development, design, and project management."
@@ -10,6 +16,7 @@
 	"dev-logs": {
 		"sortBy": "date",
 		"reverse": true,
+		"pattern": "dev-logs/*.md",
 		"metadata": {
 			"name": "Development Logs",
 			"description": "Informal updates and thoughts on currently active projects."

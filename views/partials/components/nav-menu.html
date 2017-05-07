@@ -1,12 +1,9 @@
 <nav id="site-navigation">
 	<ul class="site-nav">
-		{{!-- /* for (var i in theme.menu){ %>
-			<li>
-				<a href="<%- url_for(theme.menu[i]) %>" class="waves-effect"><%= i %></a>
+		{{#each navigation as |navItem navID|}}
+			<li {{#isActive ../category navItem.label}}class="active"{{/isActive}}>
+				<a href="{{ navItem.path }}" class="waves-effect">{{ navItem.label }}</a>
 			</li>
-		--}}
-		<li>
-			<a href="/" class="waves-effect">item</a>
-		</li>
+		{{/each}}
 	</ul>
 </nav>

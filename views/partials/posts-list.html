@@ -1,22 +1,7 @@
-{{!-- var postsToDisplay = site.posts.sort('date', -1);
-if (category !== 'all') {
-	var opts = {
-		orderby: 'updated',
-		order: -1,
-		query: {
-			categories: category,
-		},
-	};
-	if (count > -1) opts.count = count;
-	postsToDisplay = get_posts(opts);
-}
---}}
-
 <section>
 	<ul class="latest-posts-list">
-		{{!-- /*postsToDisplay.each(function(post) { %>
-			<%- partial('../_components/post-preview', { post: post }) %>
-		--}}
-		hello world
+		{{#each collection as |post postID|}}
+			{{> components/post-preview post=post}}
+		{{/each}}
 	</ul>
 </section>

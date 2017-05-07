@@ -2,7 +2,7 @@
 layout: post.html
 title:  "Building a Gulp workflow wrapped around Jekyll"
 date:   2015-8-29 17:16:21
-collection: Articles
+category: Articles
 tags:
   - gulp
   - jekyll
@@ -437,11 +437,11 @@ RunSequence effectively forces tasks to run in sequence, so the queued tasks wil
 ## To-do
 Using runSequence to force things to run in order is a little bit of a hacky solution (it's even mentioned as a hack within the readme for the module) until [orchestrator](https://github.com/orchestrator/orchestrator), what Gulp is built off of, is updated to support [non-dependent ordered tasks](https://github.com/orchestrator/orchestrator/issues/21). This is supposed to make it into [Gulp 4](https://github.com/gulpjs/gulp/milestones), so once that's released I will definitely be refactoring this to be less hacky.
 
-<div class="bg-video-wrap" style="background-image: url('/img/videos/gulpVid.png');">
+<div class="bg-video-wrap" style="background-image: url('/assets/videos/gulpVid.png');">
   <video class="bg-video-player" autoplay loop>
-    <source src="/img/videos/gulpVid.mp4"  type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
-    <source src="/img/videos/gulpVid.webm" type="video/webm; codecs=vp8,vorbis">
-    <source src="/img/videos/gulpVid.ogv"  type="video/ogg; codecs=theora,vorbis">
+    <source src="/assets/videos/gulpVid.mp4"  type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
+    <source src="/assets/videos/gulpVid.webm" type="video/webm; codecs=vp8,vorbis">
+    <source src="/assets/videos/gulpVid.ogv"  type="video/ogg; codecs=theora,vorbis">
   </video>
 </div>
 

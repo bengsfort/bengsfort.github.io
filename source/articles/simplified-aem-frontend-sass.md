@@ -2,7 +2,7 @@
 layout: post.html
 title:  "A simplified front end architecture solution for AEM"
 date:   2016-5-4 11:15:10
-collection: Articles
+category: Articles
 tags:
   - gulp
   - aem
@@ -41,7 +41,7 @@ While that's not a huge list of features it's a good platform to start from for 
 ## File Structure
 File structure and location is completely subjective, however I will say that the structure outlined here has been the most pleasant to work with compared to other front end AEM structures I've worked with. I tried to put everything in predictable locations as one of my biggest pet peeves with AEM is that there are so many different directories it's incredibly difficult to find stuff the majority of the time.
 
-![Front end structure diagram](/img/aem-fe/structure-diagram.png)
+![Front end structure diagram](/assets/aem-fe/structure-diagram.png)
 
 As you can see from the diagram above, the code is essentially split up based on type:
 
@@ -50,11 +50,11 @@ As you can see from the diagram above, the code is essentially split up based on
 
 This more or less goes along with standard practice and means that assets are predictable and easy to find. If you're developing a carousel component there's no constant switching between two massively separate directories, all of the code relative to the carousel is in _one_ place, it's completely self-contained. From a maintenance point of view alone this sort of modular structure enhances maintainability and ease of onboarding massively.
 
-![Component-specific structure diagram](/img/aem-fe/component-diagram.png)
+![Component-specific structure diagram](/assets/aem-fe/component-diagram.png)
 
 Given that the majority of the time you'll have a few extra vendor libraries and a couple global/utility files (namespace creation/general event binding and library instantiation on the JavaScript side, mixin/variable declarations and shared layout/utility class declarations on the Sass side), tossing a large amount of styles and scripts randomly in the component content section would pollute that hierarchy and really isn't semantically correct as they are design-related. That's where the `etc/designs` hierarchy comes into play.
 
-![Global/utility designs structure diagram](/img/aem-fe/designs-diagram.png)
+![Global/utility designs structure diagram](/assets/aem-fe/designs-diagram.png)
 
 The designs section is a little more open to interpretation as every project is going to be different and everybody likes to structure things their own way. The one important caveat to note is that the main `.scss` file needs to be completely independent from the rest of the sass files, otherwise you'll wind up with every single one of your source `.scss` files being converted into `.css` files. Trust me, you don't want that. In the case of the diagram above, with this in mind the `styles/` directory would contain 1 file: `main.scss` and that would import the files in the `sass/` directory and get built into `main.css`.
 

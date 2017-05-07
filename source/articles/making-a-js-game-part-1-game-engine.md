@@ -2,7 +2,7 @@
 layout: post.html
 title:  "Building a simple JavaScript game - 1. A basic game engine"
 date:   2015-11-27 9:45:48
-collection: Articles
+category: Articles
 tags:
   - javascript
   - games
@@ -52,6 +52,7 @@ It's a pretty simple structure, and should be fairly predictable. Our main `game
 First things first, we want to create our main game module so we can start working. Then, we'll include that on our html page and have it dynamically inject a high-dpi, or high resolution, canvas onto the page after calculating the correct pixel ratio; this way we can make sure we'll have crystal clear rendering even on higher pixel density devices.
 
 Let's start with that first bit by creating a bare-bones game module inside of `/js/game.js`.
+
 ```javascript js/game.js
 // /js/game.js
 var $container = document.getElementById('container');
@@ -766,11 +767,11 @@ module.exports = Player;
 
 Trust me, this is a LOT cleaner than tossing all of that _min max_ stuff into the module. As I mentioned before, since we extended the `Number` objects prototype with `Number.prototype.boundary`, that method is now available to all Numbers within our project. Since x and y are numbers rather than strings, they can then use boundary to return the proper position.
 
-<div class="bg-video-wrap" style="background-image: url('/img/videos/gulpVid.png');">
+<div class="bg-video-wrap" style="background-image: url('/assets/videos/gulpVid.png');">
   <video class="bg-video-player" autoplay loop>
-    <source src="/img/videos/game-engine-vid.mp4"  type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
-    <source src="/img/videos/game-engine-vid.webm" type="video/webm; codecs=vp8,vorbis">
-    <source src="/img/videos/game-engine-vid.ogv"  type="video/ogg; codecs=theora,vorbis">
+    <source src="/assets/videos/game-engine-vid.mp4"  type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
+    <source src="/assets/videos/game-engine-vid.webm" type="video/webm; codecs=vp8,vorbis">
+    <source src="/assets/videos/game-engine-vid.ogv"  type="video/ogg; codecs=theora,vorbis">
   </video>
 </div>
 

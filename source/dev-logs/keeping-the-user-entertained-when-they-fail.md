@@ -2,7 +2,7 @@
 layout: post.html
 title:  "Keeping the player entertained when they fail"
 date:   2016-04-30 21:22:31
-collection: Dev Logs
+category: Dev Logs
 tags:
   - unity
   - javascript
@@ -84,7 +84,7 @@ There were two elements I to the overlay that I really wanted to capture:
 1. An amusing message that would (hopefully) keep the user entertained.
 2. A similarly amusing image of our main _character_ looking battered and bruised.
 
-![The completed overlay](/img/game-respawn/respawn-screen.png)
+![The completed overlay](/assets/game-respawn/respawn-screen.png)
 
 ### Amusing variety
 Keeping with the idea of details, I didn't want to just toss in a static text field and be done with it. Having an array of potential messages and randomly choosing one to show to the user seemed far more appealing, so that's what I went ahead and did. That way there would be a sense of variety and spontaneity, rather than a predictable and boring preset message.
@@ -94,7 +94,7 @@ Thanks to Unity's public variable configuration this was cake. I just set a publ
 ### Adding the character into the mix
 Creating a variant of the main character to take a render of was extremely fun, and surprisingly didn't take too long. I took his base texture and created an alternate version with far more bummed out eyes and tons of scratches/bruises all over him, tossed it into Unity and snagged a screenshot of him in front of a green cube so I could toss that into Photoshop and get a clean transparent picture.
 
-![The result of the character render](/img/game-respawn/injured-player-resized.png)
+![The result of the character render](/assets/game-respawn/injured-player-resized.png)
 
 ### Animating and finishing up UI
 In case you haven't picked up on this yet, but I think static is boring. The more moving things the better! It was time to animate this screen for extra fancy points, so I loaded up the character image into Unity and opened up the [Animator](http://docs.unity3d.com/Manual/class-Animator.html) window for the first time on this project. I actually really enjoyed using it, it reminded me a lot of my Flash and video editing days way back when so it was super easy and quick to get up-to-speed with.
@@ -140,10 +140,10 @@ public function playerFell() {
 
 Essentially, we're freezing the state of the game for 3.5 seconds to load and show the "you failed" overlay then resetting everything back to the original positions/values when the level started. As we saw up when we were fooling with the player controller above, there's quite a bit more going on however since everything is isolated into their own public methods it makes the main script a lot more easy to comprehend. The most interesting thing here is that I decided to load the overlay as a prefabbed resource. This is because [resources don't take up memory on mobile devices until instantiated](https://youtu.be/vnF9YEm_pxk?t=29m28s), so the overlay isn't hogging any necessary memory when it's not active.
 
-<div class="bg-video-wrap" style="background-image: url('/img/entertaining-player-when-they-fail.gif');">
+<div class="bg-video-wrap" style="background-image: url('/assets/entertaining-player-when-they-fail.gif');">
   <video class="bg-video-player" autoplay loop>
-    <source src="/img/videos/entertaining-player-when-they-fail.mp4"  type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
-    <source src="/img/videos/entertaining-player-when-they-fail.webm" type="video/webm; codecs=vp8,vorbis">
+    <source src="/assets/videos/entertaining-player-when-they-fail.mp4"  type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
+    <source src="/assets/videos/entertaining-player-when-they-fail.webm" type="video/webm; codecs=vp8,vorbis">
   </video>
 </div>
 

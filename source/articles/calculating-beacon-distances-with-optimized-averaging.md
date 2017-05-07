@@ -2,7 +2,7 @@
 layout: post.html
 title:  "Calculating iBeacon distances with optimized averaging"
 date:   2015-12-29 11:30:48
-collection: Articles
+category: Articles
 tags:
   - javascript
   - ibeacon

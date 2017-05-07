@@ -12,13 +12,17 @@ const filter = require('metalsmith-filter');
 const collections = require('metalsmith-collections');
 const ignore = require('metalsmith-ignore');
 const watch = require('metalsmith-watch');
+const dates = require('metalsmith-date-formatter');
+const helpers = require('metalsmith-register-helpers');
 
 const config = require('./configs');
 
-const srcDir = path.join(__dirname, './source');
-const buildDir = path.join(__dirname, './public');
-
 module.exports = function (mode) {
+	const buildTarget = mode === 'deploy' ? './.deploy_git' : './public';
+
+	const srcDir = path.join(__dirname, './source');
+	const buildDir = path.join(__dirname, buildTarget);
+
 	const metalsmith = new Metalsmith(__dirname)
 		.destination(buildDir)
 		.use(branch('styles/main.scss')
@@ -28,7 +32,6 @@ module.exports = function (mode) {
 			}))
 		)
 		.metadata(config.globals)
-		.use(layout(config.layout))
 		.use(ignore([
 			'styles/*.scss',
 			'styles/**/*.scss',
@@ -36,10 +39,15 @@ module.exports = function (mode) {
 		]))
 		.source(srcDir)
 		.use(drafts())
-		.use(markdown())
-		.use(highlighting())
-		.use(permalinks(config.permalinks))
+		.use(dates({ format: 'D MMMM, YYYY' }))
 		.use(collections(config.collections))
+		.use(highlighting())
+		.use(markdown())
+		.use(permalinks(config.permalinks))
+		.use(helpers({
+			directory: path.join(__dirname, './views/helpers'),
+		}))
+		.use(layout(config.layout))
 		.use(assets({
 			source: './assets',
 			destination: './assets',

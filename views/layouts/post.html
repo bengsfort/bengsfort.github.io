@@ -1,1 +1,20 @@
-<h1>Hello world!</h1>
+<!DOCTYPE html>
+<html>
+	{{> head pageTitle=title }}
+
+	<body>
+		{{> nav-pane }}
+
+		<main class="main-wrapper">
+			<div class="container">
+				{{> components/page-intro header=title description=description }}
+				{{{ contents }}}
+			</div>
+		</main>
+
+		{{> svg-defs }}
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="/js/bin/materialize.min.js"></script>
+		{{> google-analytics }}
+	</body>
+</html>
