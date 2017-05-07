@@ -1,6 +1,5 @@
 {
-	"engine": "ejs",
+	"engine": "handlebars",
 	"directory": "views/layouts",
-	"partials": "views/partials",
-	"partialExtension": ".ejs"
+	"partials": "views/partials"
 }

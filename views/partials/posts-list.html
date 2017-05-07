@@ -1,5 +1,4 @@
-<%
-var postsToDisplay = site.posts.sort('date', -1);
+{{!-- var postsToDisplay = site.posts.sort('date', -1);
 if (category !== 'all') {
 	var opts = {
 		orderby: 'updated',
@@ -11,12 +10,13 @@ if (category !== 'all') {
 	if (count > -1) opts.count = count;
 	postsToDisplay = get_posts(opts);
 }
-%>
+--}}
 
 <section>
 	<ul class="latest-posts-list">
-		<% postsToDisplay.each(function(post) { %>
+		{{!-- /*postsToDisplay.each(function(post) { %>
 			<%- partial('../_components/post-preview', { post: post }) %>
-		<% }) %>
+		--}}
+		hello world
 	</ul>
 </section>

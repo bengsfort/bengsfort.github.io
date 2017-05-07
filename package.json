@@ -2,22 +2,28 @@
   "name": "bengsfort.github.io",
   "version": "0.0.1",
   "description": "A metalsmith blog",
-  "main": "metalsmith.js",
+  "main": "index.js",
   "devDependencies": {
-    "ejs": "^2.5.6",
+    "handlebars": "^4.0.8",
     "metalsmith": "^2.3.0",
     "metalsmith-assets": "^0.1.0",
     "metalsmith-branch": "0.0.5",
+    "metalsmith-collections": "^0.9.0",
+    "metalsmith-debug": "^1.1.0",
     "metalsmith-drafts": "0.0.1",
     "metalsmith-filter": "^1.0.2",
+    "metalsmith-ignore": "^0.1.2",
+    "metalsmith-inspect": "0.0.5",
     "metalsmith-layouts": "^1.8.1",
     "metalsmith-markdown": "^0.2.1",
     "metalsmith-metallic": "^2.0.1",
     "metalsmith-permalinks": "^0.5.0",
-    "metalsmith-sass": "^1.4.0"
+    "metalsmith-sass": "^1.4.0",
+    "metalsmith-watch": "^1.0.3"
   },
   "scripts": {
-    "build": "node ./metalsmith.js",
+    "build": "node ./index.js",
+    "watch": "node ./index.js --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

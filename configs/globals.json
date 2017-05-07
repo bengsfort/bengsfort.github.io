@@ -1,0 +1,24 @@
+{
+	"globals": {
+		"title": "Developmental Pixels",
+		"description": "Words and thoughts about app development, indie game development, and pixel art.",
+		"language": "en",
+		"google_analytics_id": "UA-66600710-1"
+	},
+	"author": {
+		"name": "Matt Bengston",
+		"avatar": "/assets/avatar.png",
+		"position": "Software Developer",
+		"employer": "Unity Technologies",
+		"employer_uri": "https://unity3d.com",
+		"github_id": "bengsfort",
+		"twitter_id": "bengsfort",
+		"fb_admins": 100000177595822,
+		"fb_app_id": 1893256420958255
+	},
+	"time": {
+		"timezone": "Europe/Helsinki",
+		"date_format": "D MMMM, YYYY",
+		"time_format": "H:mm"
+	}
+}

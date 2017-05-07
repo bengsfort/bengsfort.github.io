@@ -1,0 +1,29 @@
+<div class="author-card">
+	<div class="author-card-top">
+		<div class="author-avatar-wrapper">
+			<img class="author-avatar" src="{{{ author.avatar }}}" alt="{{ author.name }}" />
+		</div>
+	</div>
+
+	<div class="author-card-body">
+		<h5 class="author-name">{{ author.name }}</h5>
+		
+		<div class="author-job-info">
+			<span class="author-position">{{ author.position }}</span>
+			<a class="author-employer" target="_blank" href="{{ author.employer_uri }}">@{{ author.employer }}</a>
+		</div>
+
+		<div class="author-social">
+			<a class="author-github" target="_blank" href="https://github.com/{{ author.github_id }}">
+				<svg class="icon icon-github-with-circle">
+					<use xlink:href="#icon-github-with-circle" />
+				</svg>
+			</a>
+			<a class="author-twitter" target="_blank" href="https://twitter.com/{{ author.twitter_id }}">
+				<svg class="icon icon-twitter-with-circle">
+					<use xlink:href="#icon-twitter-with-circle" />
+				</svg>
+			</a>
+		</div>
+	</div>
+</div>

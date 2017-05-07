@@ -9,33 +9,53 @@ const assets = require('metalsmith-assets');
 const branch = require('metalsmith-branch');
 const sass = require('metalsmith-sass');
 const filter = require('metalsmith-filter');
+const collections = require('metalsmith-collections');
+const ignore = require('metalsmith-ignore');
+const watch = require('metalsmith-watch');
 
 const config = require('./configs');
 
 const srcDir = path.join(__dirname, './source');
 const buildDir = path.join(__dirname, './public');
 
-const metalsmith = new Metalsmith(__dirname)
-	.source(srcDir)
-	.destination(buildDir)
-	.use(drafts())
-	.use(layout(config.layout))
-	.use(markdown())
-	.use(highlighting())
-	.use(permalinks(config.permalinks))
-	.use(assets({
-		source: './assets',
-		destination: './assets',
-	}))
-	.use(branch('styles/*.scss')
-		.use(sass({
-			file: path.join(__dirname, './source/styles/main.scss'),
-			includePaths: [path.join(__dirname, './source/styles/')],
-			outputDir: 'styles/',
-		}))
-	)
-	.build(function(err) {
+module.exports = function (mode) {
+	const metalsmith = new Metalsmith(__dirname)
+		.destination(buildDir)
+		.use(branch('styles/main.scss')
+			.use(sass({
+				includePaths: [path.join(__dirname, './source/styles/')],
+				outputDir: 'styles/',
+			}))
+		)
+		.metadata(config.globals)
+		.use(layout(config.layout))
+		.use(ignore([
+			'styles/*.scss',
+			'styles/**/*.scss',
+			'styles/**/.DS_Store', // thx os x :(
+		]))
+		.source(srcDir)
+		.use(drafts())
+		.use(markdown())
+		.use(highlighting())
+		.use(permalinks(config.permalinks))
+		.use(collections(config.collections))
+		.use(assets({
+			source: './assets',
+			destination: './assets',
+		}));
+	if (mode === 'watch') {
+		metalsmith.use(watch({
+			paths: {
+				"${source}/**/*": true,
+				"views/**/*": true,
+				"configs/**/*": true,
+				"assets/**/*": true,
+			}
+		}));
+	}
+	metalsmith.build(function(err) {
 		if (err) throw err;
 		console.log('Build complete!');
 	});
-
+};

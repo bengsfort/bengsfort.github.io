@@ -1,0 +1,18 @@
+{
+	"articles": {
+		"sortBy": "date",
+		"reverse": true,
+		"metadata": {
+			"name": "Articles",
+			"description": "Compiled thoughts and walkthroughs on development, design, and project management."
+		}
+	},
+	"dev-logs": {
+		"sortBy": "date",
+		"reverse": true,
+		"metadata": {
+			"name": "Development Logs",
+			"description": "Informal updates and thoughts on currently active projects."
+		}
+	}
+}

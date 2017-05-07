@@ -1,9 +1,12 @@
 <nav id="site-navigation">
 	<ul class="site-nav">
-		<% for (var i in theme.menu){ %>
+		{{!-- /* for (var i in theme.menu){ %>
 			<li>
 				<a href="<%- url_for(theme.menu[i]) %>" class="waves-effect"><%= i %></a>
 			</li>
-		<% } %>
+		--}}
+		<li>
+			<a href="/" class="waves-effect">item</a>
+		</li>
 	</ul>
 </nav>
