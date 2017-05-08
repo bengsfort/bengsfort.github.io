@@ -9,13 +9,33 @@
 
 	.site-nav {
 		li {
+			position: relative;
 			display: block;
 			width: 100%;
 			float: none;
 			background: transparent;
 
-			&:hover {
+			&::before {
+				@extend .blue;
+				@extend .accent-4;
+				content: "";
+				display: block;
+				height: 100%;
+				width: 5px;
+				position: absolute;
+				top: 0;
+				left: 0;
+				transform: translateX(-5px);
+				-webkit-transform: translateX(-5px);
+				transition: transform 255ms;
+				-webkit-transition: transform 255ms, -webkit-transform 255ms;
+			}
+
+			&.active::before,
+			&:hover::before {
 				background: transparent;
+				transform: translateX(0);
+				-webkit-transform: translateX(0);
 			}
 		}
 

@@ -1,7 +1,7 @@
 <li class="latest-posts-item">
-	<a href="{{ post.path }}/" class="latest-posts-title">{{ post.title }}</a>
+	<a href="/{{ post.path }}/" class="latest-posts-title">{{ post.title }}</a>
 	<div class="latest-posts-meta">
-		Posted on <span class="latest-posts-date">{{ post.date }}</span> to
-		<div class="latest-posts-category">{{ post.category }}</div>
+		Posted on <span class="latest-posts-date">{{ post.date }}</span>
+		{{#unless isInCategory}}to <div class="latest-posts-category">{{ post.category }}</div>{{/unless}}
 	</div>
 </li>

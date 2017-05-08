@@ -13,17 +13,16 @@
 					{{> posts-list collection=posts }}
 				{{/if}}
 				{{#if listArticles }}
-					{{> posts-list collection=articles }}
+					{{> posts-list collection=articles isInCategory=true }}
 				{{/if}}
 				{{#if listDevLogs }}
-					{{> posts-list collection=dev-logs}}
+					{{> posts-list collection=dev-logs isInCategory=true }}
 				{{/if}}
 			</div>
 		</main>
 
 		{{> svg-defs }}
-		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script type="text/javascript" src="/js/bin/materialize.min.js"></script>
+		{{> scripts }}
 		{{> google-analytics }}
 	</body>
 </html>

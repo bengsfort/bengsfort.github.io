@@ -1,7 +1,7 @@
 <section>
 	<ul class="latest-posts-list">
 		{{#each collection as |post postID|}}
-			{{> components/post-preview post=post}}
+			{{> components/post-preview post=post isInCategory=../isInCategory }}
 		{{/each}}
 	</ul>
 </section>

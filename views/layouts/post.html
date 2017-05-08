@@ -9,12 +9,12 @@
 			<div class="container">
 				{{> components/page-intro header=title description=description }}
 				{{{ contents }}}
+				{{> post-footer }}
 			</div>
 		</main>
 
 		{{> svg-defs }}
-		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script type="text/javascript" src="/js/bin/materialize.min.js"></script>
+		{{> scripts }}
 		{{> google-analytics }}
 	</body>
 </html>

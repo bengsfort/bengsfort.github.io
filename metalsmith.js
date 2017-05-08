@@ -11,7 +11,7 @@ const sass = require('metalsmith-sass');
 const filter = require('metalsmith-filter');
 const collections = require('metalsmith-collections');
 const ignore = require('metalsmith-ignore');
-const watch = require('metalsmith-watch');
+const browserSync = require('metalsmith-browser-sync');
 const dates = require('metalsmith-date-formatter');
 const helpers = require('metalsmith-register-helpers');
 
@@ -53,13 +53,14 @@ module.exports = function (mode) {
 			destination: './assets',
 		}));
 	if (mode === 'watch') {
-		metalsmith.use(watch({
-			paths: {
-				"${source}/**/*": true,
-				"views/**/*": true,
-				"configs/**/*": true,
-				"assets/**/*": true,
-			}
+		metalsmith.use(browserSync({
+			files: [
+				`${srcDir}/**/*`,
+				`${srcDir}/views/**/*`,
+				`${srcDir}/configs/**/*`,
+				`${srcDir}/assets/**/*`,
+			],
+			server: buildDir,
 		}));
 	}
 	metalsmith.build(function(err) {
