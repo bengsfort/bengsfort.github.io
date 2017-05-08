@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width initial-scale=1">
+	
+		<title>Different ways to pass data from AEM6 to Javascript</title>
+	
+		<!--// Metadata //-->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width initial-scale=1">
+	
+		<!--// Metadata //-->
+		<meta name="description" content="Words and thoughts about app development, indie game development, and pixel art.">
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="Developmental Pixels">
+		<meta property="og:url" content="http://aesinv.com/index.html">
+		<meta property="og:site_name" content="Developmental Pixels">
+		<meta property="og:description" content="Words and thoughts about app development, indie game development, and pixel art.">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:title" content="Developmental Pixels">
+		<meta name="twitter:description" content="Words and thoughts about app development, indie game development, and pixel art.">
+		<meta name="twitter:creator" content="@bengsfort">
+		<meta property="fb:admins" content="100000177595822">
+		<meta property="fb:app_id" content="1893256420958255">
+		
+		
+		<!--// Stylesheets //-->
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="/styles/main.css" rel="stylesheet">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/atom-one-dark.min.css">
+	</head>
+	<body>
+		<header>
+			<a class="nav-menu-trigger waves-effect waves-light" data-target=".nav-pane">
+				<i class="material-icons close">close</i>
+				<i class="material-icons open">menu</i>
+			</a>
+			<div class="nav-pane">
+				<div class="nav-content">
+					<div class="author-card">
+						<div class="author-card-top">
+							<div class="author-avatar-wrapper">
+								<img class="author-avatar" src="/assets/avatar.png" alt="Matt Bengston" />
+							</div>
+						</div>
+					
+						<div class="author-card-body">
+							<h5 class="author-name">Matt Bengston</h5>
+							
+							<div class="author-job-info">
+								<span class="author-position">Software Developer</span>
+								<a class="author-employer" target="_blank" href="https://unity3d.com">@Unity Technologies</a>
+							</div>
+					
+							<div class="author-social">
+								<a class="author-github" target="_blank" href="https://github.com/bengsfort">
+									<svg class="icon icon-github-with-circle">
+										<use xlink:href="#icon-github-with-circle" />
+									</svg>
+								</a>
+								<a class="author-twitter" target="_blank" href="https://twitter.com/bengsfort">
+									<svg class="icon icon-twitter-with-circle">
+										<use xlink:href="#icon-twitter-with-circle" />
+									</svg>
+								</a>
+							</div>
+						</div>
+					</div>			<nav id="site-navigation">
+						<ul class="site-nav">
+								<li >
+									<a href="/" class="waves-effect">All Posts</a>
+								</li>
+								<li class="active">
+									<a href="/articles/" class="waves-effect">Articles</a>
+								</li>
+								<li >
+									<a href="/dev-logs/" class="waves-effect">Dev Logs</a>
+								</li>
+								<li >
+									<a href="/pixel-art/" class="waves-effect">Pixel Art</a>
+								</li>
+								<li >
+									<a href="/about/" class="waves-effect">About</a>
+								</li>
+						</ul>
+					</nav>		</div>
+				<div class="nav-footer">
+					<span class="copyright-info"><i class="tiny material-icons">copyright</i> Matt Bengston</span>
+					<span class="source-info"><a href="https://github.com/bengsfort/bengsfort.github.io" target="_blank"><i class="tiny material-icons">code</i> View on Github</a></span>
+				</div>	</div>
+		</header>
+		<main class="main-wrapper">
+			<div class="container">
+				<section class="intro-text">
+					<h1 class="headline">Different ways to pass data from AEM6 to Javascript</h1>
+						<span class="subtitle">As dynamic experiences become more popular, data will need to find its way from AEM to front end Javascript. Here are some good options for passing data along without headaches.</span>
+				</section>				<h2 id="tl-dr">Tl;dr</h2>
+<blockquote>
+<ul>
+<li>Use <code>data-*</code> attributes to pass along information to JS, in some cases passing along a data URI so you can obtain data via AJAX.</li>
+<li>Build a <em>component loader</em> that pushes the required components into an initialization queue as the page gets parsed.</li>
+<li>Create a data scraper that does the same as the last point, but functions a little bit more automated.</li>
+</ul>
+</blockquote>
+<p>We&#39;ve all been there. There&#39;s some fancy component that requires numerous different view states, all including a ton of data. Do you just dump all of that into the DOM and hide the elements when they&#39;re not in use, potentially adding to your initial load time and bloating up your markup? Do you dynamically call for the new data every time the user uses the call to action, potentially slowing their real-time experience? More than likely there are approximately 4.3 billion different ways to handle this scenario (this is web development, after all), but not all of them work well in the realm of <a href="http://www.adobe.com/marketing-cloud/enterprise-content-management.html">AEM</a>.</p>
+<p>So far in <a href="http://www.adobe.com/marketing-cloud/enterprise-content-management.html">AEM</a> land I&#39;ve tried quite a few different options for passing data to the front end, and some have worked far better than others. What I&#39;ve personally used that have worked the best include using data attributes and AJAX calls either on demand or to snag and cache the rest of the data after first load, using some sort of <em>component loader</em> that builds a queue of components to load at runtime then initializes them with data, and building a data scraper that, similar to the component loader, scrapes the page for key identifiers and then initializes each component with the data scraped from the page.</p>
+<p>Which one is best? It&#39;s hard to say as each one shines in different scenarios, but none of them are subjectively perfect. Let&#39;s take a dive into each method, see how to implement it, and figure out when it makes sense to do so.</p>
+<h2 id="data-attribute-fun">Data attribute fun</h2>
+<p>First up let&#39;s take a look at utilizing <code>data-*</code> attributes to pass along data to Javascript. Data attributes are semantic, standards compliant and very popular ever since their inclusion in HTML5, so they&#39;re definitely a more obvious choice. In fact if you&#39;re already well-versed in data attributes you can feel free to jump down to the next method as this will probably end up just being a refresher.</p>
+<p>Data attributes benefit in that they&#39;re almost effortless to implement (compared to the other options) and  semantically correct. Where they lose is large amounts of data and in some cases readability. For this reason data attributes are best paired with small amounts of simple data and a data URI that the Javascript can hit with a request for more yummy data.</p>
+<p>So let&#39;s pretend we&#39;ve got a form. When the user updates one select we need to grab some data based on that select, tack it onto the end of a data URI that the back end dev has provided and use that to grab some JSON data from AEM which we can then toss into a different select, with an authorable prefix.</p>
+<pre><code><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"namespace-component js-component"</span>
+    <span class="hljs-attr">data-form-trigger</span>=<span class="hljs-string">".js-trigger-field"</span>
+    <span class="hljs-attr">data-form-field</span>=<span class="hljs-string">".js-data-field"</span>
+    <span class="hljs-attr">data-option-prefix</span>=<span class="hljs-string">"$</span></span></span><span class="hljs-template-variable">{component.optionPrefix}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span>
+    <span class="hljs-attr">data-form-uri</span>=<span class="hljs-string">"$</span></span></span><span class="hljs-template-variable">{component.formUri}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- your markup --&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span></code></pre>
+
+<p>We&#39;ve added the element selectors for our elements onto our main component as data attributes, along with the data URI and option prefix that AEM has graciously given us after being configured by our content author. We now have direct access to all of these and can use them directly in our Javascript by accessing the data attributes of our component container via the <code>.data()</code> method with jQuery, or <code>.dataset</code> property with vanilla JS.</p>
+<pre><code><span class="hljs-keyword">var</span> $component  = $(<span class="hljs-string">'.js-component'</span>),
+    $trigger    = $component.find($component.data(<span class="hljs-string">'form-trigger'</span>)),
+    $field      = $component.find($component.data(<span class="hljs-string">'form-field'</span>)),
+    prefix      = $component.data(<span class="hljs-string">'option-prefix'</span>),
+    contentUri  = $component.data(<span class="hljs-string">'form-uri'</span>);
+
+<span class="hljs-comment">// When the trigger is changed</span>
+$trigger.on(<span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-comment">// Get JSON from the content URI</span>
+    $.getJSON(contentUri+$trigger.val(), <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data)</span> </span>{
+        <span class="hljs-comment">// Iterate through the options array we've recieved</span>
+        <span class="hljs-keyword">var</span> result = data.options.reduce(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(prev, opt)</span> </span>{
+            <span class="hljs-comment">// Construct an HTML string of our new options</span>
+            <span class="hljs-keyword">return</span> prev + <span class="hljs-string">"&lt;option value='"</span>+ opt.value +<span class="hljs-string">"'&gt;"</span> + prefix + opt.label + <span class="hljs-string">"&lt;/option&gt;"</span>;
+        }, <span class="hljs-string">""</span>);
+        <span class="hljs-comment">// Inject the new content into our select</span>
+        $field.html(result);
+    });
+});</code></pre>
+
+<p>Simple and effective. We&#39;re not hardcoding anything that shouldn&#39;t be hardcoded, and we&#39;ve given the user the ability to configure something that is dynamic and would have previously been un-configurable. Furthermore, implementation was incredibly simple as data attributes are a 1:1 in both the markup and JS, so grabbing them from the markup was as easy as grabbing any other elements property. Plus we don&#39;t have to hardcode in a URL, given the back end developer has created a Sightly-retrievable property containing the proper URL.</p>
+<p>The only downside to this particular implementation is the arguably ugly element block and the fact that we couldn&#39;t just pass in some JSON without making the markup even uglier. Some people won&#39;t mind it at all, but many developers find mass data attributes to be one of the ugliest sins of all humanity.</p>
+<h2 id="a-component-loader">A component loader</h2>
+<p>Next up is building a component loader, which is a pretty slick solution if you don&#39;t mind <code>&lt;script&gt;&lt;/script&gt;</code> tags. If you <strong>do</strong> absolutely despise script tags though, you should definitely stick around for the markup before making any final judgements as it leaves an super minimal footprint.</p>
+<p>The component loader has a lot more going on than data attributes, however it is much more robust in applications where there&#39;s a potential for lots of data being passed to the front end. Essentially we&#39;re going to be splitting things up into 3 parts:</p>
+<ol>
+<li>A global function in the head that adds components to an initialization queue, as well as one that fires off all components stored in that initialization queue.</li>
+<li>Script tags within the markup that fire off the loader function in the head, passing along a component name and it&#39;s data.</li>
+<li>A DOM ready event handler that triggers our component initialization function.</li>
+</ol>
+<p>This allows us to only run/trigger the components we actually need for this page and pass in as much data as we want, without worrying about Ajax calls. So let&#39;s start out with what we want our script tags to look like, then we can build the loading / initialization functions.</p>
+<h3 id="the-markup">The Markup</h3>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">sly</span> <span class="hljs-attr">data-sly-use.component</span>=<span class="hljs-string">"path.to.backing.class.of.Component"</span> /&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"namespace-component"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"${resource.name}"</span>&gt;</span>
+<span class="hljs-comment">&lt;!--/* your component markup */--&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">
+<span class="hljs-keyword">namespace</span>.loadComponent(<span class="hljs-string">'component-name'</span>, {
+    container: <span class="hljs-string">'#${resource.name @ context="scriptString"}'</span>,
+    trigger: <span class="hljs-string">'.js-component-trigger'</span>,
+    field: <span class="hljs-string">'.js-component-field'</span>,
+    prefix: <span class="hljs-string">'${component.optionPrefix @ context="scriptString"}'</span>,
+    jsonData: <span class="hljs-string">'${component.optionData @ context="scriptString"}'</span>
+});
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+
+<p>Pretty spiffy. In this instance we&#39;ve gone with a very similar setup to our last demo where we&#39;re manipulating a select field based on another select, except this time we&#39;re passing in all of our options as a giant JSON object (<code>${component.optionData}</code>) so we don&#39;t have to deal with Ajax calls. Instead, all our JS has to do is switch properties of a cached object to get new data. The only real bummer here is that to make sure we&#39;re targeting the correct instance of this component, we have to add an ID or some other identifier that matches up with only this DOM element (<code>${resource.name}</code>), which is not something we have to do when it comes to data attributes.</p>
+<h3 id="the-loader-runner">The loader/runner</h3>
+<p>Now that we know the syntax of our loader, it&#39;s time to write the loader itself. Because it needs to be instantiated and ready to go before the components begin getting parsed, we need our loader to be created very early on, so somewhere in our <code>&lt;head&gt;&lt;/head&gt;</code>. We&#39;ll also need to establish a global namespace, initialization method, and a queue for our components.</p>
+<pre><code><span class="hljs-comment">/*! Global Namespace Setup */</span>
+(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">window</span>) </span>{
+    <span class="hljs-keyword">var</span> namespace = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// Create our queue</span>
+        <span class="hljs-keyword">var</span> queue = [];
+        <span class="hljs-keyword">return</span> {
+            <span class="hljs-comment">// Create containers for our components and activated components</span>
+            components: {},
+            <span class="hljs-attr">activeComponents</span>: {},
+            <span class="hljs-comment">/**
+             * Pushes a component to the component queue
+             * @param name String - name of the component
+             * @param data Object - parameters to pass to the component
+             */</span>
+            loadComponent: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadComponent</span> (<span class="hljs-params">name, data</span>) </span>{
+                queue.push({
+                    <span class="hljs-attr">name</span>: name,
+                    <span class="hljs-attr">properties</span>: data
+                });
+            },
+            <span class="hljs-comment">/**
+             * Iterates through the component queue and runs all queued scripts.
+             * Will log an error to the console if a component can't be found.
+             */</span>
+            runComponents: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">runComponents</span> (<span class="hljs-params"></span>) </span>{
+                <span class="hljs-keyword">var</span> ns = <span class="hljs-keyword">this</span>;
+                <span class="hljs-comment">// Iterate through our queue</span>
+                <span class="hljs-keyword">this</span>.activeComponents = queue.map(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">iterateQueue</span> (<span class="hljs-params">c</span>) </span>{
+                    <span class="hljs-comment">// If the component name provided exists..</span>
+                    <span class="hljs-keyword">if</span> (ns.components.hasOwnProperty(c.name)) {
+                        <span class="hljs-comment">// Instantiate the component and push it into our activeComponents reference</span>
+                        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ns.components[c.name](c.properties);
+                    } <span class="hljs-keyword">else</span> {
+                        <span class="hljs-comment">// Otherwise, log an error to the console for further debugging</span>
+                        <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Component Loader: The "'</span>+ c.name +<span class="hljs-string">'" component was not found.'</span>);
+                    }
+                });
+
+                <span class="hljs-comment">// Reset the queue</span>
+                queue = [];
+            }
+        };
+    };
+
+    <span class="hljs-built_in">window</span>.namespace = namespace();
+})(<span class="hljs-built_in">window</span>, <span class="hljs-literal">undefined</span>);</code></pre>
+
+<p>Let&#39;s go over what&#39;s going on in this snippet:</p>
+<ol>
+<li>Queue initialization: We create a private queue to hold our to-be-initialized components (line #5)</li>
+<li>Container initialization: We set up containers for all of our component objects as well as our activated components (lines #8, 9)</li>
+<li>loadComponent method: We create a function that gets two arguments, a name (string) corresponding to the name of our component script and data (object) to be passed to it, and pushes those into our private queue (lines #15-20)</li>
+<li>runComponents method: We create a function that iterates through our queue, checks to verify the component exists, and will either run the component or log a not-found error to the console depending on the result of the verification check (lines #25-41)</li>
+</ol>
+<p>In terms of code complexity, there really isn&#39;t much going on aside from array traversal and manipulation. Something worth noting is that the <code>activeComponents</code> property doesn&#39;t strictly need to be there unless you&#39;re going to need to access one of your components after it&#39;s been initialized for some reason (more than likely the only reason will be for debugging if something isn&#39;t working correctly), so if you were to omit that you could just remove the variable assignment and call it a day. Another improvement that could be made would be to pass in the DOM element ID as another argument outside of the options object, then in your <code>runComponents</code> method pass along a cached version of the DOM element to save a line inside of your component scripts.</p>
+<p>As you can see from the snippet, this depends on storing your components inside of an accessible object and using some sort of initialization function with each component. This really shines when used in tandem with something like <a href="http://browserify.org/">Browserify</a>, where you can just require the component modules to generate your components object. Implementing via <a href="http://browserify.org/">Browserify</a> does require having an external <a href="http://gulpjs.com/">Gulp</a> build though, although if you&#39;re working on an increasingly intricate project this may already be implemented. You can see an example of what this coupled with Browserify would look like below.</p>
+<pre><code><span class="hljs-comment">/* Component namespace with Browserify */</span>
+<span class="hljs-comment">// These are not strictly necessary in this instance, but are still good to</span>
+<span class="hljs-comment">// include if something for some reason is being included manually elsewhere.</span>
+<span class="hljs-built_in">window</span>.namespace = <span class="hljs-keyword">namespace</span> || {};
+<span class="hljs-built_in">window</span>.namespace.components = <span class="hljs-keyword">namespace</span>.components || {};
+
+<span class="hljs-keyword">namespace</span>.components = {
+    linkedList: <span class="hljs-built_in">require</span>(<span class="hljs-string">'./components/linkedlist/linkedlist.js'</span>),
+    searchFilter: <span class="hljs-built_in">require</span>(<span class="hljs-string">'./components/searchfilter/searchfilter.js'</span>)
+};
+
+<span class="hljs-comment">// linkedlist.js component</span>
+<span class="hljs-keyword">var</span> linkedList = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-comment">// do something</span>
+};
+
+<span class="hljs-built_in">module</span>.exports = linkedList;</code></pre>
+
+<p>If you&#39;re ditching the added complexity of something like Browserify, this still works really well and is pretty straightforward. The only difference is you&#39;ll be adding the components to the components object manually in your scripts.</p>
+<pre><code><span class="hljs-keyword">window</span>.<span class="hljs-keyword">namespace</span> = <span class="hljs-keyword">namespace</span> || {};
+<span class="hljs-keyword">window</span>.<span class="hljs-keyword">namespace</span>.components = <span class="hljs-keyword">namespace</span>.components || {};
+
+var linkedList = <span class="hljs-keyword">function</span> (data) {
+    // Do things
+};
+
+<span class="hljs-keyword">namespace</span>.components.linkedList = linkedList;</code></pre>
+
+<p>The structures are very similar, but in one instance (Browserify) you&#39;re leaving the component scripts strictly module-related and bulk-importing them, where the standard method you&#39;re having to also verify existence of the globals then manually add the component to them. Technically speaking as long as we have the global declaration in the head, the globals verification is not strictly necessary (at least, the main <code>window.namespace = namespace || {}</code> part) but it&#39;s always a good idea to include it just to be safe. If one thing somehow tweaks the order it can lead to a lot of really awful debugging time.</p>
+<p>Another thing to note is that even though in the example the components are functions, you&#39;re not absolutely tied down to this pattern. If you&#39;re more into the type of pattern where you have a plain object with tons of methods including an <code>.init()</code> method, that&#39;s totally doable as well it would just require the instantiation of the components in the <code>runComponents</code> declaration to be updated with the new pattern:</p>
+<pre><code class="hljs javascript"><span class="hljs-keyword">this</span>.activeComponents = queue.map(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">iterateQueue</span> (<span class="hljs-params">c</span>) </span>{
+    <span class="hljs-comment">// If the component name provided exists..</span>
+    <span class="hljs-keyword">if</span> (ns.components.hasOwnProperty(c.name)) {
+        <span class="hljs-comment">// Instantiate the component and push it into our activeComponents reference</span>
+        <span class="hljs-keyword">return</span> ns.components[c.name].init(c.properties);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-comment">// Otherwise, log an error to the console for further debugging</span>
+        <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Component Loader: The "'</span>+ c.name +<span class="hljs-string">'" component was not found.'</span>);
+    }
+});</code></pre>
+
+<p>From there, all that&#39;s left to do is fire our <code>runComponents()</code> method somewhere in the footer, after all of our components have been loaded into the queue. As an added bonus, if you toss it into an on DOM ready event, all of the components loaded via the component loader will initialize.... well, on DOM ready. One less thing to worry about in your components!</p>
+<h2 id="a-component-scraper">A component scraper</h2>
+<p>So this method is extremely similar to the component loader and takes queues from it, however it handles  loading differently. With this method our plan is to assign some sort of identifier to our script tags that helps the scraper detect them, along with a data attribute that specifies what component the script tag belongs to. Inside of the script tag we then toss a JSON object with all of our data that we need passed to the component. From there it&#39;s more or less the same, apart from our loader looking for the script tags rather than filling up a queue.</p>
+<h3 id="the-markup">The Markup</h3>
+<p>First up we&#39;ll look at the markup we&#39;re going for. This will just need to be a JSON object with all of the data tossed into it. This works best for large amounts of data passed into the front end as JSON then dumped straight into the script tag, ideally to be used as a data store once it makes its way into whatever JS function will be taking care of it. This works for smaller amounts of data being used for different things, but it&#39;s maybe not as clean when used in that way.</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">sly</span> <span class="hljs-attr">data-sly-use.component</span>=<span class="hljs-string">"path.to.your.component.Class"</span> /&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"namespace-component"</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- Do awesome things --&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!--/* Example manually setting up props, including a json object as well */--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"js-scraper-data"</span> <span class="hljs-attr">data-component</span>=<span class="hljs-string">"linkedList"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"application/json"</span>&gt;</span><span class="actionscript">
+{
+    <span class="hljs-string">"id"</span>: <span class="hljs-string">"${component.id @ context='scriptToken'}"</span>,
+    <span class="hljs-string">"moreUri"</span>: <span class="hljs-string">"${component.moreUri @ context='uri'}"</span>,
+    <span class="hljs-string">"initialData"</span>: ${component.storeData @ context=<span class="hljs-string">'unsafe'</span>}
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!--/* Example with using a json object passed in from the back end */--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"js-scraper-data"</span> <span class="hljs-attr">data-component</span>=<span class="hljs-string">"linkedList"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"application/json"</span>&gt;</span><span class="actionscript">
+${component.storeData @ context=<span class="hljs-string">'unsafe'</span>}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+
+<p>As mentioned earlier, it&#39;s pretty similar to the loader markup just sort of a different interpretation of it. The only bummer is that since we&#39;re already specifying this as JSON, we can&#39;t set the context of the JSON objects we&#39;re passing in to <code>scriptString</code> otherwise we&#39;ll run into parsing errors. This leaves us with only the <code>unsafe</code> context, which isn&#39;t ideal but it works.</p>
+<p>In this case we&#39;re using the class <code>js-scraper-data</code> as our identifier so we can easily search for them from our scraper. We also add in a data attribute, <code>data-component</code>, to specify what component this script tag correlates with. From there it&#39;s just a matter of constructing a JSON object of the data we want to pass through to our component and it&#39;s ready to be scraped.</p>
+<h3 id="the-scraper">The scraper</h3>
+<p>Our scraper, similar to our loader, is going to be made up by two parts: the data scraper and the component runner, and it differs in that it can be placed outside of the head in the main JS file and it will fire off the components as it gets them, rather than adding them to a queue.</p>
+<pre><code><span class="hljs-built_in">window</span>.namespace = <span class="hljs-built_in">window</span>.namespace || {};
+<span class="hljs-keyword">namespace</span>.components = <span class="hljs-built_in">window</span>.namespace.components || {};
+
+<span class="hljs-comment">// Stores initialized components for debugging</span>
+<span class="hljs-keyword">namespace</span>.activeComponents = [];
+
+<span class="hljs-comment">/**
+ * Iterates through the identified script tags, parses them, then passes
+ * the data along to runComponent for initialization and storage.
+ */</span>
+<span class="hljs-keyword">namespace</span>.scrapeComponents = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> scripts = <span class="hljs-built_in">document</span>.querySelectorAll(<span class="hljs-string">'.js-scraper-data'</span>),
+        numComponents = scripts.length;
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; numComponents; ++i) {
+        <span class="hljs-keyword">var</span> name = scripts[i].dataset.component,
+            data = <span class="hljs-built_in">JSON</span>.parse(scripts[i].innerText);
+
+        <span class="hljs-keyword">this</span>.runComponent(name, data);
+    }
+};
+
+<span class="hljs-comment">/**
+ * Initializes and stores the component passed to it in activeComponents.
+ * @param component String - name of the component
+ * @param data Object - parameters to pass to the component
+ */</span>
+<span class="hljs-keyword">namespace</span>.runComponent = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">component, data</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.components.hasOwnProperty(component)) {
+        <span class="hljs-keyword">this</span>.activeComponents.push( <span class="hljs-keyword">this</span>.components[component](data) );
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Component Scraper: Could not find component'</span>, component);
+    }
+};
+
+$(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'ready'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">namespace</span>.scrapeComponents();
+    <span class="hljs-comment">// Do other cool global stuff</span>
+});</code></pre>
+
+<p>The functions themselves should look similar by now, but as noted earlier the main way we get the components  has been swapped. We no longer have a queue, and while iterating through each instance of our identifier we immediately parse and hand it off to be initialized (lines #14-18).</p>
+<p>This sort of adjustment does mean we have to make sure that we call our <code>namespace.scrapeComponents()</code> method <strong>AFTER</strong> we&#39;ve stored all of our components accessibly. You <em>could</em> keep this in the head and follow a similar structure to the component loader, but that would mean you would have to include the methods and namespace setup separately and in the headlibs rather than with the rest of your code.</p>
+<h2 id="final-thoughts">Final thoughts</h2>
+<p>The three methods included in this post are all unique in their own way and all have their own strengths and weaknesses. Data attributes work absolutely great for the majority of situations, but can be ugly and are not suitable what-so-ever for large amounts of JSON data; the component loader works great for all situations but can be incredibly heavy-handed and unnecessary for simple components; the component scraper, like the component loader, works great for when you have a large amount of JSON data that needs to get passed along to the Javascript but again is complete overkill for the majority of simple components.</p>
+<p>Which is the best solution? That depends fully on the project and the type of data that needs to be moved around, but hopefully these give you some ideas to build off of to come up with the perfect solution for your next project.</p>
+
+				<div id="disqus_thread"></div>
+				<script type="text/javascript">
+				    var disqus_shortname = 'aesinv',
+				        disqus_title = 'Different ways to pass data from AEM6 to Javascript',
+				        disqus_identifier = 'Different ways to pass data from AEM6 to Javascript',
+				        disqus_url = 'bengsfort.github.io/articles/passing-data-from-aem6-to-javascript';
+				
+				    (function() {
+				        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+				        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+				        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+				    })();
+				</script>
+				<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+			</div>
+		</main>
+
+		<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+		  <defs>
+		    <symbol id="icon-github-with-circle" viewBox="0 0 20 20">
+		      <title>github-with-circle</title>
+		      <path class="path1" d="M10.015 9.949c0 0-0.010 0-0.015 0h-0.015c-1.191 0-2.24-0.303-2.861 0.268-0.371 0.342-0.527 0.754-0.527 1.197 0 1.852 1.483 2.080 3.389 2.080h0.029c1.905 0 3.389-0.229 3.389-2.080 0-0.443-0.156-0.856-0.527-1.197-0.622-0.571-1.671-0.268-2.862-0.268zM8.393 12.48c-0.363 0-0.656-0.408-0.656-0.91s0.293-0.908 0.656-0.908c0.363 0 0.657 0.406 0.657 0.908s-0.293 0.91-0.657 0.91zM11.606 12.48c-0.363 0-0.657-0.408-0.657-0.91s0.294-0.908 0.657-0.908c0.362 0 0.656 0.406 0.656 0.908s-0.293 0.91-0.656 0.91zM10 0.4c-5.302 0-9.6 4.298-9.6 9.6s4.298 9.6 9.6 9.6 9.6-4.298 9.6-9.6-4.298-9.6-9.6-9.6zM10.876 13.939c-0.172 0-0.514 0-0.876 0.002-0.362-0.002-0.704-0.002-0.876-0.002-0.76 0-3.772-0.059-3.772-3.689 0-0.834 0.286-1.445 0.755-1.955-0.074-0.184-0.078-1.232 0.32-2.236 0 0 0.916 0.1 2.301 1.051 0.289-0.081 0.781-0.122 1.272-0.122s0.982 0.041 1.273 0.121c1.385-0.951 2.301-1.051 2.301-1.051 0.398 1.004 0.395 2.053 0.32 2.236 0.469 0.51 0.755 1.121 0.755 1.955-0.001 3.632-3.013 3.69-3.773 3.69z"></path>
+		    </symbol>
+		    <symbol id="icon-twitter-with-circle" viewBox="0 0 20 20">
+		      <title>twitter-with-circle</title>
+		      <path class="path1" d="M10 0.4c-5.302 0-9.6 4.298-9.6 9.6s4.298 9.6 9.6 9.6 9.6-4.298 9.6-9.6-4.298-9.6-9.6-9.6zM13.905 8.264c0.004 0.082 0.005 0.164 0.005 0.244 0 2.5-1.901 5.381-5.379 5.381-1.068 0-2.062-0.312-2.898-0.85 0.147 0.018 0.298 0.025 0.451 0.025 0.886 0 1.701-0.301 2.348-0.809-0.827-0.016-1.525-0.562-1.766-1.312 0.115 0.021 0.233 0.033 0.355 0.033 0.172 0 0.34-0.023 0.498-0.066-0.865-0.174-1.517-0.938-1.517-1.854v-0.023c0.255 0.141 0.547 0.227 0.857 0.237-0.508-0.34-0.841-0.918-0.841-1.575 0-0.346 0.093-0.672 0.256-0.951 0.933 1.144 2.325 1.896 3.897 1.977-0.033-0.139-0.049-0.283-0.049-0.432 0-1.043 0.846-1.891 1.891-1.891 0.543 0 1.035 0.23 1.38 0.598 0.431-0.086 0.835-0.242 1.2-0.459-0.141 0.441-0.44 0.812-0.831 1.047 0.383-0.047 0.747-0.148 1.086-0.299-0.253 0.379-0.574 0.713-0.943 0.979z"></path>
+		    </symbol>
+		  </defs>
+		</svg>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="/js/bin/materialize.min.js"></script>
+		<script type="text/javascript">
+			var trigger = $('.nav-menu-trigger'),
+				target = $(trigger.data('target'));
+			
+			trigger.on('click', function() {
+				trigger.toggleClass('active');
+				target.toggleClass('in');
+			});
+		</script>		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		
+		  ga('create', 'UA-66600710-1', 'auto');
+		  ga('send', 'pageview');
+		</script>
+	</body>
+</html>

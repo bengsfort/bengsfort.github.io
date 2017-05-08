@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width initial-scale=1">
+	
+		<title>Building a simple JavaScript game - 1. A basic game engine</title>
+	
+		<!--// Metadata //-->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width initial-scale=1">
+	
+		<!--// Metadata //-->
+		<meta name="description" content="Words and thoughts about app development, indie game development, and pixel art.">
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="Developmental Pixels">
+		<meta property="og:url" content="http://aesinv.com/index.html">
+		<meta property="og:site_name" content="Developmental Pixels">
+		<meta property="og:description" content="Words and thoughts about app development, indie game development, and pixel art.">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:title" content="Developmental Pixels">
+		<meta name="twitter:description" content="Words and thoughts about app development, indie game development, and pixel art.">
+		<meta name="twitter:creator" content="@bengsfort">
+		<meta property="fb:admins" content="100000177595822">
+		<meta property="fb:app_id" content="1893256420958255">
+		
+		
+		<!--// Stylesheets //-->
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="/styles/main.css" rel="stylesheet">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/atom-one-dark.min.css">
+	</head>
+	<body>
+		<header>
+			<a class="nav-menu-trigger waves-effect waves-light" data-target=".nav-pane">
+				<i class="material-icons close">close</i>
+				<i class="material-icons open">menu</i>
+			</a>
+			<div class="nav-pane">
+				<div class="nav-content">
+					<div class="author-card">
+						<div class="author-card-top">
+							<div class="author-avatar-wrapper">
+								<img class="author-avatar" src="/assets/avatar.png" alt="Matt Bengston" />
+							</div>
+						</div>
+					
+						<div class="author-card-body">
+							<h5 class="author-name">Matt Bengston</h5>
+							
+							<div class="author-job-info">
+								<span class="author-position">Software Developer</span>
+								<a class="author-employer" target="_blank" href="https://unity3d.com">@Unity Technologies</a>
+							</div>
+					
+							<div class="author-social">
+								<a class="author-github" target="_blank" href="https://github.com/bengsfort">
+									<svg class="icon icon-github-with-circle">
+										<use xlink:href="#icon-github-with-circle" />
+									</svg>
+								</a>
+								<a class="author-twitter" target="_blank" href="https://twitter.com/bengsfort">
+									<svg class="icon icon-twitter-with-circle">
+										<use xlink:href="#icon-twitter-with-circle" />
+									</svg>
+								</a>
+							</div>
+						</div>
+					</div>			<nav id="site-navigation">
+						<ul class="site-nav">
+								<li >
+									<a href="/" class="waves-effect">All Posts</a>
+								</li>
+								<li class="active">
+									<a href="/articles/" class="waves-effect">Articles</a>
+								</li>
+								<li >
+									<a href="/dev-logs/" class="waves-effect">Dev Logs</a>
+								</li>
+								<li >
+									<a href="/pixel-art/" class="waves-effect">Pixel Art</a>
+								</li>
+								<li >
+									<a href="/about/" class="waves-effect">About</a>
+								</li>
+						</ul>
+					</nav>		</div>
+				<div class="nav-footer">
+					<span class="copyright-info"><i class="tiny material-icons">copyright</i> Matt Bengston</span>
+					<span class="source-info"><a href="https://github.com/bengsfort/bengsfort.github.io" target="_blank"><i class="tiny material-icons">code</i> View on Github</a></span>
+				</div>	</div>
+		</header>
+		<main class="main-wrapper">
+			<div class="container">
+				<section class="intro-text">
+					<h1 class="headline">Building a simple JavaScript game - 1. A basic game engine</h1>
+						<span class="subtitle">Playing video games is fun. JavaScript is fun. So..... Why not both? In this episode, we&#x27;ll be building a basic game engine as a foundation to build on.</span>
+				</section>				<p>Once I started getting into web development my desire to be a game developer got put on the back burner while I continued to explore and build my skills as a web developer. As my experience grew and I began to understand the underlying concepts behind what makes a game it started to come back around again, but instead of using traditional languages I&#39;ve been having a lot of fun experimenting with video game development with JavaScript.</p>
+<p>There are plenty of existing libraries and foundations for JavaScript game development you can build off of (<a href="http://phaser.io/">Phaser</a>, <a href="http://unity3d.com/">Unity</a>, <a href="http://www.kiwijs.org/">Kiwi</a>, <a href="https://playcanvas.com/">PlayCanvas</a>), my personal favorite being Unity. However, there is a certain charm and satisfaction that comes from building something from scratch. If you&#39;re looking to jump right into build a crazy 3D cross-platform behemoth I&#39;d certainly suggest checking out some of the frameworks/engines referenced above, but for the sake of a great educational exercise, we&#39;ll be building a simple little top-down game from scratch.</p>
+<p>Before we continue, I&#39;d just like to mention that throughout the writing and development of this simple game I&#39;m going to be listening to a live performance from the Legend of Zelda: Symphony of the Goddesses to really get into the spirit of the project. I highly recommend you fire it up and do the same, it&#39;s terrific!</p>
+<iframe width='560' height='315' src='https://www.youtube-nocookie.com/embed/Vbfc3HAOw7o?&amp;showinfo=0&amp;controls=0' frameborder='0' allowfullscreen></iframe>
+
+<h2 id="high-level-overview">High-level overview</h2>
+<p>We&#39;re going to be making a simple top-down game with basic old-school gameplay characteristics. The finished product will allow us to walk around a small town, go in buildings, and fight baddies just outside the town. As the character moves, the camera will remain still until it either gets to the edge of the viewport or moves within a <em>door tile</em>. When these two events occur, the camera will either move to display the next portion of the world or the player will be transported into a new room (whatever the door leads to), respectively.</p>
+<p>We&#39;ll be using the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">HTML5 Canvas API</a> to handle rendering our game, and we&#39;ll be developing our JavaScript with the help of <a href="http://gulpjs.com/">Gulp</a>, <a href="http://browserify.org/">Browserify</a>, and <a href="http://www.browsersync.io/">Browser Sync</a>. In terms of managing what&#39;s going on within the game, we&#39;ll be attaching state objects to all of our different components so we can manage the current state of each component individually, which I personally find to be the easiest method of monitoring and managing data.</p>
+<p>I&#39;ve completed a basic project boilerplate you can download and follow along with, available on <a href="https://github.com/aesinv/javascript-game-demo/releases/tag/0.1.0-boilerplate">Github</a>. Alternatively, you can visit the <a href="https://github.com/aesinv/javascript-game-demo/">repository</a> for the demo and just checkout commit 3a4f588. If you&#39;d like a more in-depth look at setting up Gulp for projects, you can check out a <a href="{% post_url 2015-8-29-building-a-gulp-workflow-around-jekyll %}">previous post</a> that goes over building a gulp file for Jekyll pretty thoroughly.</p>
+<h2 id="getting-started">Getting started</h2>
+<p>Our first order of business will be creating a good project foundation. We could build this entire thing in a single monstrous file, but for the sake of readability and maintainability I&#39;m more a fan of modularity, which is why I&#39;ve opted to build out the game and its components as modules then bundle them together via <a href="http://browserify.org/">browserify</a>. Let&#39;s have a look at our proposed project structure:</p>
+<pre><code>index.html  // Loads up game module for game-playing party time.
+/js/        // Main JS root.
+- game.js   // Primary game module.
+- core/     // Contains core &quot;engine&quot;-related modules.
+- players/  // Contains all enemy/character-related modules.
+- utils/    // Contains global constants/utility functions.
+- world/    // Contains the main world classes and all levels.
+</code></pre><p>It&#39;s a pretty simple structure, and should be fairly predictable. Our main <code>game.js</code> file will require the proper modules from <code>players/</code>, <code>utils/</code>, <code>core/</code>, and <code>world/</code> as dependencies, which will in turn require any additional dependencies needed to generate our game. In this part we&#39;ll more than likely only touch one (maybe two) files in each directory.</p>
+<h2 id="creating-a-viewport-with-canvas">Creating a viewport with canvas</h2>
+<p>First things first, we want to create our main game module so we can start working. Then, we&#39;ll include that on our html page and have it dynamically inject a high-dpi, or high resolution, canvas onto the page after calculating the correct pixel ratio; this way we can make sure we&#39;ll have crystal clear rendering even on higher pixel density devices.</p>
+<p>Let&#39;s start with that first bit by creating a bare-bones game module inside of <code>/js/game.js</code>.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/game.js</span>
+<span class="hljs-keyword">var</span> $container = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'container'</span>);
+
+<span class="hljs-comment">// Create base game class</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Game</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.viewport = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'canvas'</span>);
+    <span class="hljs-keyword">this</span>.context = viewport.getContext(<span class="hljs-string">'2d'</span>);
+
+    <span class="hljs-keyword">this</span>.viewport.width = <span class="hljs-number">800</span>;
+    <span class="hljs-keyword">this</span>.viewport.height = <span class="hljs-number">600</span>;
+
+    <span class="hljs-comment">// Append the canvas node to our container</span>
+    $container.insertBefore(<span class="hljs-keyword">this</span>.viewport, $container.firstChild);
+
+    <span class="hljs-comment">// Toss some text into our canvas</span>
+    <span class="hljs-keyword">this</span>.context.font = <span class="hljs-string">'32px Arial'</span>;
+    <span class="hljs-keyword">this</span>.context.fillText(<span class="hljs-string">'It\'s dangerous to travel this route alone.'</span>, <span class="hljs-number">5</span>, <span class="hljs-number">50</span>, <span class="hljs-number">800</span>);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+}
+
+<span class="hljs-comment">// Instantiate the game in a global</span>
+<span class="hljs-built_in">window</span>.game = <span class="hljs-keyword">new</span> Game();
+
+<span class="hljs-comment">// Export the game as a module</span>
+<span class="hljs-built_in">module</span>.exports = game;</code></pre>
+
+<p>We&#39;re not doing anything fancy here, just creating a canvas (6 - 10), tossing it into our container (13), then rendering some text (16 - 17). More than likely if you view the above code on a high pixel density monitor it will output the text but it will be <em>super</em> blurry and gross. To solve this, we&#39;re going to create a utility that will calculate the correct pixel ratio then downscale the canvas for optimum rendering quality. We&#39;re going to be basing our utilities off of a terrific <a href="http://www.html5rocks.com/en/tutorials/canvas/hidpi/">HTML5 Rocks blog post</a> on the subject, and tossing them into our handy-dandy <code>utils/</code> directory under the file name <code>utils.canvas.js</code>.</p>
+<p>Just a note, but our utility files will be extremely simple exports of object literals contained with methods, so you can expect them to follow a structure like so:</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/utils/utils.canvas.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-attr">methodOne</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{},
+    <span class="hljs-attr">methodTwo</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{}
+};</code></pre>
+
+<p>First, we&#39;ll need a way to get the correct pixel ratio. To do this we&#39;re going to need a canvas context, which we&#39;ll use to get the device backing ratio from the backing device backing store. We&#39;ll then divide the pixel ratio from the window by that backing ratio, giving us our pixel ratio.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/utils/utils.canvas.js</span>
+
+<span class="hljs-comment">/** Determine the proper pixel ratio for the canvas */</span>
+getPixelRatio : <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getPixelRatio</span>(<span class="hljs-params">context</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Determining pixel ratio.'</span>);
+
+  <span class="hljs-comment">// I'd rather not have a giant var declaration block,</span>
+  <span class="hljs-comment">// so I'm storing the props in an array to dynamically</span>
+  <span class="hljs-comment">// get the backing ratio.</span>
+  <span class="hljs-keyword">var</span> backingStores = [
+    <span class="hljs-string">'webkitBackingStorePixelRatio'</span>,
+    <span class="hljs-string">'mozBackingStorePixelRatio'</span>,
+    <span class="hljs-string">'msBackingStorePixelRatio'</span>,
+    <span class="hljs-string">'oBackingStorePixelRatio'</span>,
+    <span class="hljs-string">'backingStorePixelRatio'</span>
+  ];
+
+  <span class="hljs-keyword">var</span> deviceRatio = <span class="hljs-built_in">window</span>.devicePixelRatio;
+
+  <span class="hljs-comment">// Iterate through our backing store props and determine the proper backing ratio.</span>
+  <span class="hljs-keyword">var</span> backingRatio = backingStores.reduce(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">prev, curr</span>) </span>{
+    <span class="hljs-keyword">return</span> (context.hasOwnProperty(curr) ? context[curr] : <span class="hljs-number">1</span>);
+  });
+
+  <span class="hljs-comment">// Return the proper pixel ratio by dividing the device ratio by the backing ratio</span>
+  <span class="hljs-keyword">return</span> deviceRatio / backingRatio;
+},</code></pre>
+
+<p>The comments are pretty verbose, but a secondary quick rundown of whats going on:</p>
+<ol>
+<li>We create an array of the properly browser-prefixed backing store props. (10 - 16)</li>
+<li>We reduce our array to a single backing store ratio, defaulting to 1 if none exist. (21 - 23)</li>
+<li>We divide the device pixel ratio (from the window) by the backing ratio, giving us our pixel ratio. (26)</li>
+</ol>
+<p>Next, we need to apply our calculated ratio to our canvas then downscale the entire canvas via CSS and transforms, giving us predictable high quality rendering with predictable dimensions. We&#39;ll toss all of this inside of another canvas utility, then return the canvas to our main game object for instantiation and dom injection.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/utils/utils.canvas.js</span>
+
+<span class="hljs-comment">/** Generate a canvas with the proper width / height
+ * Based on: http://www.html5rocks.com/en/tutorials/canvas/hidpi/
+ */</span>
+generateCanvas : <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">generateCanvas</span>(<span class="hljs-params">w, h</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Generating canvas.'</span>);
+
+  <span class="hljs-keyword">var</span> canvas = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'canvas'</span>),
+      context = canvas.getContext(<span class="hljs-string">'2d'</span>);
+  <span class="hljs-comment">// Pass our canvas' context to our getPixelRatio method</span>
+  <span class="hljs-keyword">var</span> ratio = <span class="hljs-keyword">this</span>.getPixelRatio(context);
+
+  <span class="hljs-comment">// Set the canvas' width then downscale via CSS</span>
+  canvas.width = <span class="hljs-built_in">Math</span>.round(w * ratio);
+  canvas.height = <span class="hljs-built_in">Math</span>.round(h * ratio);
+  canvas.style.width = w +<span class="hljs-string">'px'</span>;
+  canvas.style.height = h +<span class="hljs-string">'px'</span>;
+  <span class="hljs-comment">// Scale the context so we get accurate pixel density</span>
+  context.setTransform(ratio, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, ratio, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+
+  <span class="hljs-keyword">return</span> canvas;
+}</code></pre>
+
+<p>Again, pretty straight forward. You&#39;ll notice that after creating our canvas and getting the context, we&#39;re passing that context to our <code>getPixelRatio()</code> method then multiplying our canvas width and height by the returned number, then setting the width and height <em>styles</em> to the original width and height; this is us <em>downscaling</em> the canvas. It&#39;s kind of like if you watch a 1080p video on YouTube at 400px wide. Our transform is then relatively scaling the canvas back up by the amount we downscaled it, that way we get accurate pixel sizes. Try removing the setTransform and viewing the effects, it&#39;s super interesting.</p>
+<p>Now that both of our utility methods for canvas generation are created, we can rewrite our main game module create a properly sized canvas dynamically and then append it into our container, giving us our viewport.</p>
+<pre><code class="hljs javascript"><span class="hljs-keyword">var</span> cUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./utils/utils.canvas.js'</span>),
+    $container = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'container'</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Game</span>(<span class="hljs-params">w, h</span>) </span>{
+  <span class="hljs-comment">// Generate a canvas and store it as our viewport</span>
+  <span class="hljs-keyword">this</span>.viewport = cUtils.generateCanvas(w, h);
+  <span class="hljs-keyword">this</span>.viewport.id = <span class="hljs-string">"gameViewport"</span>; <span class="hljs-comment">// give the canvas an ID for easy CSS/JS targeting</span>
+
+  <span class="hljs-comment">// Get and store the canvas context as a global</span>
+  <span class="hljs-keyword">this</span>.context = <span class="hljs-keyword">this</span>.viewport.getContext(<span class="hljs-string">'2d'</span>);
+
+  <span class="hljs-comment">// Append our viewport into a container in the dom</span>
+  $container.insertBefore(<span class="hljs-keyword">this</span>.viewport, $container.firstChild);
+
+  <span class="hljs-comment">// Spit out some text</span>
+  <span class="hljs-keyword">this</span>.context.font = <span class="hljs-string">'32px Arial'</span>;
+  <span class="hljs-keyword">this</span>.context.fillStyle = <span class="hljs-string">'#fff'</span>;
+  <span class="hljs-keyword">this</span>.context.fillText(<span class="hljs-string">'It\'s dangerous to travel this route alone.'</span>, <span class="hljs-number">5</span>, <span class="hljs-number">50</span>);
+
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+}
+
+<span class="hljs-comment">// Instantiate a new game in the global scope at 800px by 600px</span>
+<span class="hljs-built_in">window</span>.game = <span class="hljs-keyword">new</span> Game(<span class="hljs-number">800</span>, <span class="hljs-number">600</span>);
+
+<span class="hljs-built_in">module</span>.exports = game;</code></pre>
+
+<p>Our Game module remains largely the same, apart from us using the <code>generateCanvas()</code> method from our canvas utilities module to create our viewport instead of manually creating it. On the upside, we should now have a dynamically generated high resolution canvas to play around with, so now we have to figure out how to prime it for game play.</p>
+<h2 id="creating-a-game-loop">Creating a game loop</h2>
+<p>So we&#39;ve got a canvas and some folders that make us look like we really know what we&#39;re doing. Reasonable next steps involve creating some sort of rendering and logic engine to handle updating the games state, and re-rendering our canvas to reflect the updated state. Luckily, we can take care of both of these in one fell swoop by creating a <a href="https://developer.mozilla.org/en-US/docs/Games/Anatomy"><em>game loop</em></a>.</p>
+<p>When it comes to animating and managing a canvas there are a few more hoops to jump through than when you&#39;re animating a typical dom node, mostly because you can&#39;t really reference the created canvas contents after you&#39;ve rendered them. To solve this we&#39;re going to wind up storing everything within a central state; with individual entities (players, enemies, etc.) storing they&#39;re positioning and other pertinent data within their own states. Then, when it&#39;s time to re-render, we&#39;ll call each entities <code>render()</code> method which will use the data within their states to render the entity correctly.</p>
+<p>Since with a canvas we need to clear objects out before re-rendering them in a different position, we&#39;re going to be re-rendering the entire canvas every frame. To accomplish this we&#39;re going to need a loop, which being JavaScript there are millions of ways to do that. Let&#39;s take a look at our primary options:</p>
+<ol>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/WindowTimers/setTimeout"><code>setTimeout</code></a> or <a href="https://developer.mozilla.org/en-US/docs/Web/API/WindowTimers/setInterval"><code>setInterval</code></a> set to an interval that would fire off at a rate that would equal our target <abbr title="Frames per second">FPS</abbr>.</li>
+<li>Utilize <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame"><code>window.requestAnimationFrame</code></a>, which is the recommended method, to tell the browser we&#39;d like to do an animation and to fire our render method before the next repaint.</li>
+</ol>
+<p>Our first option, using <code>setTimeout</code> or <code>setInterval</code> would be much easier (and readable for the most part), but it&#39;s incredibly inefficient. The second option, while being way more complex, is miles more efficient due to the browser being able to optimize animations during repaint cycles.</p>
+<h3 id="scaffolding-out-the-loop">Scaffolding out the loop</h3>
+<p>Let&#39;s start by scaffolding out the modules that we&#39;ll be needing for our main loop. The main loop will have three parts:</p>
+<pre><code>/js/core/game.loop.js // The actual loop
+/js/core/game.update.js // An update method
+/js/core/game.render.js // A rendering method
+</code></pre><p>These modules will need to access some constants that we will be setting in our global game module, so we&#39;re going to create a new <code>constants</code> property along with an empty <code>state</code> within our main game module first.</p>
+<pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Game</span>(<span class="hljs-params">w, h, targetFps, showFps</span>) </span>{
+    <span class="hljs-comment">// Setup some constants</span>
+    <span class="hljs-keyword">this</span>.constants = {
+        <span class="hljs-attr">width</span>: w,
+        <span class="hljs-attr">height</span>: h,
+        <span class="hljs-attr">targetFps</span>: targetFps,
+        <span class="hljs-attr">showFps</span>: showFps
+    };
+
+    <span class="hljs-comment">// Instantiate an empty state object</span>
+    <span class="hljs-keyword">this</span>.state = {};
+    . . .
+}
+
+<span class="hljs-comment">// Instantiate a new game in the global scope at 800px by 600px</span>
+<span class="hljs-built_in">window</span>.game = <span class="hljs-keyword">new</span> Game(<span class="hljs-number">800</span>, <span class="hljs-number">600</span>, <span class="hljs-number">60</span>, <span class="hljs-literal">true</span>);</code></pre>
+
+<p>In addition to our original props for the width and height, we&#39;ve also added a target frame rate prop and a flag for whether or not to render the current FPS; the latter being totally optional both in implementation and use. Now that we&#39;re storing all of this inside of a handy dandy exposed object, we can start on our new modules.</p>
+<p>Since these are all integral to the functioning of our game, we can count these modules as <em>core</em> modules which we&#39;ll instantiate from our main game module. Since the update and rendering method are fairly simple and straight forward (for now), so let&#39;s start with those.</p>
+<h4 id="the-game-update-module">The game update module</h4>
+<p>Since we&#39;re just scaffolding out our loop and currently have no actual functionality, our update method is going to be really boring. Eventually it will take the games state object, determine changes in, update it, then return it. We&#39;ll just pretend we&#39;re doing fancy stuff for now though.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/core/game.update.js</span>
+
+<span class="hljs-comment">/** Game Update Module
+ * Called by the game loop, this module will
+ * perform any state calculations / updates
+ * to properly render the next frame.
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">gameUpdate</span> (<span class="hljs-params"> scope </span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">update</span>(<span class="hljs-params"> tFrame </span>) </span>{
+        <span class="hljs-keyword">var</span> state = scope.state || {};
+
+        <span class="hljs-comment">// If there are entities, iterate through them and call their `update` methods</span>
+        <span class="hljs-keyword">if</span> (state.hasOwnProperty(<span class="hljs-string">'entities'</span>)) {
+            <span class="hljs-keyword">var</span> entities = state.entities;
+            <span class="hljs-comment">// Loop through entities</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> entity <span class="hljs-keyword">in</span> entities) {
+                <span class="hljs-comment">// Fire off each active entities `render` method</span>
+                entities[entity].update();
+            }
+        }
+
+        <span class="hljs-keyword">return</span> state;
+    }
+}
+
+<span class="hljs-built_in">module</span>.exports = gameUpdate;</code></pre>
+
+<p>Like I said, nothing super crazy going on. We&#39;re injecting the global scope (8), then creating a new object based off of the global state (10), iterating through entities in the global state (13), firing the <code>update()</code> method for each active entity (16 - 22), then returning it (15). Easy.</p>
+<p>One interesting thing you may have noticed is that I&#39;m expecting a <code>scope</code> parameter to be passed in first, then I&#39;m returning another function that is actually doing all of the work. You&#39;ll see this in the render method as well, and it&#39;s more of a personal preference more than anything. An alternative would be to remove the returned function, move it&#39;s contents into the main <code>gameUpdate</code> function, and instead of injecting the scope we&#39;d tap into the global <code>window.game</code> object. Since I want to avoid hard coding these references in, I&#39;m just injecting the scope as a parameter.</p>
+<h4 id="the-game-render-module">The game render module</h4>
+<p>The render module is a little more busy than our update one, but it&#39;s nothing too crazy yet. We&#39;re going to move our dummy text from the main game module into this one, add our FPS rendering logic, then write a quick little loop to iterate through potential active entities.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/core/game.render.js</span>
+
+<span class="hljs-comment">/** Game Render Module
+ * Called by the game loop, this module will
+ * perform use the global state to re-render
+ * the canvas using new data. Additionally,
+ * it will call all game entities `render`
+ * methods.
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">gameRender</span>(<span class="hljs-params"> scope </span>) </span>{
+    <span class="hljs-comment">// Setup globals</span>
+    <span class="hljs-keyword">var</span> w = scope.constants.width,
+        h = scope.constants.height;
+
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// Clear out the canvas</span>
+        scope.context.clearRect(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, w, h);
+
+        <span class="hljs-comment">// Spit out some text</span>
+        scope.context.font = <span class="hljs-string">'32px Arial'</span>;
+        scope.context.fillStyle = <span class="hljs-string">'#fff'</span>;
+        scope.context.fillText(<span class="hljs-string">'It\'s dangerous to travel this route alone.'</span>, <span class="hljs-number">5</span>, <span class="hljs-number">50</span>);
+
+        <span class="hljs-comment">// If we want to show the FPS, then render it in the top right corner.</span>
+        <span class="hljs-keyword">if</span> (scope.constants.showFps) {
+            scope.context.fillStyle = <span class="hljs-string">'#ff0'</span>;
+            scope.context.fillText(<span class="hljs-string">'FPS'</span>, w - <span class="hljs-number">100</span>, <span class="hljs-number">50</span>);
+        }
+
+        <span class="hljs-comment">// If there are entities, iterate through them and call their `render` methods</span>
+        <span class="hljs-keyword">if</span> (scope.state.hasOwnProperty(<span class="hljs-string">'entities'</span>)) {
+            <span class="hljs-keyword">var</span> entities = scope.state.entities;
+            <span class="hljs-comment">// Loop through entities</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> entity <span class="hljs-keyword">in</span> entities) {
+                <span class="hljs-comment">// Fire off each active entities `render` method</span>
+                entities[entity].render();
+            }
+        }
+    }
+}
+
+<span class="hljs-built_in">module</span>.exports = gameRender;</code></pre>
+
+<p>Like the update module we&#39;re injecting the games context (10), then we&#39;re clearing the canvas (17), rendering our dummy content (19-22) and setting it up to show the FPS in the top right corner of the canvas if the <code>showFps</code> flag is set (25-28).</p>
+<p>The only fanciness occurring here is between lines 31 and 38, where we are iterating through all active entities with a simple <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in"><code>for...in</code></a> loop (if the global state has any entities set, as per line 31), then firing off the <code>render()</code> method of each active entity (36).</p>
+<p>We&#39;ll be returning to this module in a little bit to change the text we&#39;re writing in place of the actual frame rate, but for now it&#39;s completed.</p>
+<h4 id="the-loop-of-doom">The loop of doom</h4>
+<p>Now it&#39;s time for us to move onto our mythical loop, which will by far be the most complex portion of code we&#39;ve written yet. As I mentioned earlier, we&#39;re going to be using <code>requestAnimationFrame</code> to handle our loop, as recommended by <a href="https://developer.mozilla.org/en-US/docs/Games/Anatomy">MDN</a> and based off of information from <a href="http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/">Paul Irish</a>, coupled together with some frame rate throttling based on some terrific <a href="http://stackoverflow.com/a/19772220">stack overflow answers</a>.</p>
+<p>I know that&#39;s a lot to swallow, so we&#39;ll tackle this one one by one. Let&#39;s start with the loop itself, then we&#39;ll jump into the frame rate throttling.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/core/game.loop.js</span>
+
+<span class="hljs-comment">/** Game Loop Module
+ * This module contains the game loop, which handles
+ * updating the game state and re-rendering the canvas
+ * (using the updated state) at the configured FPS.
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">gameLoop</span> (<span class="hljs-params"> scope </span>) </span>{
+    <span class="hljs-keyword">var</span> loop = <span class="hljs-keyword">this</span>;
+
+    <span class="hljs-comment">// Main game rendering loop</span>
+    loop.main = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mainLoop</span>(<span class="hljs-params"> tframe </span>) </span>{
+        <span class="hljs-comment">// Request a new Animation Frame</span>
+        <span class="hljs-comment">// setting to `stopLoop` so animation can be stopped via</span>
+        <span class="hljs-comment">// `window.cancelAnimationFrame( loop.stopLoop )`</span>
+        loop.stopLoop = <span class="hljs-built_in">window</span>.requestAnimationFrame( loop.main );
+
+        <span class="hljs-comment">// Update the game state</span>
+        scope.state = scope.update( now );
+        <span class="hljs-comment">// Render the next frame</span>
+        scope.render();
+    };
+
+    <span class="hljs-comment">// Start off main loop</span>
+    loop.main();
+
+    <span class="hljs-keyword">return</span> loop;
+}
+
+<span class="hljs-built_in">module</span>.exports = gameLoop;</code></pre>
+
+<p>By itself the loop isn&#39;t too terrifying at all, and if you&#39;ve checked out the MDN docs on the anatomy of a web game it should be very familiar; we&#39;re just creating a callback and passing it into <code>window.requestAnimationFrame</code>, then firing off our update and render methods, which are instantiated in the global context (which has been injected in). I realize this isn&#39;t the most elegant way to fire off the update and render methods, but my reasoning is to have the update and render modules instantiated and exposed globally if, for whatever reason, they need to be triggered manually. An alternative to this would be to require the modules within the game loop module, and instantiate them with the injected context.</p>
+<p>Next, we&#39;ll start with our frame rate throttling. There&#39;s quite a lot to this, so I&#39;ll try to break it down as best as I can. First we need to set up our variables for calculating the frame rate. We&#39;re going to require the current animation tick timestamp, the previous animation tick timestamp as well as the difference between the two; our target FPS and our target interval between animation ticks <em>(1000 / fps)</em>.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/core/game.loop.js, lines 9 - 30</span>
+
+    <span class="hljs-comment">// Initialize timer variables so we can calculate FPS</span>
+    <span class="hljs-keyword">var</span> fps = scope.constants.targetFps, <span class="hljs-comment">// Our target fps</span>
+        fpsInterval = <span class="hljs-number">1000</span> / fps, <span class="hljs-comment">// the interval between animation ticks, in ms (1000 / 60 = ~16.666667)</span>
+        before = <span class="hljs-built_in">window</span>.performance.now(), <span class="hljs-comment">// The starting times timestamp</span>
+
+        <span class="hljs-comment">// Set up an object to contain our alternating FPS calculations</span>
+        cycles = {
+            <span class="hljs-attr">new</span>: {
+                <span class="hljs-attr">frameCount</span>: <span class="hljs-number">0</span>, <span class="hljs-comment">// Frames since the start of the cycle</span>
+                startTime: before, <span class="hljs-comment">// The starting timestamp</span>
+                sinceStart: <span class="hljs-number">0</span> <span class="hljs-comment">// time elapsed since the startTime</span>
+            },
+            <span class="hljs-attr">old</span>: {
+                <span class="hljs-attr">frameCount</span>: <span class="hljs-number">0</span>,
+                <span class="hljs-attr">startTime</span>: before,
+                <span class="hljs-attr">sineStart</span>: <span class="hljs-number">0</span>
+            }
+        },
+        <span class="hljs-comment">// Alternating Frame Rate vars</span>
+        resetInterval = <span class="hljs-number">5</span>, <span class="hljs-comment">// Frame rate cycle reset interval (in seconds)</span>
+        resetState = <span class="hljs-string">'new'</span>; <span class="hljs-comment">// The initial frame rate cycle</span>
+
+    loop.fps = <span class="hljs-number">0</span>; <span class="hljs-comment">// A prop that will expose the current calculated FPS to other modules</span>
+
+    <span class="hljs-comment">// Main game rendering loop</span>
+    loop.main = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mainLoop</span>(<span class="hljs-params"> tframe </span>) </span>{ . . . }</code></pre>
+
+<p>Whoa, that&#39;s a lot of variables. Keeping the code comments in mind, there&#39;s one thing I would like to explain which is the <code>cycles</code> object. If you look at the stack overflow answer I mentioned earlier, there&#39;s a lot of examples of some calculations to determine and throttle the frame rate, but they use a single computation cycle which while testing I noticed some issues with.</p>
+<ol>
+<li>After a while, the performance would bog down due to the constant incrementation of the single frame count and elapsed time variables.</li>
+<li>Also after some time, the accuracy would drastically decrease. As the calculations depend on the current time and frame count in relation to the original time, because the gap was so massive the resulting value would be mis-representative of the actual frame rate and would act as more of an &quot;average-over-the-time-you&#39;ve-had-this-page-open&quot;.</li>
+</ol>
+<p>The second issue may be more of a presentation of the frame rate problem I admit, but as a solution I&#39;ve made it so there are two increments going on in parallel and as they reach a pre-determined interval, <code>resetInterval</code>, the active cycle will get reset to 0 and the alternate cycle will take its place as the active cycle. This helps maintain an accurately calculated frame rate based on samples from a short period of time, rather than an increasingly large period of time.</p>
+<p>Now, back to our loop.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/core/game.loop.js, lines 32. . .82</span>
+
+loop.main = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mainLoop</span>(<span class="hljs-params"> tframe </span>) </span>{
+    <span class="hljs-comment">// Request a new Animation Frame</span>
+    <span class="hljs-comment">// setting to `stopLoop` so animation can be stopped via</span>
+    <span class="hljs-comment">// `window.cancelAnimationFrame( loop.stopLoop )`</span>
+    loop.stopLoop = <span class="hljs-built_in">window</span>.requestAnimationFrame( loop.main );
+
+    <span class="hljs-comment">// How long ago since last loop?</span>
+    <span class="hljs-keyword">var</span> now = tframe,
+        elapsed = now - before,
+        activeCycle, targetResetInterval;
+
+    <span class="hljs-comment">// If it's been at least our desired interval, render</span>
+    <span class="hljs-keyword">if</span> (elapsed &gt; fpsInterval) {
+        <span class="hljs-comment">// Set before = now for next frame, also adjust for</span>
+        <span class="hljs-comment">// specified fpsInterval not being a multiple of rAF's interval (16.7ms)</span>
+        <span class="hljs-comment">// ( http://stackoverflow.com/a/19772220 )</span>
+        before = now - (elapsed % fpsInterval);
+
+        <span class="hljs-comment">// Update the game state</span>
+        scope.update( now );
+        <span class="hljs-comment">// Render the next frame</span>
+        scope.render();
+    }
+};</code></pre>
+
+<p>Throttling the loop to our ideal fps is actually relatively simple, as you can see above. Here are the headlines:</p>
+<ul>
+<li><strong>Lines 8 &amp; 9:</strong> cache the current timestamp, then subtract the previous timestamp from it to get the elapsed time.</li>
+<li><strong>Line 13:</strong> If the elapsed time from line 9 is greater than our target interval, continue with the re-render.</li>
+<li><strong>Lines 14 - 22:</strong> Set the variable holding the previous timestamp to the current timestamp, then fire the update and render modules.</li>
+</ul>
+<p>Pretty straight forward, so now let&#39;s calculate the current frame rate and expose it for other modules (namely the rendering module).</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/core/game.loop.js, lines 49 - 78</span>
+
+before = now - (elapsed % fpsInterval);
+
+<span class="hljs-comment">// Increment the vals for both the active and the alternate FPS calculations</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> calc <span class="hljs-keyword">in</span> cycles) {
+    ++cycles[calc].frameCount;
+    cycles[calc].sinceStart = now - cycles[calc].startTime;
+}
+
+<span class="hljs-comment">// Choose the correct FPS calculation, then update the exposed fps value</span>
+activeCycle = cycles[resetState];
+loop.fps = <span class="hljs-built_in">Math</span>.round(<span class="hljs-number">1000</span> / (activeCycle.sinceStart / activeCycle.frameCount) * <span class="hljs-number">100</span>) / <span class="hljs-number">100</span>;
+
+<span class="hljs-comment">// If our frame counts are equal....</span>
+targetResetInterval = (cycles.new.frameCount === cycles.old.frameCount
+                       ? resetInterval * fps <span class="hljs-comment">// Wait our interval</span>
+                       : (resetInterval * <span class="hljs-number">2</span>) * fps); <span class="hljs-comment">// Wait double our interval</span>
+
+<span class="hljs-comment">// If the active calculation goes over our specified interval,</span>
+<span class="hljs-comment">// reset it to 0 and flag our alternate calculation to be active</span>
+<span class="hljs-comment">// for the next series of animations.</span>
+<span class="hljs-keyword">if</span> (activeCycle.frameCount &gt; targetResetInterval) {
+    cycles[resetState].frameCount = <span class="hljs-number">0</span>;
+    cycles[resetState].startTime = now;
+    cycles[resetState].sinceStart = <span class="hljs-number">0</span>;
+
+    resetState = (resetState === <span class="hljs-string">'new'</span> ? <span class="hljs-string">'old'</span> : <span class="hljs-string">'new'</span>);
+}
+
+<span class="hljs-comment">// Update the game state</span></code></pre>
+
+<p>This is probably the most we&#39;ve got going on so far, so let&#39;s review it block by block.</p>
+<ul>
+<li><strong>Lines 4 - 7:</strong> First we&#39;re going to iterate through both cycles, increment the frame counts and update the elapsed times since the start of the cycle.</li>
+<li><strong>Lines 10 &amp; 11:</strong> Set the active cycle, then use some maths to determine and set our exposed property to the current frame rate.</li>
+<li><strong>Lines 12 - 15:</strong> Set our target reset interval. Once the cycles begin alternating, when the <em>active</em> cycle reaches it&#39;s target, the <em>inactive</em> cycle will be equal to half of the target since it runs in parallel. Therefore, rather than resetting at our interval, we want to reset at double our interval.</li>
+<li><strong>Lines 21 - 27:</strong> If the active cycles frame count is greater than its target interval, reset the active cycle to 0 and switch to the inactive cycle.</li>
+</ul>
+<p>Now that that&#39;s completed, we can run back to our rendering module (<code>/js/core/game.render.js</code>) and toss our exposed <code>loop.fps</code> value in place of our dummy <em>&#39;FPS&#39;</em> text:</p>
+<pre><code>scope.context.fillText(scope.loop.fps, w - 100, 50);
+</code></pre><h4 id="wrapping-it-all-together">Wrapping it all together</h4>
+<p>Since we have all of our modules built and exposed as exportable modules, we can now simply instantiate them within the main game module and our game should automagically run our main loop, displaying the frame rate in the top right corner if you&#39;ve set your <code>showFps</code> parameter to true.</p>
+<pre><code class="hljs javascript">. . .
+$container.insertBefore(<span class="hljs-keyword">this</span>.viewport, $container.firstChild);
+
+<span class="hljs-comment">// Instantiate core modules with the current scope</span>
+<span class="hljs-keyword">this</span>.update = gameUpdate( <span class="hljs-keyword">this</span> );
+<span class="hljs-keyword">this</span>.render = gameRender( <span class="hljs-keyword">this</span> );
+<span class="hljs-keyword">this</span>.loop = gameLoop( <span class="hljs-keyword">this</span> );
+
+<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;</code></pre>
+
+<p>Huzzah! We&#39;ve built (albeit basic) our own rudimentary game engine! It automagically generates a high resolution canvas element and injects it into our HTML, updates itself at a configurable frame rate, and displays said frame rate using an alternating calculation cycle strategy (which you can see if you toss a log of the frame rate of both cycles into your loop).</p>
+<h2 id="bonus-creating-a-movable-player">Bonus: Creating a movable player</h2>
+<p>I could end there, but I usually get really annoyed whenever I see a multi-part how-to that completely leaves me hanging before magic happens, so I don&#39;t want to be <em>&quot;that guy&quot;</em>. To some people, getting the loop completed is magical and they&#39;re probably way stoked at the moment; I am as well but I think an even more magical stopping point would be the ability to move a little box around the viewport. Nothing crazy, just enough to be interactive and really get the inspiration flowing when you get that &quot;Eureka!&quot; moment as you&#39;re moving the box around the viewport aimlessly.</p>
+<p>Let&#39;s get cracking.</p>
+<h3 id="creating-our-player-module">Creating our player module</h3>
+<p>Earlier I kept mentioning <em>entities</em>, which is essentially what we&#39;re going to be creating. If you&#39;ve played around in Unity before, the term will be familiar to you as Unity games are built from entities. Entities are essentially interactive components such as NPC&#39;s, enemies, projectiles, etc. Eventually, our entity will have tons of different methods and properties such as health, damage, attack, and other game-type stuff; for now all we&#39;re going to be needing is a state that will contain our position within the viewport, a render method, and an update method.</p>
+<p>As far as utilities go, foreseeable necessary utilities include a way to bind our number to a specific boundary (the width of our viewport and 0) and a way of determining whether or not a key is being pressed at any time. Let&#39;s start by scaffolding out our player entity, then we can create and plug in those utilities as needed.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/players/player.js</span>
+
+<span class="hljs-comment">/** Player Module
+ * Main player entity module.
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Player</span>(<span class="hljs-params">scope, x, y</span>) </span>{
+    <span class="hljs-keyword">var</span> player = <span class="hljs-keyword">this</span>;
+
+    <span class="hljs-comment">// Create the initial state</span>
+    player.state = {
+        <span class="hljs-attr">position</span>: {
+            <span class="hljs-attr">x</span>: x,
+            <span class="hljs-attr">y</span>: y
+        },
+        <span class="hljs-attr">moveSpeed</span>: <span class="hljs-number">1.5</span>
+    };
+
+    <span class="hljs-comment">// Set up any other constants</span>
+    <span class="hljs-keyword">var</span> height = <span class="hljs-number">23</span>,
+        width = <span class="hljs-number">16</span>;
+
+    <span class="hljs-comment">// Draw the player on the canvas</span>
+    player.render = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">playerRender</span>(<span class="hljs-params"></span>) </span>{
+        scope.context.fillStyle = <span class="hljs-string">'#40d870'</span>;
+        scope.context.fillRect(
+            player.state.position.x,
+            player.state.position.y,
+            width, height
+        );
+    };
+
+    <span class="hljs-comment">// Fired via the global update method.</span>
+    <span class="hljs-comment">// Mutates state as needed for proper rendering next state</span>
+    player.update = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">playerUpdate</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// Check if keys are pressed, if so, update the players position.</span>
+        <span class="hljs-comment">// Bind the player to the boundary</span>
+    };
+
+    <span class="hljs-keyword">return</span> player;
+}
+
+<span class="hljs-built_in">module</span>.exports = Player;</code></pre>
+
+<p>As you can see, our entity structure is extremely similar to all of our other modules; we just have an exported function declaration with some properties and methods exposed. What&#39;s important to note here are the exposed <code>render</code> and <code>update</code> methods, lines 23 - 30 and 34 - 37, respectively. You&#39;ll remember that in both our global update and render modules we&#39;re iterating through all of the active entities and firing off these methods, so the inclusion of them within our entity is crucial.</p>
+<p>Again, we&#39;re injecting the scope into the module but this isn&#39;t 100% necessary; we could also inject it by ditching the <code>scope</code> parameter and using the <code>window.game</code> global to get the context. Since we were injecting it earlier, I&#39;m sticking with that here. If it winds up bugging me later, I&#39;m sure I&#39;ll change it in the next post.</p>
+<p>Technically, as long as we instantiate the player module our game should function and render our player in our viewport. This will more than likely occur on a per-level (or world) basis, but for now we&#39;ll just toss that into our main module.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/game.js, lines 40 - 51</span>
+
+that = <span class="hljs-keyword">this</span>;
+
+<span class="hljs-keyword">var</span> createPlayer = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createPlayer</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// Set the state.entities prop to an empty object if it does not exist</span>
+    that.state.entities = that.state.entities || {};
+    <span class="hljs-comment">// Instantiate a player as an active entity</span>
+    that.state.entities.player = <span class="hljs-keyword">new</span> playerEnt(
+        that,
+        that.constants.width / <span class="hljs-number">2</span>,
+        that.constants.height - <span class="hljs-number">100</span>
+    );
+}();</code></pre>
+
+<h4 id="getting-our-player-to-move">Getting our player to move</h4>
+<p>Now that we&#39;ve got a working entity it&#39;s time for us to fill up the entities update method so it actually does something. Our first order of business is getting our player to move around whenever we press the arrow keys down. Since we&#39;re not using jQuery or any libraries we&#39;re going to have to figure out a way to gracefully monitor the dom for key down events, then store whether or not a key is down at any given point as a boolean. There&#39;s two ways we can do this, we can either return some functions that will act as getters and retrieve whatever the keys variable is set to at that moment (<code>keys.isLeftPressed()</code>), or we can utilize <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty">Object.defineProperty</a> to actually create some getters for the variables (<code>keys.isPressed.left</code>). This is obviously left completely to personal preference, and I&#39;m going to be using <code>Object.defineProperty</code> because I like the syntax it leaves us with.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/utils/utils.keysDown.js</span>
+
+<span class="hljs-comment">/** keysDown Utility Module
+ * Monitors and determines whether a key
+ * is pressed down at any given moment.
+ * Returns getters for each key.
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">keysDown</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// Set isPressed to an empty object</span>
+    <span class="hljs-keyword">this</span>.isPressed = {};
+    <span class="hljs-keyword">var</span> left, right, up, down;
+
+    <span class="hljs-comment">// Set up `onkeydown` event handler.</span>
+    <span class="hljs-built_in">document</span>.onkeydown = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ev</span>) </span>{
+        <span class="hljs-keyword">if</span> (ev.keyCode === <span class="hljs-number">39</span>) { right = <span class="hljs-literal">true</span>; }
+        <span class="hljs-keyword">if</span> (ev.keyCode === <span class="hljs-number">37</span>) { left = <span class="hljs-literal">true</span>; }
+        <span class="hljs-keyword">if</span> (ev.keyCode === <span class="hljs-number">38</span>) { up = <span class="hljs-literal">true</span>; }
+        <span class="hljs-keyword">if</span> (ev.keyCode === <span class="hljs-number">40</span>) { down = <span class="hljs-literal">true</span>; }
+    };
+
+    <span class="hljs-comment">// Set up `onkeyup` event handler.</span>
+    <span class="hljs-built_in">document</span>.onkeyup = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ev</span>) </span>{
+        <span class="hljs-keyword">if</span> (ev.keyCode === <span class="hljs-number">39</span>) { right = <span class="hljs-literal">false</span>; }
+        <span class="hljs-keyword">if</span> (ev.keyCode === <span class="hljs-number">37</span>) { left = <span class="hljs-literal">false</span>; }
+        <span class="hljs-keyword">if</span> (ev.keyCode === <span class="hljs-number">38</span>) { up = <span class="hljs-literal">false</span>; }
+        <span class="hljs-keyword">if</span> (ev.keyCode === <span class="hljs-number">40</span>) { down = <span class="hljs-literal">false</span>; }
+    };
+
+    <span class="hljs-comment">// Define getters for each key</span>
+    <span class="hljs-comment">// * Not strictly necessary. Could just return</span>
+    <span class="hljs-comment">// * an object literal of methods, the syntactic</span>
+    <span class="hljs-comment">// * sugar of `defineProperty` is just so much sweeter :)</span>
+    <span class="hljs-built_in">Object</span>.defineProperty(<span class="hljs-keyword">this</span>.isPressed, <span class="hljs-string">'left'</span>, {
+        <span class="hljs-attr">get</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> left; },
+        <span class="hljs-attr">configurable</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">true</span>
+    });
+
+    <span class="hljs-built_in">Object</span>.defineProperty(<span class="hljs-keyword">this</span>.isPressed, <span class="hljs-string">'right'</span>, {
+        <span class="hljs-attr">get</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> right; },
+        <span class="hljs-attr">configurable</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">true</span>
+    });
+
+    <span class="hljs-built_in">Object</span>.defineProperty(<span class="hljs-keyword">this</span>.isPressed, <span class="hljs-string">'up'</span>, {
+        <span class="hljs-attr">get</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> up; },
+        <span class="hljs-attr">configurable</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">true</span>
+    });
+
+    <span class="hljs-built_in">Object</span>.defineProperty(<span class="hljs-keyword">this</span>.isPressed, <span class="hljs-string">'down'</span>, {
+        <span class="hljs-attr">get</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> down; },
+        <span class="hljs-attr">configurable</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">true</span>
+    });
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+}
+
+<span class="hljs-built_in">module</span>.exports = keysDown();</code></pre>
+
+<p>Now, I understand that this probably looks about as graceful as an ice skating bear with all of its if blocks, but it&#39;s certainly a lot better than polluting our entity with all of this mumbo jumbo (trust me on this, I had it within the module when I first wrote it and the tears were real). So, what&#39;s goin&#39; on here?</p>
+<ul>
+<li>We prep our <code>isPressed</code> property by setting it to an empty object and we cache all of our variables (10, 11).</li>
+<li>Set up event listeners for when a key is pressed down, then we determine what keys are pressed and set variables accordingly (14 - 19).</li>
+<li>Similarly, we set up event listeners for when a key is released and again set variables accordingly. This is crucial as it will tell our game <em>&quot;Hey, we&#39;re not moving left anymore&quot;</em> (22 - 27).</li>
+<li>Finally, we define some getters for each of our keys. They aren&#39;t the most complex getters in the world, but they&#39;re terrific as they give us the syntax of a variable declaration, but it will return whatever value is active at the time (33 - 55).</li>
+</ul>
+<p>After requiring this module into our player module, we then have access to the ability to request whether a key is active or not at any given time by calling that keys property within the <code>isPressed</code> object (<code>keys.isPressed.left</code> for example).</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/players/player.js</span>
+<span class="hljs-keyword">var</span> keys = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../utils/utils.keysDown.js'</span>);
+
+<span class="hljs-comment">/** Player Module
+ * Main player entity module.
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Player</span>(<span class="hljs-params">scope, x, y</span>) </span>{
+. . .
+    player.update = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">playerUpdate</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// Check if keys are pressed, and if so, update the players position.</span>
+        <span class="hljs-keyword">if</span> (keys.isPressed.left) {
+            player.state.position.x -= player.state.moveSpeed;
+        }
+
+        <span class="hljs-keyword">if</span> (keys.isPressed.right) {
+            player.state.position.x += player.state.moveSpeed;
+        }
+
+        <span class="hljs-keyword">if</span> (keys.isPressed.up) {
+            player.state.position.y -= player.state.moveSpeed;
+        }
+
+        <span class="hljs-keyword">if</span> (keys.isPressed.down) {
+            player.state.position.y += player.state.moveSpeed;
+        }
+
+        <span class="hljs-comment">// Bind the player to the boundary</span>
+    };
+. . .
+}
+
+<span class="hljs-built_in">module</span>.exports = Player;</code></pre>
+
+<p>Easier than expected, huh? And since we&#39;ve defined our moveSpeed as a variable, later on we can alter the move speed dynamically to implement things like smooth surfaces, boost power ups, sprinting, etc. The only downside that we&#39;re left with is if we keep going left for instance, we could easily get lost in the depths of the out-of-viewport wilderness; never to return. Let&#39;s fix that.</p>
+<h4 id="binding-our-position-to-a-boundary">Binding our position to a boundary</h4>
+<p>When I say we&#39;re going to be binding our position to a boundary, it&#39;s just a fancy way of saying that we&#39;re going to be forcing our coordinates to not exceed a minimum or maximum value. It&#39;s a really simple trick, and while it isn&#39;t absolutely necessary to have as its own module it makes using it within our player module a lot cleaner. Not to mention we can always extend the module to contain other math-related helper functions as well.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/utils/utils.math.js</span>
+
+<span class="hljs-comment">/**
+ * Number.prototype.boundary
+ * Binds a number between a minimum and a maximum amount.
+ * var x = 12 * 3;
+ * var y = x.boundary(3, 23);
+ * y === 23
+ */</span>
+
+<span class="hljs-keyword">var</span> Boundary = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">numberBoundary</span>(<span class="hljs-params">min, max</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.min( <span class="hljs-built_in">Math</span>.max(<span class="hljs-keyword">this</span>, min), max );
+};
+
+<span class="hljs-comment">// Expose methods</span>
+<span class="hljs-built_in">Number</span>.prototype.boundary = Boundary;
+<span class="hljs-built_in">module</span>.exports = Boundary;</code></pre>
+
+<p>All we&#39;re doing here is taking the min and max boundaries, and applying our current position so it won&#39;t exceed those two boundary points. Some <em>&quot;Eureka!&quot;</em>&#39;s include that since we&#39;re extending the prototype of the Number object our number is available to us within the method via <code>this</code>, and I&#39;m only exporting it as a module to get browserify to bundle the file up with the rest of our project.</p>
+<p>Now we can jump back into our player module and change our update method to bind our position to the boundaries we&#39;ve set.</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// /js/players/player.js</span>
+<span class="hljs-keyword">var</span> keys = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../utils/utils.keysDown.js'</span>),
+    mathHelpers = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../utils/utils.math.js'</span>);
+
+<span class="hljs-comment">/** Player Module
+ * Main player entity module.
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Player</span>(<span class="hljs-params">scope, x, y</span>) </span>{
+    . . .
+
+    player.update = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">playerUpdate</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-comment">// Check if keys are pressed, if so, update the players position.</span>
+        . . .
+
+        <span class="hljs-comment">// Bind the player to the boundary</span>
+        player.state.position.x = player.state.position.x.boundary(<span class="hljs-number">0</span>, (scope.constants.width - width));
+        player.state.position.y = player.state.position.y.boundary(<span class="hljs-number">0</span>, (scope.constants.height - height));
+    };
+
+    . . .
+}
+
+<span class="hljs-built_in">module</span>.exports = Player;</code></pre>
+
+<p>Trust me, this is a LOT cleaner than tossing all of that <em>min max</em> stuff into the module. As I mentioned before, since we extended the <code>Number</code> objects prototype with <code>Number.prototype.boundary</code>, that method is now available to all Numbers within our project. Since x and y are numbers rather than strings, they can then use boundary to return the proper position.</p>
+<div class="bg-video-wrap" style="background-image: url('/assets/videos/gulpVid.png');">
+  <video class="bg-video-player" autoplay loop>
+    <source src="/assets/videos/game-engine-vid.mp4"  type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
+    <source src="/assets/videos/game-engine-vid.webm" type="video/webm; codecs=vp8,vorbis">
+    <source src="/assets/videos/game-engine-vid.ogv"  type="video/ogg; codecs=theora,vorbis">
+  </video>
+</div>
+
+<h2 id="wrapping-up">Wrapping Up</h2>
+<p>So, let&#39;s review what we&#39;ve done in this episode:</p>
+<ul>
+<li>Built a pretty rad project structure that is fairly predictable and easy to work with.</li>
+<li>Created a dynamically generated high-resolution canvas and injected it into the dom as a viewport.</li>
+<li>Built out a rudimentary rendering and logic engine using <code>requestAnimationFrame</code>, dynamically throttling it to a configurable frame rate</li>
+<li>Made a two-cycle alternating frame rate calculator for frame rate monitoring during development</li>
+<li>Created our first interactive entity, the player, and added logic to move him around the screen</li>
+<li>Got a feel for how to add onto to our project foundation</li>
+</ul>
+<p>Not too shabby for a first pass. I know we mostly did the <em>behind the scenes</em> stuff (the kind of stuff that takes forever, then you excitedly show it to the client and they go &quot;uhhh. that&#39;s it? that&#39;s all you&#39;ve done? what am I looking at?&quot;) and the current iteration isn&#39;t the most exciting thing in the world, but it&#39;s a solid platform for us to start with. In the next couple posts we&#39;ll start going in and doing the exciting stuff like creating sprites for our entities, generating levels, writing in collision detection, and possibly extracting our logic update layer further for more efficiency.</p>
+<p>If you&#39;d like to check out the code for this post in full, you can check it out on the <a href="https://github.com/aesinv/javascript-game-demo/tree/0.2.0-p1">github repo</a> (specifically the 0.2.0-p1 tag), or you can <a href="https://github.com/aesinv/javascript-game-demo/releases/tag/0.2.0-p1">download it</a> as a zip or tar file.</p>
+<p>Safe travels until next round!</p>
+<h2 id="adventure-outline-parts">Adventure outline / parts</h2>
+<ul>
+<li><strong><a href="#">Part 1: A basic game engine</a></strong></li>
+<li>Part 2: Creating our game world - Coming soon</li>
+<li>Part 3: Sprites, enemies and danger - Coming soon</li>
+<li>Part 4: Implementing an event system - Coming soon</li>
+<li>Part ~: More will be added as they&#39;re written!</li>
+</ul>
+
+				<div id="disqus_thread"></div>
+				<script type="text/javascript">
+				    var disqus_shortname = 'aesinv',
+				        disqus_title = 'Building a simple JavaScript game - 1. A basic game engine',
+				        disqus_identifier = 'Building a simple JavaScript game - 1. A basic game engine',
+				        disqus_url = 'bengsfort.github.io/articles/making-a-js-game-part-1-game-engine';
+				
+				    (function() {
+				        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+				        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+				        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+				    })();
+				</script>
+				<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+			</div>
+		</main>
+
+		<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+		  <defs>
+		    <symbol id="icon-github-with-circle" viewBox="0 0 20 20">
+		      <title>github-with-circle</title>
+		      <path class="path1" d="M10.015 9.949c0 0-0.010 0-0.015 0h-0.015c-1.191 0-2.24-0.303-2.861 0.268-0.371 0.342-0.527 0.754-0.527 1.197 0 1.852 1.483 2.080 3.389 2.080h0.029c1.905 0 3.389-0.229 3.389-2.080 0-0.443-0.156-0.856-0.527-1.197-0.622-0.571-1.671-0.268-2.862-0.268zM8.393 12.48c-0.363 0-0.656-0.408-0.656-0.91s0.293-0.908 0.656-0.908c0.363 0 0.657 0.406 0.657 0.908s-0.293 0.91-0.657 0.91zM11.606 12.48c-0.363 0-0.657-0.408-0.657-0.91s0.294-0.908 0.657-0.908c0.362 0 0.656 0.406 0.656 0.908s-0.293 0.91-0.656 0.91zM10 0.4c-5.302 0-9.6 4.298-9.6 9.6s4.298 9.6 9.6 9.6 9.6-4.298 9.6-9.6-4.298-9.6-9.6-9.6zM10.876 13.939c-0.172 0-0.514 0-0.876 0.002-0.362-0.002-0.704-0.002-0.876-0.002-0.76 0-3.772-0.059-3.772-3.689 0-0.834 0.286-1.445 0.755-1.955-0.074-0.184-0.078-1.232 0.32-2.236 0 0 0.916 0.1 2.301 1.051 0.289-0.081 0.781-0.122 1.272-0.122s0.982 0.041 1.273 0.121c1.385-0.951 2.301-1.051 2.301-1.051 0.398 1.004 0.395 2.053 0.32 2.236 0.469 0.51 0.755 1.121 0.755 1.955-0.001 3.632-3.013 3.69-3.773 3.69z"></path>
+		    </symbol>
+		    <symbol id="icon-twitter-with-circle" viewBox="0 0 20 20">
+		      <title>twitter-with-circle</title>
+		      <path class="path1" d="M10 0.4c-5.302 0-9.6 4.298-9.6 9.6s4.298 9.6 9.6 9.6 9.6-4.298 9.6-9.6-4.298-9.6-9.6-9.6zM13.905 8.264c0.004 0.082 0.005 0.164 0.005 0.244 0 2.5-1.901 5.381-5.379 5.381-1.068 0-2.062-0.312-2.898-0.85 0.147 0.018 0.298 0.025 0.451 0.025 0.886 0 1.701-0.301 2.348-0.809-0.827-0.016-1.525-0.562-1.766-1.312 0.115 0.021 0.233 0.033 0.355 0.033 0.172 0 0.34-0.023 0.498-0.066-0.865-0.174-1.517-0.938-1.517-1.854v-0.023c0.255 0.141 0.547 0.227 0.857 0.237-0.508-0.34-0.841-0.918-0.841-1.575 0-0.346 0.093-0.672 0.256-0.951 0.933 1.144 2.325 1.896 3.897 1.977-0.033-0.139-0.049-0.283-0.049-0.432 0-1.043 0.846-1.891 1.891-1.891 0.543 0 1.035 0.23 1.38 0.598 0.431-0.086 0.835-0.242 1.2-0.459-0.141 0.441-0.44 0.812-0.831 1.047 0.383-0.047 0.747-0.148 1.086-0.299-0.253 0.379-0.574 0.713-0.943 0.979z"></path>
+		    </symbol>
+		  </defs>
+		</svg>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="/js/bin/materialize.min.js"></script>
+		<script type="text/javascript">
+			var trigger = $('.nav-menu-trigger'),
+				target = $(trigger.data('target'));
+			
+			trigger.on('click', function() {
+				trigger.toggleClass('active');
+				target.toggleClass('in');
+			});
+		</script>		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		
+		  ga('create', 'UA-66600710-1', 'auto');
+		  ga('send', 'pageview');
+		</script>
+	</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width initial-scale=1">
+	
+		<title>Building a Gulp workflow wrapped around Jekyll</title>
+	
+		<!--// Metadata //-->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width initial-scale=1">
+	
+		<!--// Metadata //-->
+		<meta name="description" content="Words and thoughts about app development, indie game development, and pixel art.">
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="Developmental Pixels">
+		<meta property="og:url" content="http://aesinv.com/index.html">
+		<meta property="og:site_name" content="Developmental Pixels">
+		<meta property="og:description" content="Words and thoughts about app development, indie game development, and pixel art.">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:title" content="Developmental Pixels">
+		<meta name="twitter:description" content="Words and thoughts about app development, indie game development, and pixel art.">
+		<meta name="twitter:creator" content="@bengsfort">
+		<meta property="fb:admins" content="100000177595822">
+		<meta property="fb:app_id" content="1893256420958255">
+		
+		
+		<!--// Stylesheets //-->
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="/styles/main.css" rel="stylesheet">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/atom-one-dark.min.css">
+	</head>
+	<body>
+		<header>
+			<a class="nav-menu-trigger waves-effect waves-light" data-target=".nav-pane">
+				<i class="material-icons close">close</i>
+				<i class="material-icons open">menu</i>
+			</a>
+			<div class="nav-pane">
+				<div class="nav-content">
+					<div class="author-card">
+						<div class="author-card-top">
+							<div class="author-avatar-wrapper">
+								<img class="author-avatar" src="/assets/avatar.png" alt="Matt Bengston" />
+							</div>
+						</div>
+					
+						<div class="author-card-body">
+							<h5 class="author-name">Matt Bengston</h5>
+							
+							<div class="author-job-info">
+								<span class="author-position">Software Developer</span>
+								<a class="author-employer" target="_blank" href="https://unity3d.com">@Unity Technologies</a>
+							</div>
+					
+							<div class="author-social">
+								<a class="author-github" target="_blank" href="https://github.com/bengsfort">
+									<svg class="icon icon-github-with-circle">
+										<use xlink:href="#icon-github-with-circle" />
+									</svg>
+								</a>
+								<a class="author-twitter" target="_blank" href="https://twitter.com/bengsfort">
+									<svg class="icon icon-twitter-with-circle">
+										<use xlink:href="#icon-twitter-with-circle" />
+									</svg>
+								</a>
+							</div>
+						</div>
+					</div>			<nav id="site-navigation">
+						<ul class="site-nav">
+								<li >
+									<a href="/" class="waves-effect">All Posts</a>
+								</li>
+								<li class="active">
+									<a href="/articles/" class="waves-effect">Articles</a>
+								</li>
+								<li >
+									<a href="/dev-logs/" class="waves-effect">Dev Logs</a>
+								</li>
+								<li >
+									<a href="/pixel-art/" class="waves-effect">Pixel Art</a>
+								</li>
+								<li >
+									<a href="/about/" class="waves-effect">About</a>
+								</li>
+						</ul>
+					</nav>		</div>
+				<div class="nav-footer">
+					<span class="copyright-info"><i class="tiny material-icons">copyright</i> Matt Bengston</span>
+					<span class="source-info"><a href="https://github.com/bengsfort/bengsfort.github.io" target="_blank"><i class="tiny material-icons">code</i> View on Github</a></span>
+				</div>	</div>
+		</header>
+		<main class="main-wrapper">
+			<div class="container">
+				<section class="intro-text">
+					<h1 class="headline">Building a Gulp workflow wrapped around Jekyll</h1>
+						<span class="subtitle">An attempt at adding more dynamism to Jekyll via a workflow revamp using Gulp as a task runner and BrowserSync as a local server.</span>
+				</section>				<h2 id="tl-dr">Tl;dr</h2>
+<blockquote>
+<ul>
+<li>Jekyll is analog out of the box, a Gulp workflow allows you to simplify development massively.</li>
+<li>Use either <a href="https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options">child_process.spawn</a> or <a href="https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback">child_process.exec</a> to run the Jekyll build from Node/Gulp.</li>
+<li>A way of sequencing your tasks is crucial to the build. I currently use <a href="https://www.npmjs.com/package/run-sequence">runSequence</a> but am looking at refactoring.</li>
+<li>View the <a href="https://github.com/aesinv/aesinv-jekyll-blog/blob/master/gulpfile.js">Completed Gulpfile</a> on <a href="https://github.com/aesinv/aesinv-jekyll-blog/">GitHub</a>.</li>
+</ul>
+</blockquote>
+<h2 id="the-problem">The Problem</h2>
+<p>Out of the box, <a href="http://jekyllrb.com/">Jekyll</a> comes with everything you&#39;d need to set up a simple, fully static website. When it comes time to add some dynamism however, things become quite analog. The default set up is very set in stone, and while you can add directories and files to include on compilation to your <code>_config.yml</code> file, if you want to delve into the realm of actual optimization of said included files you have to jump into <em>lots of pizza and a full night of Ruby</em> land. As a front end developer with no previous experience in <a href="https://www.ruby-lang.org/en/">Ruby</a>, this wasn&#39;t an appealing option for me (especially considering I can hardly stand even setting up <a href="https://rvm.io/">RVM</a>).</p>
+<p>Ideally then, this should be handled via a solid task manager such as <a href="http://gulpjs.com/">Gulp</a> that would allow me to toss in any optimizations I&#39;d like with minimal effort. While there are tons of <a href="http://yeoman.io">Yeoman</a> generators out there, where&#39;s the fun in that?! Setting up a Gulp workflow is very straightforward and in some cases <em>quite fun</em> (I&#39;m not supposed to let people see me say that or something, right?), however the problem of how to get it to interact nicely with Jekyll persists.</p>
+<h2 id="determining-what-handles-what">Determining what handles what</h2>
+<p>Since Jekyll spins up it&#39;s own build as well as a local development server and is required to generate the finished site, it&#39;s clearly necessary to determine what should be handling what. Since running the <code>jekyll serve</code> command in parallel with Gulp would wind up with the two stepping on each others toes, that idea quickly got thrown out the window in favor for Gulp handling the majority of the legwork while the Jekyll build would be reserved strictly for site generation.</p>
+<p>So, let&#39;s start with what Jekyll can do right out of the box:</p>
+<ul>
+<li><a href="http://sass-lang.com/">Sass</a> compilation</li>
+<li>Markup / <a href="http://daringfireball.net/projects/markdown/">Markdown</a> / Data compilation and site generation</li>
+<li>Destination directory cleaning</li>
+<li>Copying project source directories and files that are marked for inclusion</li>
+<li>Spinning up a local dev server that auto re-gens on source file changes</li>
+</ul>
+<p>Because Jekyll cleans the destination directory with each build and I&#39;m not a huge fan of compiled build files hanging out and partying with source files, any extra tasks being handled by Gulp need to be run after the Jekyll build every time, with the built files then being injected into the build directory. Since Gulp will be handling the local server, there&#39;s no need to worry about that particular task. Additionally, to prevent requiring a full Jekyll/Asset re-build on simple stylesheet changes, that&#39;s another thing that we can transfer responsibility over to Gulp. Gulp can then handle tacking on some extra CSS stuff (such as <a href="https://www.npmjs.com/package/gulp-minify-css">minification</a> and <a href="https://www.npmjs.com/package/gulp-autoprefixer">auto prefixing</a>), as well as all JavaScript and image optimization.</p>
+<h2 id="scaffolding-out-the-tasks">Scaffolding out the tasks</h2>
+<p>At this point, it&#39;s time to start scaffolding out exactly what needs to be built on a higher level so development is more focused on just writing some simple tasks rather than trying to determine what needs to be where and how <em>x</em> should be called by <em>y</em>.</p>
+<h3 id="main-utility-tasks">Main utility tasks</h3>
+<p>We need some main utility tasks to handle all of the heavy lifting, so they can easily get called by the build tasks. Each one should handle all of the optimizations and subtasks for it&#39;s stated code type, that way the watch task can efficiently rebuild the portion of the code that&#39;s changed and not the entire build process.</p>
+<ul>
+<li><code>buildJs</code>: Concatenate, lint, and minify all JavaScript</li>
+<li><code>buildCss</code>: Take the built CSS, run it through the auto-prefixer, then minify</li>
+<li><code>buildJekyll</code>: Utility function/task to run the Jekyll build</li>
+<li><code>optimizeImg</code>: Run all images through <a href="https://www.npmjs.com/package/gulp-imagemin">gulp-imagemin</a> for optimization</li>
+<li><code>browser</code>: Initialize a <a href="http://browsersync.io">BrowserSync</a> local server</li>
+<li><code>browser:reload</code>: Reload our BrowserSync local server</li>
+</ul>
+<h3 id="helper-convenience-tasks">Helper/convenience tasks</h3>
+<p>Utility tasks out of the way, it would be useful to have some helper tasks that can batch the utility classes so the main build tasks and the watch stream aren&#39;t polluted with tons of individual task calls and complications.</p>
+<ul>
+<li><code>build:assets</code>: Helper task to build, compile and optimize all site assets<ul>
+<li><code>buildJs</code></li>
+<li><code>buildCss</code></li>
+<li><code>optimizeImg</code></li>
+</ul>
+</li>
+<li><code>build</code>: Run the Jekyll build with the _<em>config.yml</em> file<ul>
+<li><code>buildJekyll</code></li>
+</ul>
+</li>
+<li><code>build:prod</code>: Same as <code>build</code>, but with the _<em>config.build.yml</em> file<ul>
+<li><code>buildJekyll</code></li>
+</ul>
+</li>
+</ul>
+<p>It&#39;s also worth noting that while the <code>build</code> and <code>build:prod</code> tasks may seem redundant, they&#39;re necessary as <code>buildJekyll</code> is more of a utility function rather than a task, and to build using a specific config file requires it to be called as a function. I generally build my gulp tasks out as normal <a href="https://darrenderidder.github.io/talks/ModulePatterns/#/">Node.js modules</a> so they can exist independent of each other and be called normally. This is achieved by utilizing the <a href="https://www.npmjs.com/package/gulp-auto-task">gulp-auto-task</a> module, an absolute must-use with Gulp.</p>
+<h3 id="main-build-tasks">Main build tasks</h3>
+<p>Now that there are all of the tasks necessary to run builds, there needs to be some main build tasks that utilize our helpers and utilities to automate the entire proces for us.</p>
+<ul>
+<li><code>serve</code>: Fire up a BrowserSync server, run a full site and asset build then watch for any changes.<ul>
+<li><code>browser</code></li>
+<li><code>build</code></li>
+<li><code>build:assets</code></li>
+<li><code>browser:reload</code> (on change)</li>
+</ul>
+</li>
+<li><code>deploy</code>: Run a full site and asset build, using the production config file.<ul>
+<li><code>build:prod</code></li>
+<li><code>build:assets</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="building-out-the-tasks">Building out the tasks</h2>
+<p>Since the workflows needs are pretty well laid out, the Gulp tasks can efficiently start being developed. I like to start out by scaffolding out the utility tasks/functions then creating the main build process. That way I can get all of my tasks working, then the main build tasks are just quick, batched task or function calls.</p>
+<h3 id="getting-a-testable-gulpfile-set-up">Getting a testable Gulpfile set up</h3>
+<p>To make sure the tasks are easy to test, a very basic Gulpfile needs to be in place. Two must-use modules I use all the time and absolutely adore make super quick work of this: <a href="https://www.npmjs.com/package/gulp-auto-task">gulp-auto-task</a> which automagically turns standard node modules into gulp tasks, and <a href="https://www.npmjs.com/package/require-dir">require-dir</a> which will include all files within the specified folder, removing the possibility of having a giant mess of requires.</p>
+<pre><code><span class="hljs-keyword">var</span> gulp          = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp'</span>),
+    <span class="hljs-comment">/** Utils */</span>
+    requireDir    = <span class="hljs-built_in">require</span>(<span class="hljs-string">'require-dir'</span>),
+    gulpAutoTask  = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-auto-task'</span>),
+    <span class="hljs-comment">/** Config */</span>
+    paths        = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./package.json'</span>).paths;
+
+<span class="hljs-comment">/** Import Main Tasks */</span>
+<span class="hljs-comment">// Require modules so they can be called as functions</span>
+<span class="hljs-keyword">var</span> utils = requireDir(<span class="hljs-string">'gulp-tasks'</span>); <span class="hljs-comment">// ex. utils.buildJekyll();</span>
+<span class="hljs-comment">// Automagically set up tasks</span>
+gulpAutoTask(<span class="hljs-string">'{*,**/*}.js'</span>, {
+  <span class="hljs-attr">base</span>: paths.tasks,
+  <span class="hljs-attr">gulp</span>: gulp
+});</code></pre>
+
+<p>Technically, <code>require-dir</code> is not necessary at this stage, but it&#39;s easy enough to include now and it saves having to include it later. With this in place, any <em>*.js</em> files placed within the <em>./gulp-tasks/</em> directory will not only get automatically required into the <code>utils</code> object, but they will also be turned into tasks without any <code>gulp.task</code> declarations. Some benefits to this include tasks becoming true modules, more readable files/file structure and <strong>tasks become reusable</strong>, which is very important for the Jekyll build task.</p>
+<p>I&#39;m also including a portion of <em>package.json</em> that I use to hold all of my paths. One quirk to working with tasks that are spread across different files is that globals can very quickly become very repetitive, so to solve this and to stay <strong>DRY</strong> I tossed a a <code>paths</code> object into my <em>package.json</em> file, so I can just require that object directly and keep all of my paths in one place.</p>
+<pre><code>{
+  ...
+  <span class="hljs-string">"paths"</span>: {
+    <span class="hljs-string">"tasks"</span>: <span class="hljs-string">"gulp-tasks/"</span>,
+    <span class="hljs-string">"src"</span>: <span class="hljs-string">"project/"</span>,
+    <span class="hljs-string">"build"</span>: <span class="hljs-string">"_dist/"</span>,
+    <span class="hljs-string">"bower"</span>: <span class="hljs-string">"bower_components/"</span>,
+    <span class="hljs-string">"vendor"</span>: {
+      <span class="hljs-string">"src"</span>: <span class="hljs-string">"project/js/lib/"</span>,
+      <span class="hljs-string">"dest"</span>: <span class="hljs-string">"_dist/js/"</span>
+    },
+    <span class="hljs-string">"js"</span>: {
+      <span class="hljs-string">"src"</span>: <span class="hljs-string">"project/js/"</span>,
+      <span class="hljs-string">"dest"</span>: <span class="hljs-string">"_dist/js/"</span>
+    },
+    <span class="hljs-string">"sass"</span>: {
+      <span class="hljs-string">"src"</span>: <span class="hljs-string">"project/_sass/"</span>
+    },
+    <span class="hljs-string">"css"</span>: {
+      <span class="hljs-string">"src"</span>: <span class="hljs-string">"project/css/"</span>,
+      <span class="hljs-string">"dest"</span>: <span class="hljs-string">"_dist/css/"</span>
+    },
+    <span class="hljs-string">"img"</span>: {
+      <span class="hljs-string">"src"</span>: <span class="hljs-string">"project/img/"</span>,
+      <span class="hljs-string">"dest"</span>: <span class="hljs-string">"_dist/img/"</span>
+    }
+  },
+  ...
+}</code></pre>
+
+<h3 id="utility-tasks">Utility Tasks</h3>
+<p>Since the Gulpfile is ready to accept tasks in the form of modules, the utility tasks can begin to take shape. As the modules are added they&#39;ll automatically be available to test via <code>gulp &lt;fileName&gt;</code>, which is extremely helpful from a testing standpoint. For the sake of progress, I like to start with the easiest ones to get them knocked out first and foremost; in this case that&#39;s the asset utilities as they are extremely simple and straight forward gulp tasks.</p>
+<h4 id="css-build">CSS Build</h4>
+<pre><code><span class="hljs-built_in">var</span> gulp        = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp'</span>),
+    <span class="hljs-comment">/** Utilities */</span>
+    rename      = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-rename'</span>),
+    <span class="hljs-built_in">size</span>        = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-filesize'</span>),
+    <span class="hljs-comment">/** CSS */</span>
+    sass          = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-sass'</span>),
+    minifyCss     = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-minify-css'</span>),
+    autoprefixer  = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-autoprefixer'</span>),
+    <span class="hljs-comment">/** Config */</span>
+    paths      = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../package.json"</span>).paths;
+
+<span class="hljs-comment">/** CSS Build */</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildCss</span> (<span class="hljs-params"></span>) </span>{
+
+  <span class="hljs-keyword">return</span> gulp.src(paths.css.src + <span class="hljs-string">'main.scss'</span>)
+    .pipe(sass({
+      <span class="hljs-attribute">includePaths</span>: [paths.sass.src] <span class="hljs-comment">// Tell Sass where to look for files</span>
+    }).on(<span class="hljs-string">'error'</span>, sass.logError))
+    .pipe(autoprefixer({
+      <span class="hljs-attribute">browsers</span>: [<span class="hljs-string">'last 2 versions'</span>]
+    }))
+    .pipe(minifyCss())
+    .pipe(rename({ <span class="hljs-attribute">extname</span>: <span class="hljs-string">'.min.css'</span> }))
+    .pipe(<span class="hljs-built_in">size</span>()) <span class="hljs-comment">// Logs the minified file size to the console</span>
+    .pipe(gulp.dest(paths.css.dest));
+};</code></pre>
+
+<p>The CSS task is a pretty straightforward, so there&#39;s not too much in it that&#39;s very special. There are two quirks that should be noted:</p>
+<ul>
+<li>Pass the path to the _<em>sass/</em> folder to the compiler so Sass knows where to look for files that get imported via <code>import();</code> (line 16)</li>
+<li>Surrender the handling of styles completely from Jekyll to avoid Sass compilation errors.</li>
+</ul>
+<p>The former is easy enough and handled within our <code>sass()</code> function, but the latter requires messing with a couple more files.</p>
+<ul>
+<li>Tell Jekyll to exclude the <em>css/</em> directory by adding it to the excludes array within the _<em>config.yml</em> file:<pre><code class="hljs yaml"><span class="hljs-attr">exclude:</span> [css/]</code></pre></li>
+<li>Remove the YAML front matter from the <em>main.scss</em> file:<pre><code class="hljs scss"><span class="hljs-comment">// ---</span>
+<span class="hljs-comment">// # Only the main Sass file needs front matter (the dashes are enough)</span>
+<span class="hljs-comment">// ---</span></code></pre>
+
+</li>
+</ul>
+<h4 id="javascript-build">JavaScript Build</h4>
+<p>Again, there isn&#39;t really anything super special about the JavaSript build that differs from any other run-of-the-mill Gulp JavaScript builds. I gather the vendor files from my <em>js/lib</em> directory and compile them to their own file, then similarly concatenate the regular <em>js/*.js</em> files and build them together. Since Jekyll doesn&#39;t provide much in terms of JavaScript support out of the box, there&#39;s no extra configuration required.</p>
+<pre><code><span class="hljs-built_in">var</span> gulp        = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp'</span>),
+  <span class="hljs-comment">/** Utilities */</span>
+    rename      = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-rename'</span>),
+    <span class="hljs-built_in">size</span>        = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-filesize'</span>),
+  <span class="hljs-comment">/** JS Specific */</span>
+    jshint      = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-jshint'</span>),
+    concat      = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-concat'</span>),
+    uglify      = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-uglify'</span>),
+<span class="hljs-comment">/** Config */</span>
+    paths      = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../package.json'</span>).paths;
+
+<span class="hljs-comment">/**
+ * JavaScript
+ * @todo Extract this to be more dynamic, helper function, specify path, file name, and what tasks to execute.
+ */</span>
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildJs</span>(<span class="hljs-params"></span>) </span>{
+
+  <span class="hljs-comment">// Build vendor files</span>
+  gulp.src(paths.vendor.src + <span class="hljs-string">'*.js'</span>)
+  <span class="hljs-comment">// Concat files</span>
+    .pipe(concat(<span class="hljs-string">'vendor.js'</span>))
+  <span class="hljs-comment">// Minify combined files and rename</span>
+    .pipe(uglify())
+    .pipe(rename({ <span class="hljs-attribute">extname</span>: <span class="hljs-string">'.min.js'</span> }))
+    .pipe(<span class="hljs-built_in">size</span>())
+    .pipe(gulp.dest(paths.vendor.dest));
+
+  <span class="hljs-keyword">return</span> gulp.src(paths.js.src + <span class="hljs-string">'*.js'</span>)
+  <span class="hljs-comment">// Concat files</span>
+    .pipe(concat(<span class="hljs-string">'main.js'</span>))
+  <span class="hljs-comment">// Lint file</span>
+    .pipe(jshint())
+    .pipe(jshint.reporter(<span class="hljs-string">'default'</span>))
+  <span class="hljs-comment">// Minify files and rename</span>
+    .pipe(uglify())
+    .pipe(rename({ <span class="hljs-attribute">extname</span>: <span class="hljs-string">'.min.js'</span> }))
+    .pipe(<span class="hljs-built_in">size</span>())
+    .pipe(gulp.dest(paths.js.dest));
+
+};</code></pre>
+
+<h4 id="image-optimization">Image Optimization</h4>
+<p>After having discovered the importance of image optimization while working at a marketing firm and embarking on a giant performance optimization crusade, I try to include it in all of my projects. Luckily, basic image optimization with gulp is a cake walk with <a href="https://www.npmjs.com/package/gulp-imagemin">gulp-imagemin</a>.</p>
+<pre><code><span class="hljs-keyword">var</span> gulp        = <span class="hljs-keyword">require</span>(<span class="hljs-string">'gulp'</span>),
+    <span class="hljs-comment">/** Images */</span>
+    imagemin    = <span class="hljs-keyword">require</span>(<span class="hljs-string">'gulp-imagemin'</span>),
+    pngquant    = <span class="hljs-keyword">require</span>(<span class="hljs-string">'imagemin-pngquant'</span>),
+    <span class="hljs-comment">/** Config */</span>
+    paths      = <span class="hljs-keyword">require</span>(<span class="hljs-string">"../package.json"</span>).paths;
+
+<span class="hljs-comment">/**
+ * Images
+ * <span class="hljs-doctag">@todo</span> Determine better way of handling the inline SVG's so they can get optimized as well.
+ */</span>
+
+module.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">optimizeImg</span><span class="hljs-params">()</span> </span>{
+
+  <span class="hljs-keyword">return</span> gulp.src([paths.img.src + <span class="hljs-string">'*'</span>, paths.img.src + <span class="hljs-string">'**/*'</span>])
+    .pipe(imagemin({
+      progressive: <span class="hljs-keyword">true</span>,
+      <span class="hljs-keyword">use</span>: [<span class="hljs-title">pngquant</span>({
+        <span class="hljs-title">quality</span>: '65-75'
+      })]
+    }))
+    .<span class="hljs-title">pipe</span>(<span class="hljs-title">gulp</span>.<span class="hljs-title">dest</span>(<span class="hljs-title">paths</span>.<span class="hljs-title">img</span>.<span class="hljs-title">dest</span>));
+
+};</code></pre>
+At this point I'm pretty happy with the results of the implementation on this site, however as noted in my @todo below I need to determine a better way of handling inline SVG's, which I currently have as includes. One option I've been considering is tossing all of my SVG's into __assets/svg_, then updating this task to minify and optimize all SVG's within that folder and toss them into my __includes/svg_ folder so they can easily be inlined via `{% raw %}{% include svg/icon-name.svg %}{% endraw %}`.
+
+#### Jekyll Build
+While the Jekyll build is the real meat and potatoes of the workflow, it's relatively simple and can be handled using one of two [child_process](https://nodejs.org/api/child_process.html) methods: [child_process.spawn](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) or [child_process.exec](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback).
+
+Spawn and exec both do the same thing, but in different ways: spawn returns a stream, is asynchronously asynchronous and meant for streaming large amounts of data back to node, while exec returns a buffer and is synchronously asynchronous and meant for returning small data such as status messages. While both work, I personally prefer and am currently using exec for handling Jekyll builds.
+
+**Jekyll Build using `child_process.exec`**
+<pre><code><span class="hljs-keyword">var</span> exec          = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).exec,
+    <span class="hljs-comment">/** Utilities */</span>
+    gutil         = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-util'</span>);
+
+<span class="hljs-comment">// Gulp tasks get passed a callback first, so our secondary arg</span>
+<span class="hljs-comment">// MUST be the second arg. Successful processes return callback(null).</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildJekyll</span>(<span class="hljs-params">callback, env</span>) </span>{
+  <span class="hljs-keyword">var</span> cmd = <span class="hljs-string">'jekyll build --config '</span>;
+  cmd += (env === <span class="hljs-string">'prod'</span> ? <span class="hljs-string">'_config.build.yml'</span> : <span class="hljs-string">'_config.yml'</span>);
+
+  <span class="hljs-comment">// https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback</span>
+  <span class="hljs-keyword">return</span> exec(cmd, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, stdout, stderror</span>) </span>{
+    gutil.log(stdout); <span class="hljs-comment">// Log the output to the console</span>
+    <span class="hljs-keyword">return</span> callback(error !== <span class="hljs-literal">null</span> ? <span class="hljs-string">'ERROR: Jekyll process exited with code: '</span>+error.code : <span class="hljs-literal">null</span>);
+  });
+};</code></pre>
+
+<p><strong>Jekyll Build using <code>child_process.spawn</code></strong></p>
+<pre><code><span class="hljs-comment">/** gulp-tasks/buildJekyll.js */</span>
+<span class="hljs-keyword">var</span> spawn         = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).spawn;
+
+<span class="hljs-comment">// Gulp tasks get passed a callback first, so our secondary arg</span>
+<span class="hljs-comment">// MUST be the second arg. Successful processes return callback(null).</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildJekyll</span>(<span class="hljs-params">callback, env</span>) </span>{
+  <span class="hljs-keyword">var</span> opts = [<span class="hljs-string">'build'</span>, <span class="hljs-string">'--config'</span>]; <span class="hljs-comment">// add base opts</span>
+
+  <span class="hljs-comment">// if `env` is 'prod', use the production config file</span>
+  opts.push(env === <span class="hljs-string">'prod'</span> ? <span class="hljs-string">'_config.build.yml'</span> : <span class="hljs-string">'_config.yml'</span>);
+
+  <span class="hljs-comment">// Init the `jekyll` command with our `opts` array</span>
+  <span class="hljs-keyword">var</span> jekyll = spawn(<span class="hljs-string">'jekyll'</span>, opts, {
+  <span class="hljs-comment">// https://nodejs.org/api/child_process.html#child_process_options_stdio</span>
+    stdio: <span class="hljs-string">'inherit'</span> <span class="hljs-comment">// use stdin, stdout, etc.</span>
+  });
+
+  <span class="hljs-comment">// Once finished, fire the Gulp callback</span>
+  <span class="hljs-keyword">return</span> jekyll.on(<span class="hljs-string">'exit'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">code</span>) </span>{
+    <span class="hljs-keyword">return</span> callback(code === <span class="hljs-number">0</span> ? <span class="hljs-literal">null</span> : <span class="hljs-string">'ERROR: Jekyll process exited with code: '</span>+code);
+  });
+};</code></pre>
+
+<p>Having used both spawn and exec, I personally prefer exec due to the cleanliness and compactness of the resulting file and I&#39;ve noticed better consistency with how quick the process has been ending, allowing the following queued tasks to start quicker.</p>
+<h3 id="helper-and-convenience-tasks">Helper and Convenience Tasks</h3>
+<p>With the utility tasks completed, the entire workflow could be emulated by manually running each task individually. As I don&#39;t think anyone is really interested in a workflow that would require you to manually run each task individually, some helper tasks are definitely in order to automate everything. These tasks can then be called either individually or by the main build tasks, keeping our main build tasks concise.</p>
+<p>Since these helper tasks are pretty much exclusively batch task runners, they can just get tossed into the Gulpfile after the task importation.</p>
+<pre><code><span class="hljs-comment">/** Helper Tasks */</span>
+gulp.task(<span class="hljs-string">'build'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(callback)</span> </span>{
+  <span class="hljs-keyword">return</span> utils.buildJekyll(<span class="hljs-keyword">callback</span>, <span class="hljs-string">'serve'</span>);
+});
+
+gulp.task(<span class="hljs-string">'build:prod'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(callback)</span> </span>{
+  <span class="hljs-keyword">return</span> utils.buildJekyll(<span class="hljs-keyword">callback</span>, <span class="hljs-string">'prod'</span>);
+});
+
+gulp.task(<span class="hljs-string">'build:assets'</span>, [<span class="hljs-string">'buildCss'</span>, <span class="hljs-string">'buildJs'</span>, <span class="hljs-string">'optimizeImg'</span>]);</code></pre>
+
+<p>On lines 2 - 4 the <code>build</code> task is getting declared, which just returns the <code>buildJekyll</code> utility function with the Gulp callback and non-<code>prod</code> environment passed in. On 6 - 8 the same is being done for the <code>build:prod</code> task but with the <code>prod</code> environment passed in as the second argument to dictate the use of the production build file. This duplication is a bummer, but it&#39;s unfortunately necessary so the environment can get passed in. Since the <code>buildJekyll</code> call is being returned and the completed buffer returns by calling the Gulp callback, the task is also able to be used in sequence which is very important while making the main build tasks.</p>
+<p>On line 9 the <code>build:assets</code> call isn&#39;t anything super special, it&#39;s just a simple Gulp task that is calling all of our asset build tasks. This isn&#39;t super necessary but it&#39;s nice being able to call just one task rather than three whenever a full asset build needs to be run.</p>
+<h3 id="implementing-browsersync">Implementing BrowserSync</h3>
+<p>Since the entire build system is being handle by Gulp, it makes sense to have Gulp handle the local server as well. Rather than somehow hacking the the <code>jekyll serve</code> command into our watch command, tossing the blame to Gulp requires a lot less legwork; especially when integrating something like <a href="http://browsersync.io">BrowserSync</a>, which is my personal favorite. Not only is BrowserSync super easy to set up but it has some super cool features such as device syncing (which is incredibly fun to play with).</p>
+<p>While the tasks being so small is reason enough to toss them into the Gulpfile after our helpers, the initialization of the server and the reload task need to be within the same file for them to know each other exist, making throwing these into the Gulpfile a necessity.</p>
+<pre><code><span class="hljs-comment">// BrowserSync needs to get required at the top of the file</span>
+<span class="hljs-keyword">var</span> browserSync   = <span class="hljs-built_in">require</span>(<span class="hljs-string">'browser-sync'</span>).create(<span class="hljs-string">'jekyll'</span>);
+
+. . .
+
+<span class="hljs-comment">/** BrowserSync */</span>
+<span class="hljs-comment">// Init server to build directory</span>
+gulp.task(<span class="hljs-string">'browser'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  browserSync.init({
+    <span class="hljs-attr">server</span>: <span class="hljs-string">"./"</span> + paths.build,
+  });
+});
+
+<span class="hljs-comment">// Force reload across all devices</span>
+gulp.task(<span class="hljs-string">'browser:reload'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  browserSync.reload();
+});</code></pre>
+
+<p>Luckily BrowserSync is super easy to implement, so there isn&#39;t a whole lot of bloat added to the Gulpfile. The module gets required and the server gets created with the name <em>Jekyll</em>, then the <code>browser</code> task actually initializes the server using the build path specified in the <em>package.json</em> file and finally the <code>browser:reload</code> task takes the initialized server and sends it a notice to refresh. Piece of cake.</p>
+<h3 id="creating-the-main-build-tasks">Creating the Main Build tasks</h3>
+<p>So far all of the tasks required to actually fully build the site are completely scaffolded out, and the build could actually be used by manually running <code>gulp build &amp;&amp; gulp build:assets</code> in the command line. That&#39;s all great, but personally I would find that super annoying, plus it wouldn&#39;t turn on the BrowserSync server. Since the whole point of this is complete automation, some build tasks are in order.</p>
+<pre><code><span class="hljs-keyword">var</span> watch         = <span class="hljs-built_in">require</span>(<span class="hljs-string">'gulp-watch'</span>),
+    runSequence   = <span class="hljs-built_in">require</span>(<span class="hljs-string">'run-sequence'</span>);
+
+. . .
+
+<span class="hljs-comment">/** Main Builds */</span>
+gulp.task(<span class="hljs-string">'serve'</span>, [<span class="hljs-string">'browser'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  runSequence(<span class="hljs-string">'build'</span>, [<span class="hljs-string">'build:assets'</span>]);
+  <span class="hljs-comment">// CSS/SCSS</span>
+  watch([
+        paths.src +<span class="hljs-string">'fonts/*'</span>,
+        paths.sass.src +<span class="hljs-string">'*.scss'</span>,
+        paths.css.src +<span class="hljs-string">'main.scss'</span>,
+        paths.sass.src +<span class="hljs-string">'**/*.scss'</span>,
+  ], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    runSequence(<span class="hljs-string">'buildCss'</span>, [<span class="hljs-string">'browser:reload'</span>]);
+  });
+  <span class="hljs-comment">// JS</span>
+  watch([paths.js.src +<span class="hljs-string">'*.js'</span>, paths.vendor.src +<span class="hljs-string">'*.js'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    runSequence(<span class="hljs-string">'buildJs'</span>, [<span class="hljs-string">'browser:reload'</span>]);
+  });
+  <span class="hljs-comment">// Images</span>
+  watch([paths.img.src +<span class="hljs-string">'*'</span>, paths.img.src +<span class="hljs-string">'**/*'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    runSequence(<span class="hljs-string">'optimizeImg'</span>, [<span class="hljs-string">'browser:reload'</span>]);
+  });
+  <span class="hljs-comment">// Markup / Posts/ Data</span>
+  watch([
+        paths.src +<span class="hljs-string">'*'</span>,
+        paths.src +<span class="hljs-string">'_data/*'</span>,
+        paths.src +<span class="hljs-string">'_plugins/*'</span>,
+        paths.src +<span class="hljs-string">'**/*.md'</span>,
+        paths.src +<span class="hljs-string">'**/*.html'</span>,
+        paths.src +<span class="hljs-string">'**/*.markdown'</span>,
+        paths.src +<span class="hljs-string">'_includes/**/*.md'</span>,
+        paths.src +<span class="hljs-string">'_includes/**/*.svg'</span>,
+        paths.src +<span class="hljs-string">'_includes/**/*.html'</span>,
+  ], <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    runSequence(<span class="hljs-string">'build'</span>, [<span class="hljs-string">'build:assets'</span>, <span class="hljs-string">'browser:reload'</span>]);
+  });
+
+  gutil.log(<span class="hljs-string">'Watching for changes.'</span>);
+});
+
+gulp.task(<span class="hljs-string">'deploy'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  runSequence(<span class="hljs-string">'build:prod'</span>, [<span class="hljs-string">'build:assets'</span>]);
+});</code></pre>
+
+<p>The <code>gulp deploy</code> task (lines 44 - 46) is nothing special, so I won&#39;t really get into that as it&#39;s essentially that I mentioned in the first part of this section, just a batch task. The <code>gulp serve</code> task (lines 7 - 42) however looks like quite the stinker, especially due to my use of the <a href="https://www.npmjs.com/package/gulp-watch">gulp-watch</a> module rather than the built in <code>gulp.watch</code> function; the former taking an endless stream approach, which I prefer.</p>
+<h4 id="the-gulp-serve-task-explained">The <code>gulp serve</code> task, explained</h4>
+<p>While the task looks like an absolute monster, it&#39;s actually pretty simple. On a very high level, it just sets up some listeners for each type of file that should trigger some sort of rebuild, and is broken down by type:</p>
+<ul>
+<li>CSS/Sass files which should trigger a style rebuild</li>
+<li>JavaScript files which should trigger a JS rebuild</li>
+<li>Images which should trigger image re-optimization</li>
+<li>Anything else which should trigger a full rebuild due to the Jekyll build cleaning the destination folder</li>
+</ul>
+<p>As I said, pretty simple but there&#39;s one other quirk to the build that will almost certainly need a refactor with the release of Gulp 4 that I haven&#39;t explained yet, which is the <a href="https://www.npmjs.com/package/run-sequence"><code>runSequence</code> module</a> that keeps getting called. Obviously there&#39;s a very specific order that needs to be called each time; if the other tasks fire and complete before the Jekyll build is complete, they&#39;ll be deleted by the Jekyll build and made pointless. This could be solved by adding some of the assets folders to the <code>excludes</code> within the _<em>config.yml</em> file, but I&#39;d rather not have to toss in extra cleans in all of the builds and worry about extra artifacts sticking around and bloating up the built site.</p>
+<p>RunSequence effectively forces tasks to run in sequence, so the queued tasks will not run until the first task is completed. This is why in all of the utility tasks the stream / callback is always getting returned, giving runSequence a reference of when one task ends so it can call the next task.</p>
+<h2 id="to-do">To-do</h2>
+<p>Using runSequence to force things to run in order is a little bit of a hacky solution (it&#39;s even mentioned as a hack within the readme for the module) until <a href="https://github.com/orchestrator/orchestrator">orchestrator</a>, what Gulp is built off of, is updated to support <a href="https://github.com/orchestrator/orchestrator/issues/21">non-dependent ordered tasks</a>. This is supposed to make it into <a href="https://github.com/gulpjs/gulp/milestones">Gulp 4</a>, so once that&#39;s released I will definitely be refactoring this to be less hacky.</p>
+<div class="bg-video-wrap" style="background-image: url('/assets/videos/gulpVid.png');">
+  <video class="bg-video-player" autoplay loop>
+    <source src="/assets/videos/gulpVid.mp4"  type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
+    <source src="/assets/videos/gulpVid.webm" type="video/webm; codecs=vp8,vorbis">
+    <source src="/assets/videos/gulpVid.ogv"  type="video/ogg; codecs=theora,vorbis">
+  </video>
+</div>
+
+<h2 id="the-completed-workflow">The Completed Workflow</h2>
+<p>With everything built, development is started by running <code>gulp serve</code>, which spins up a BrowserSync server and does a full Jekyll and asset build, then watches for any changes and automagically runs whatever builds are necessary to quickly reflect that change on the BrowserSync server. Once development is finished and something is ready to be deployed, <code>gulp deploy</code> can be run to run a full Jekyll and asset build, but using the _<em>config.build.yml</em> config file to get the correct URLs and build settings for production. This task only gets run by my server after I&#39;ve pushed up a new commit to it, which I&#39;ll cover in a blog post later although there are many posts already in reference to this (such as <a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-jekyll-blogs-with-git">this one</a> on <a href="digitalocean.com">Digital Ocean</a>).</p>
+<p>You can find all of the completed files referenced in this post in the <a href="https://github.com/aesinv/aesinv-jekyll-blog/">GitHub repository</a> for this site.</p>
+
+				<div id="disqus_thread"></div>
+				<script type="text/javascript">
+				    var disqus_shortname = 'aesinv',
+				        disqus_title = 'Building a Gulp workflow wrapped around Jekyll',
+				        disqus_identifier = 'Building a Gulp workflow wrapped around Jekyll',
+				        disqus_url = 'bengsfort.github.io/articles/building-a-gulp-workflow-around-jekyll';
+				
+				    (function() {
+				        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+				        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+				        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+				    })();
+				</script>
+				<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+			</div>
+		</main>
+
+		<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+		  <defs>
+		    <symbol id="icon-github-with-circle" viewBox="0 0 20 20">
+		      <title>github-with-circle</title>
+		      <path class="path1" d="M10.015 9.949c0 0-0.010 0-0.015 0h-0.015c-1.191 0-2.24-0.303-2.861 0.268-0.371 0.342-0.527 0.754-0.527 1.197 0 1.852 1.483 2.080 3.389 2.080h0.029c1.905 0 3.389-0.229 3.389-2.080 0-0.443-0.156-0.856-0.527-1.197-0.622-0.571-1.671-0.268-2.862-0.268zM8.393 12.48c-0.363 0-0.656-0.408-0.656-0.91s0.293-0.908 0.656-0.908c0.363 0 0.657 0.406 0.657 0.908s-0.293 0.91-0.657 0.91zM11.606 12.48c-0.363 0-0.657-0.408-0.657-0.91s0.294-0.908 0.657-0.908c0.362 0 0.656 0.406 0.656 0.908s-0.293 0.91-0.656 0.91zM10 0.4c-5.302 0-9.6 4.298-9.6 9.6s4.298 9.6 9.6 9.6 9.6-4.298 9.6-9.6-4.298-9.6-9.6-9.6zM10.876 13.939c-0.172 0-0.514 0-0.876 0.002-0.362-0.002-0.704-0.002-0.876-0.002-0.76 0-3.772-0.059-3.772-3.689 0-0.834 0.286-1.445 0.755-1.955-0.074-0.184-0.078-1.232 0.32-2.236 0 0 0.916 0.1 2.301 1.051 0.289-0.081 0.781-0.122 1.272-0.122s0.982 0.041 1.273 0.121c1.385-0.951 2.301-1.051 2.301-1.051 0.398 1.004 0.395 2.053 0.32 2.236 0.469 0.51 0.755 1.121 0.755 1.955-0.001 3.632-3.013 3.69-3.773 3.69z"></path>
+		    </symbol>
+		    <symbol id="icon-twitter-with-circle" viewBox="0 0 20 20">
+		      <title>twitter-with-circle</title>
+		      <path class="path1" d="M10 0.4c-5.302 0-9.6 4.298-9.6 9.6s4.298 9.6 9.6 9.6 9.6-4.298 9.6-9.6-4.298-9.6-9.6-9.6zM13.905 8.264c0.004 0.082 0.005 0.164 0.005 0.244 0 2.5-1.901 5.381-5.379 5.381-1.068 0-2.062-0.312-2.898-0.85 0.147 0.018 0.298 0.025 0.451 0.025 0.886 0 1.701-0.301 2.348-0.809-0.827-0.016-1.525-0.562-1.766-1.312 0.115 0.021 0.233 0.033 0.355 0.033 0.172 0 0.34-0.023 0.498-0.066-0.865-0.174-1.517-0.938-1.517-1.854v-0.023c0.255 0.141 0.547 0.227 0.857 0.237-0.508-0.34-0.841-0.918-0.841-1.575 0-0.346 0.093-0.672 0.256-0.951 0.933 1.144 2.325 1.896 3.897 1.977-0.033-0.139-0.049-0.283-0.049-0.432 0-1.043 0.846-1.891 1.891-1.891 0.543 0 1.035 0.23 1.38 0.598 0.431-0.086 0.835-0.242 1.2-0.459-0.141 0.441-0.44 0.812-0.831 1.047 0.383-0.047 0.747-0.148 1.086-0.299-0.253 0.379-0.574 0.713-0.943 0.979z"></path>
+		    </symbol>
+		  </defs>
+		</svg>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="/js/bin/materialize.min.js"></script>
+		<script type="text/javascript">
+			var trigger = $('.nav-menu-trigger'),
+				target = $(trigger.data('target'));
+			
+			trigger.on('click', function() {
+				trigger.toggleClass('active');
+				target.toggleClass('in');
+			});
+		</script>		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		
+		  ga('create', 'UA-66600710-1', 'auto');
+		  ga('send', 'pageview');
+		</script>
+	</body>
+</html>
