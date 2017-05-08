@@ -17,11 +17,44 @@
 /** Main / Body */
 @import "_components/intro-text";
 @import "_components/latest-posts";
+@import "_components/art-list";
 
 html, body {
 	background: #f8f8f8;
 }
 
+img {
+	max-width: 100%;
+}
+
 .main-wrapper {
-	margin-left: $nav-pane-size;
+	margin-top: 75px;
+}
+
+code:not(.hljs) {
+	@extend .pink-text;
+	@extend .text-accent-3;
+}
+
+p a {
+	@extend .blue-text;
+	@extend .text-accent-4;
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+@media (min-width: $mobile-size) {
+	.main-wrapper {
+		margin-top: 0;
+		margin-left: $nav-pane-size;
+	}
+}
+
+@media (max-width: $mobile-size) {
+	h1 { font-size: 2.5rem; }
+	h2 { font-size: 2rem; }
+	h3 { font-size: 1.6rem; }
+	h4 { font-size: 1.3rem; }
+	h5 { font-size: 1.1rem; }
 }

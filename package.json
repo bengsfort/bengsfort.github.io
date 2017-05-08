@@ -21,7 +21,9 @@
     "metalsmith-metallic": "^2.0.1",
     "metalsmith-permalinks": "^0.5.0",
     "metalsmith-register-helpers": "^0.3.0",
-    "metalsmith-sass": "^1.4.0"
+    "metalsmith-sass": "^1.4.0",
+    "metalsmith-sitemap": "^1.2.0",
+    "metalsmith-youtube": "^1.0.2"
   },
   "scripts": {
     "build": "node ./index.js",

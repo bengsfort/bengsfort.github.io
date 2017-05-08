@@ -1,11 +1,14 @@
 .nav-footer {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
+	// position: absolute;
+	// bottom: 0;
+	// left: 0;
+	// right: 0;
+	margin-top: -($nav-footer-height);
+	height: $nav-footer-height;
 	width: 100%;
 	border-top: 1px solid $site-nav-border-color;
 	padding: 18px;
+	background-color: #fff;
 
 	&> span {
 		display: block;

@@ -14,6 +14,8 @@ const ignore = require('metalsmith-ignore');
 const browserSync = require('metalsmith-browser-sync');
 const dates = require('metalsmith-date-formatter');
 const helpers = require('metalsmith-register-helpers');
+const sitemap = require('metalsmith-sitemap');
+const youtube = require('metalsmith-youtube');
 
 const config = require('./configs');
 
@@ -42,6 +44,12 @@ module.exports = function (mode) {
 		.use(dates({ format: 'D MMMM, YYYY' }))
 		.use(collections(config.collections))
 		.use(highlighting())
+		.use(youtube({
+			suggested: false,
+			controls: true,
+			showTitle: true,
+			privacy: true,
+		}))
 		.use(markdown())
 		.use(permalinks(config.permalinks))
 		.use(helpers({
@@ -51,7 +59,11 @@ module.exports = function (mode) {
 		.use(assets({
 			source: './assets',
 			destination: './assets',
-		}));
+		}))
+		.use(sitemap({
+			hostname: 'https://bengsfort.github.io/',
+			omitIndex: true,
+		}))
 	if (mode === 'watch') {
 		metalsmith.use(browserSync({
 			files: [

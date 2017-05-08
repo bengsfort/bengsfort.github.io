@@ -21,5 +21,10 @@
 			"name": "Development Logs",
 			"description": "Informal updates and thoughts on currently active projects."
 		}
+	},
+	"pixel-art": {
+		"sortBy": "date",
+		"reverse": true,
+		"pattern": "pixel-art/*.md"
 	}
 }

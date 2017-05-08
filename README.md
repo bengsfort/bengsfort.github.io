@@ -1,6 +1,21 @@
 # bengsfort.github.io
 
-Yet another incarnation of my blog (there has to be at least 3 or 4 different projects/rewrites at this point); this time using [Hexo](https://hexo.io/) and hosted on [github pages](https://pages.github.com/) to save dem €€€'s.
+Yet another incarnation of my blog (there has to be at least 3 or 4 different projects/rewrites at this point); this time ~~using [Hexo](https://hexo.io/)~~ and hosted on [github pages](https://pages.github.com/) to save dem €€€'s.
+
+This readme is out of date and its too late in the evening for me to want to change it. Currently using metalsmith for this.
+
+```
+# building
+make build
+
+# browser sync for local dev
+make watch
+
+# deploying
+make publish
+```
+
+**@todo:** fix ordering of stuff.
 
 ## Installation
 
@@ -47,3 +62,5 @@ $ hexo deploy
 ```
 
 The module will build the site to .deploy_git then force-push that to the `master` branch.
+
+##Todo

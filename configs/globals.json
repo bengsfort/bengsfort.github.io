@@ -7,6 +7,10 @@
 	},
 	"navigation": [
 		{
+			"label": "All Posts",
+			"path": "/"
+		},
+		{
 			"label": "Articles",
 			"path": "/articles/"
 		},
@@ -17,6 +21,10 @@
 		{
 			"label": "Pixel Art",
 			"path": "/pixel-art/"
+		},
+		{
+			"label": "About",
+			"path": "/about/"
 		}
 	],
 	"author": {

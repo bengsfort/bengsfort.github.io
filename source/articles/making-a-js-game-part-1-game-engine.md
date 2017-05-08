@@ -21,7 +21,7 @@ There are plenty of existing libraries and foundations for JavaScript game devel
 
 Before we continue, I'd just like to mention that throughout the writing and development of this simple game I'm going to be listening to a live performance from the Legend of Zelda: Symphony of the Goddesses to really get into the spirit of the project. I highly recommend you fire it up and do the same, it's terrific!
 
-{% youtube Vbfc3HAOw7o %}
+youtube|Vbfc3HAOw7o
 
 ## High-level overview
 
@@ -53,7 +53,7 @@ First things first, we want to create our main game module so we can start worki
 
 Let's start with that first bit by creating a bare-bones game module inside of `/js/game.js`.
 
-```javascript js/game.js
+```javascript
 // /js/game.js
 var $container = document.getElementById('container');
 
@@ -86,7 +86,7 @@ We're not doing anything fancy here, just creating a canvas (6 - 10), tossing it
 
 Just a note, but our utility files will be extremely simple exports of object literals contained with methods, so you can expect them to follow a structure like so:
 
-```javascript js/utils/utils.canvas.js
+```javascript
 // /js/utils/utils.canvas.js
 module.exports = {
     methodOne: function () {},
@@ -96,7 +96,7 @@ module.exports = {
 
 First, we'll need a way to get the correct pixel ratio. To do this we're going to need a canvas context, which we'll use to get the device backing ratio from the backing device backing store. We'll then divide the pixel ratio from the window by that backing ratio, giving us our pixel ratio.
 
-```javascript js/utils/utils.canvas.js
+```javascript
 // /js/utils/utils.canvas.js
 
 /** Determine the proper pixel ratio for the canvas */
@@ -134,7 +134,7 @@ The comments are pretty verbose, but a secondary quick rundown of whats going on
 
 Next, we need to apply our calculated ratio to our canvas then downscale the entire canvas via CSS and transforms, giving us predictable high quality rendering with predictable dimensions. We'll toss all of this inside of another canvas utility, then return the canvas to our main game object for instantiation and dom injection.
 
-```javascript js/utils/utils.canvas.js
+```javascript
 // /js/utils/utils.canvas.js
 
 /** Generate a canvas with the proper width / height
@@ -164,7 +164,7 @@ Again, pretty straight forward. You'll notice that after creating our canvas and
 
 Now that both of our utility methods for canvas generation are created, we can rewrite our main game module create a properly sized canvas dynamically and then append it into our container, giving us our viewport.
 
-```javascript js/game.js
+```javascript
 var cUtils = require('./utils/utils.canvas.js'),
     $container = document.getElementById('container');
 
@@ -218,7 +218,7 @@ Let's start by scaffolding out the modules that we'll be needing for our main lo
 
 These modules will need to access some constants that we will be setting in our global game module, so we're going to create a new `constants` property along with an empty `state` within our main game module first.
 
-```javascript js/game.js
+```javascript
 function Game(w, h, targetFps, showFps) {
     // Setup some constants
     this.constants = {
@@ -245,7 +245,7 @@ Since these are all integral to the functioning of our game, we can count these 
 
 Since we're just scaffolding out our loop and currently have no actual functionality, our update method is going to be really boring. Eventually it will take the games state object, determine changes in, update it, then return it. We'll just pretend we're doing fancy stuff for now though.
 
-```javascript js/core/game.update.js
+```javascript
 // /js/core/game.update.js
 
 /** Game Update Module
@@ -282,7 +282,7 @@ One interesting thing you may have noticed is that I'm expecting a `scope` param
 
 The render module is a little more busy than our update one, but it's nothing too crazy yet. We're going to move our dummy text from the main game module into this one, add our FPS rendering logic, then write a quick little loop to iterate through potential active entities.
 
-```javascript js/core/game.render.js
+```javascript
 // /js/core/game.render.js
 
 /** Game Render Module
@@ -339,7 +339,7 @@ Now it's time for us to move onto our mythical loop, which will by far be the mo
 
 I know that's a lot to swallow, so we'll tackle this one one by one. Let's start with the loop itself, then we'll jump into the frame rate throttling.
 
-```javascript js/core/game.loop.js
+```javascript
 // /js/core/game.loop.js
 
 /** Game Loop Module
@@ -376,7 +376,7 @@ By itself the loop isn't too terrifying at all, and if you've checked out the MD
 
 Next, we'll start with our frame rate throttling. There's quite a lot to this, so I'll try to break it down as best as I can. First we need to set up our variables for calculating the frame rate. We're going to require the current animation tick timestamp, the previous animation tick timestamp as well as the difference between the two; our target FPS and our target interval between animation ticks _(1000 / fps)_.
 
-```javascript js/core/game.loop.js
+```javascript
     // /js/core/game.loop.js, lines 9 - 30
 
     // Initialize timer variables so we can calculate FPS
@@ -416,7 +416,7 @@ The second issue may be more of a presentation of the frame rate problem I admit
 
 Now, back to our loop.
 
-```javascript js/core/game.loop.js
+```javascript
 // /js/core/game.loop.js, lines 32. . .82
 
 loop.main = function mainLoop( tframe ) {
@@ -453,7 +453,7 @@ Throttling the loop to our ideal fps is actually relatively simple, as you can s
 
 Pretty straight forward, so now let's calculate the current frame rate and expose it for other modules (namely the rendering module).
 
-```javascript js/core/game.loop.js
+```javascript
 // /js/core/game.loop.js, lines 49 - 78
 
 before = now - (elapsed % fpsInterval);
@@ -502,7 +502,7 @@ Now that that's completed, we can run back to our rendering module (`/js/core/ga
 
 Since we have all of our modules built and exposed as exportable modules, we can now simply instantiate them within the main game module and our game should automagically run our main loop, displaying the frame rate in the top right corner if you've set your `showFps` parameter to true.
 
-```javascript js/game.js
+```javascript
 . . .
 $container.insertBefore(this.viewport, $container.firstChild);
 
@@ -516,8 +516,6 @@ return this;
 
 Huzzah! We've built (albeit basic) our own rudimentary game engine! It automagically generates a high resolution canvas element and injects it into our HTML, updates itself at a configurable frame rate, and displays said frame rate using an alternating calculation cycle strategy (which you can see if you toss a log of the frame rate of both cycles into your loop).
 
-<!-- video -->
-
 ## Bonus: Creating a movable player
 
 I could end there, but I usually get really annoyed whenever I see a multi-part how-to that completely leaves me hanging before magic happens, so I don't want to be _"that guy"_. To some people, getting the loop completed is magical and they're probably way stoked at the moment; I am as well but I think an even more magical stopping point would be the ability to move a little box around the viewport. Nothing crazy, just enough to be interactive and really get the inspiration flowing when you get that "Eureka!" moment as you're moving the box around the viewport aimlessly.
@@ -530,7 +528,7 @@ Earlier I kept mentioning _entities_, which is essentially what we're going to b
 
 As far as utilities go, foreseeable necessary utilities include a way to bind our number to a specific boundary (the width of our viewport and 0) and a way of determining whether or not a key is being pressed at any time. Let's start by scaffolding out our player entity, then we can create and plug in those utilities as needed.
 
-```javascript js/players/player.js
+```javascript
 // /js/players/player.js
 
 /** Player Module
@@ -581,7 +579,7 @@ Again, we're injecting the scope into the module but this isn't 100% necessary; 
 
 Technically, as long as we instantiate the player module our game should function and render our player in our viewport. This will more than likely occur on a per-level (or world) basis, but for now we'll just toss that into our main module.
 
-```javascript js/game.js
+```javascript
 // /js/game.js, lines 40 - 51
 
 that = this;
@@ -602,7 +600,7 @@ var createPlayer = function createPlayer() {
 
 Now that we've got a working entity it's time for us to fill up the entities update method so it actually does something. Our first order of business is getting our player to move around whenever we press the arrow keys down. Since we're not using jQuery or any libraries we're going to have to figure out a way to gracefully monitor the dom for key down events, then store whether or not a key is down at any given point as a boolean. There's two ways we can do this, we can either return some functions that will act as getters and retrieve whatever the keys variable is set to at that moment (`keys.isLeftPressed()`), or we can utilize [Object.defineProperty](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty) to actually create some getters for the variables (`keys.isPressed.left`). This is obviously left completely to personal preference, and I'm going to be using `Object.defineProperty` because I like the syntax it leaves us with.
 
-```javascript js/utils/utils.keysDown.js
+```javascript
 // /js/utils/utils.keysDown.js
 
 /** keysDown Utility Module
@@ -674,7 +672,7 @@ Now, I understand that this probably looks about as graceful as an ice skating b
 
 After requiring this module into our player module, we then have access to the ability to request whether a key is active or not at any given time by calling that keys property within the `isPressed` object (`keys.isPressed.left` for example).
 
-```javascript js/players/player.js
+```javascript
 // /js/players/player.js
 var keys = require('../utils/utils.keysDown.js');
 
@@ -715,7 +713,7 @@ Easier than expected, huh? And since we've defined our moveSpeed as a variable, 
 
 When I say we're going to be binding our position to a boundary, it's just a fancy way of saying that we're going to be forcing our coordinates to not exceed a minimum or maximum value. It's a really simple trick, and while it isn't absolutely necessary to have as its own module it makes using it within our player module a lot cleaner. Not to mention we can always extend the module to contain other math-related helper functions as well.
 
-```javascript js/utils/utils.math.js
+```javascript
 // /js/utils/utils.math.js
 
 /**
@@ -739,7 +737,7 @@ All we're doing here is taking the min and max boundaries, and applying our curr
 
 Now we can jump back into our player module and change our update method to bind our position to the boundaries we've set.
 
-```javascript js/players/player.js
+```javascript
 // /js/players/player.js
 var keys = require('../utils/utils.keysDown.js'),
     mathHelpers = require('../utils/utils.math.js');

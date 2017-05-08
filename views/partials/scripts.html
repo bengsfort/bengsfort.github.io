@@ -1,2 +1,11 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="/js/bin/materialize.min.js"></script>
+<script type="text/javascript">
+	var trigger = $('.nav-menu-trigger'),
+		target = $(trigger.data('target'));
+	
+	trigger.on('click', function() {
+		trigger.toggleClass('active');
+		target.toggleClass('in');
+	});
+</script>

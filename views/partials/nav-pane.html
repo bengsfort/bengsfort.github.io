@@ -1,7 +1,13 @@
 <header>
+	<a class="nav-menu-trigger waves-effect waves-light" data-target=".nav-pane">
+		<i class="material-icons close">close</i>
+		<i class="material-icons open">menu</i>
+	</a>
 	<div class="nav-pane">
-		{{> components/author-card }}
-		{{> components/nav-menu }}
+		<div class="nav-content">
+			{{> components/author-card }}
+			{{> components/nav-menu }}
+		</div>
 		{{> components/nav-footer }}
 	</div>
 </header>
