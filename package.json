@@ -27,6 +27,7 @@
   },
   "scripts": {
     "build": "node ./index.js",
+    "deploy": "node ./index.js --deploy",
     "watch": "node ./index.js --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
