@@ -1,7 +1,7 @@
 ---
 layout: post.html
 title:  "Keeping the player entertained when they fail"
-date:   2016-04-30 21:22:31
+date: 2016-04-30T21:22:31Z
 category: Dev Logs
 tags:
   - unity

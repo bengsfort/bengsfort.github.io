@@ -41,7 +41,6 @@ module.exports = function (mode) {
 		]))
 		.source(srcDir)
 		.use(drafts())
-		.use(dates({ format: 'D MMMM, YYYY' }))
 		.use(collections(config.collections))
 		.use(highlighting())
 		.use(youtube({
@@ -50,6 +49,7 @@ module.exports = function (mode) {
 			showTitle: true,
 			privacy: true,
 		}))
+		.use(dates({ format: 'D MMMM, YYYY' }))
 		.use(markdown())
 		.use(permalinks(config.permalinks))
 		.use(helpers({

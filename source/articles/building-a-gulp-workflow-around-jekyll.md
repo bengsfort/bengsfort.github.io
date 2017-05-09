@@ -1,7 +1,7 @@
 ---
 layout: post.html
 title:  "Building a Gulp workflow wrapped around Jekyll"
-date:   2015-8-29 17:16:21
+date:   2015-08-29T17:16:21Z
 category: Articles
 tags:
   - gulp

@@ -1,7 +1,7 @@
 ---
 layout: post.html
 title:  "Different ways to pass data from AEM6 to Javascript"
-date:   2016-5-15 11:15:10
+date: 2016-05-15T11:15:10Z
 category: Articles
 tags:
   - aem6
