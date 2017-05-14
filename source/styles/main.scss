@@ -29,6 +29,16 @@ img {
 
 .main-wrapper {
 	margin-top: 75px;
+
+	ul {
+		list-style-type: disc;
+		padding-left: 1.5rem;
+
+		li {
+			list-style-type: disc;
+			margin-bottom: 0.5rem;
+		}
+	}
 }
 
 code:not(.hljs) {

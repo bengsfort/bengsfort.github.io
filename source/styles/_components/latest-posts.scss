@@ -1,10 +1,15 @@
 $post-preview-img-size: 75px;
 
+.latest-posts-list {
+	padding-left: 0 !important;
+	list-style: none !important;
+}
+
 .latest-posts-item {
 	position: relative;
 	padding: 6px 12px 12px;
 	margin-bottom: 12px;
-	// border-bottom: 1px solid #ebebeb;
+	list-style: none !important;
 	box-shadow: 0;
 	transition: box-shadow 255ms, background 255ms;
 
