@@ -495,20 +495,6 @@ gulp.task(<span class="hljs-string">'deploy'</span>, <span class="hljs-function"
 <p>With everything built, development is started by running <code>gulp serve</code>, which spins up a BrowserSync server and does a full Jekyll and asset build, then watches for any changes and automagically runs whatever builds are necessary to quickly reflect that change on the BrowserSync server. Once development is finished and something is ready to be deployed, <code>gulp deploy</code> can be run to run a full Jekyll and asset build, but using the _<em>config.build.yml</em> config file to get the correct URLs and build settings for production. This task only gets run by my server after I&#39;ve pushed up a new commit to it, which I&#39;ll cover in a blog post later although there are many posts already in reference to this (such as <a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-jekyll-blogs-with-git">this one</a> on <a href="digitalocean.com">Digital Ocean</a>).</p>
 <p>You can find all of the completed files referenced in this post in the <a href="https://github.com/aesinv/aesinv-jekyll-blog/">GitHub repository</a> for this site.</p>
 
-				<div id="disqus_thread"></div>
-				<script type="text/javascript">
-				    var disqus_shortname = 'aesinv',
-				        disqus_title = 'Building a Gulp workflow wrapped around Jekyll',
-				        disqus_identifier = 'Building a Gulp workflow wrapped around Jekyll',
-				        disqus_url = 'bengsfort.github.io/articles/building-a-gulp-workflow-around-jekyll';
-				
-				    (function() {
-				        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-				        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-				        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-				    })();
-				</script>
-				<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 			</div>
 		</main>
 
