@@ -3,4 +3,5 @@ module.exports = {
 	layout: require('./layout'),
 	permalinks: require('./permalinks'),
 	collections: require('./collections'),
+	redirects: require('./redirects'),
 };

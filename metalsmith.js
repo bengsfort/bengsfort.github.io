@@ -16,6 +16,7 @@ const dates = require('metalsmith-date-formatter');
 const helpers = require('metalsmith-register-helpers');
 const sitemap = require('metalsmith-sitemap');
 const youtube = require('metalsmith-youtube');
+const redirect = require('metalsmith-redirect');
 
 const config = require('./configs');
 
@@ -64,6 +65,8 @@ module.exports = function (mode) {
 			hostname: 'https://bengsfort.github.io/',
 			omitIndex: true,
 		}))
+		.use(redirect(config.redirects));
+
 	if (mode === 'watch') {
 		metalsmith.use(browserSync({
 			files: [
@@ -75,6 +78,7 @@ module.exports = function (mode) {
 			server: buildDir,
 		}));
 	}
+	
 	metalsmith.build(function(err) {
 		if (err) throw err;
 		console.log('Build complete!');
