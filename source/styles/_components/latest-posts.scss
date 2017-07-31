@@ -62,6 +62,24 @@ $post-preview-img-size: 75px;
 		font-weight: 300;
 	}
 
+	.latest-posts-project {
+		display: block;
+		float: left;
+		height: 100%;
+		margin-right: 0.5em;
+		padding: 1px 4px 0px;
+		position: relative;
+		top: 2px;
+		font-size: .75em;
+		line-height: 1.5;
+		color: #fff;
+
+		&.flying-is-hard {
+			@extend .purple;
+			@extend .accent-4;
+		}
+	}
+
 	.latest-posts-meta {
 		@extend .grey-text;
 		@extend .text-darken-1;
