@@ -5,7 +5,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width initial-scale=1">
 	
-		<title>Developmental Pixels</title>
+		<title>Experimenting with a futuristic, moving UI</title>
 	
 		<!--// Metadata //-->
 		<meta charset="utf-8">
@@ -70,13 +70,13 @@
 						</div>
 					</div>			<nav id="site-navigation">
 						<ul class="site-nav">
-								<li class="active">
+								<li >
 									<a href="/" class="waves-effect">All Posts</a>
 								</li>
 								<li >
 									<a href="/articles/" class="waves-effect">Articles</a>
 								</li>
-								<li >
+								<li class="active">
 									<a href="/dev-logs/" class="waves-effect">Dev Logs</a>
 								</li>
 								<li >
@@ -95,82 +95,25 @@
 		<main class="main-wrapper">
 			<div class="container">
 				<section class="intro-text">
-					<h1 class="headline">Developmental Pixels</h1>
-						<span class="subtitle">Words and thoughts about app development, indie game development, and pixel art.</span>
-				</section>				
-					<section>
-						<ul class="latest-posts-list">
-								<li class="latest-posts-item">
-									<a href="/dev-logs/experimenting-with-futuristic-ui/" class="latest-posts-title">Experimenting with a futuristic, moving UI</a>
-									<div class="latest-posts-meta">
-											<span class="latest-posts-project flying-is-hard">Flying is Hard</span>
-										Posted on <span class="latest-posts-date">28 July, 2017</span>
-										to <div class="latest-posts-category">Dev Logs</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/dev-logs/down-the-ecs-rabbit-hole/" class="latest-posts-title">Down the ECS Rabbit Hole</a>
-									<div class="latest-posts-meta">
-											<span class="latest-posts-project flying-is-hard">Flying is Hard</span>
-										Posted on <span class="latest-posts-date">25 July, 2017</span>
-										to <div class="latest-posts-category">Dev Logs</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/dev-logs/introducing-flying-is-hard/" class="latest-posts-title">Introducing: Flying is Hard</a>
-									<div class="latest-posts-meta">
-											<span class="latest-posts-project flying-is-hard">Flying is Hard</span>
-										Posted on <span class="latest-posts-date">20 July, 2017</span>
-										to <div class="latest-posts-category">Dev Logs</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/articles/metalsmith-blog-refactor/" class="latest-posts-title">Switching from Jekyll to Metalsmith - Post Mortem</a>
-									<div class="latest-posts-meta">
-										Posted on <span class="latest-posts-date">14 May, 2017</span>
-										to <div class="latest-posts-category">Articles</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/articles/games-first-2017/" class="latest-posts-title">Games First Helsinki 2017 take-aways</a>
-									<div class="latest-posts-meta">
-										Posted on <span class="latest-posts-date">9 May, 2017</span>
-										to <div class="latest-posts-category">Articles</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/articles/fixing-git-push-pull-timeout/" class="latest-posts-title">Fixing git push/pull timing out</a>
-									<div class="latest-posts-meta">
-										Posted on <span class="latest-posts-date">26 May, 2016</span>
-										to <div class="latest-posts-category">Articles</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/articles/passing-data-from-aem6-to-javascript/" class="latest-posts-title">Different ways to pass data from AEM6 to Javascript</a>
-									<div class="latest-posts-meta">
-										Posted on <span class="latest-posts-date">15 May, 2016</span>
-										to <div class="latest-posts-category">Articles</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/articles/simplified-aem-frontend-sass/" class="latest-posts-title">A simplified front end architecture solution for AEM</a>
-									<div class="latest-posts-meta">
-										Posted on <span class="latest-posts-date">4 May, 2016</span>
-										to <div class="latest-posts-category">Articles</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/articles/calculating-beacon-distances-with-optimized-averaging/" class="latest-posts-title">Calculating iBeacon distances with optimized averaging</a>
-									<div class="latest-posts-meta">
-										Posted on <span class="latest-posts-date">29 December, 2015</span>
-										to <div class="latest-posts-category">Articles</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/articles/making-a-js-game-part-1-game-engine/" class="latest-posts-title">Building a simple JavaScript game - 1. A basic game engine</a>
-									<div class="latest-posts-meta">
-										Posted on <span class="latest-posts-date">27 November, 2015</span>
-										to <div class="latest-posts-category">Articles</div>
-									</div>
-								</li>			<li class="latest-posts-item">
-									<a href="/articles/building-a-gulp-workflow-around-jekyll/" class="latest-posts-title">Building a Gulp workflow wrapped around Jekyll</a>
-									<div class="latest-posts-meta">
-										Posted on <span class="latest-posts-date">29 August, 2015</span>
-										to <div class="latest-posts-category">Articles</div>
-									</div>
-								</li>	</ul>
-					</section>			</div>
+					<h1 class="headline">Experimenting with a futuristic, moving UI</h1>
+						<span class="subtitle">Trying to set the mood with some fancy sci-fi like UI that follows the player.</span>
+						<span class="series">This post is part of an ongoing series about Flying is Hard.</span>
+				</section>				<p>After I got my ECS stuff finished I needed a small break from heavy coding and scaffolding, so I decided to play around and get some UI created to visualise the players inputs. Since the game focuses on movement via jet engine thrust, I keep having a sci-fi vibe ringing around in my head; so I tried to replicate the stereotypical <em>&#39;futuristic space ship HUD&#39;</em> look with slightly transparent light greenish-blue and yellow colours.</p>
+<center>
+<img src="/assets/experimenting-with-futuristic-ui/UI-Mockup.png" alt="A UI Mockup">
+</center>
+
+<p>I figured attaching the UI to the main character would allow the player to get immediate feedback in terms of touch force and horizontal position without forcing them to lose focus on their movement. We are talking about 3D Touch after all, and I&#39;ve found having this force reference to be super valuable when trying to maintain a steady path while traversing horizontally.</p>
+<p>Hooking it up wound up being a pretty simple job thanks to the built in Image Fill feature of Unity UI Images and my ECS setup.</p>
+<div class="streamable-container" style="max-width: 260px;">
+    <div style="width:100%;height:0px;position:relative;padding-bottom:177.723%;"><iframe src="https://streamable.com/s/bqc1r/rzfoq" frameborder="0" width="100%" height="100%" allowfullscreen style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"></iframe></div>
+</div>
+
+<p>I also added off-screen detection to the thrust indicator so that it flips to the other side of the character instead of going off-screen, which was the trickiest part of the entire process. There was quite a lot of vector translation between world space, screen space and local space and while I wound up coming up with a working solution, it probably will need to be revisited to make the orientation flip a little bit more smooth and polished.</p>
+<p>On that note, I want to give a huge shout to <a href="https://docs.unity3d.com/ScriptReference/RectTransformUtility.ScreenPointToLocalPointInRectangle.html"><code>RectTransformUtility.ScreenPointToLocalPointInRectangle</code></a>! This is the second instance where it&#39;s been invaluable, and is something I&#39;ve worked to replicate on my own before finding this super awesome utility method. Hopefully knowledge of it will save someone else endless hours of frustration! :)</p>
+<p>That wraps up this log. Stay tuned for more Flying is Hard logs, and maybe follow along on twitter <a href="https://twitter.com/bengsfort">@bengsfort</a>.</p>
+
+			</div>
 		</main>
 
 		<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
