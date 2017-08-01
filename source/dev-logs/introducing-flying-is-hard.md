@@ -7,7 +7,6 @@ category: Dev Logs
 description: A 3d-touch movement-based puzzle game for iOS.
 ---
 
-
 I get bored of projects really easily. My computer is literally a graveyard of game prototypes in various stages of completion. A month or so ago I was thinking about 3D Touch on iOS and in what ways you could utilise it for interesting controls in a game, and after a whole lot of not coming up with anything the idea of jet engines and thrust kept popping into my head; so I decided to play around with that concept. What I got was the following; a little alien blasting around with upward thrust being mapped to 3d touch and horizontal movement mapped to moving your finger left and right.
 
 <div class="streamable-container" style="max-width: 260px;">
