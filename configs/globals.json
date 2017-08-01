@@ -3,6 +3,7 @@
 		"title": "Developmental Pixels",
 		"description": "Words and thoughts about app development, indie game development, and pixel art.",
 		"language": "en",
+		"favicon": "/assets/favicon.ico",
 		"google_analytics_id": "UA-66600710-1"
 	},
 	"navigation": [
