@@ -101,10 +101,11 @@
 		</header>
 		<main class="main-wrapper">
 			<div class="container">
-				<section class="intro-text">
-					<h1 class="headline">Calculating iBeacon distances with optimized averaging</h1>
-						<span class="subtitle">The past few weeks I&#x27;ve been working a lot with calculating user/device location via signal strength from iBeacons, and 90% of the time it feels like playing Russian Roulette with an Imperial Blaster. Here&#x27;s how I got rid of the guess work via optimizing data averaging.</span>
-				</section>				<p>It&#39;s no real secret that beacons are most certainly still an &quot;emerging technology&quot; with some growing pains. Unfortunately when you&#39;re working on a hybrid app that depends on them, you kind of have to figure out a way to make things work. In this instance, it&#39;s trying to weed-out the distance/signal strength inconsistencies so user location can be calculated correctly and accurately. </p>
+				<article class="post-body">
+					<header class="intro-text">
+						<h1 class="headline">Calculating iBeacon distances with optimized averaging</h1>
+							<span class="subtitle">The past few weeks I&#x27;ve been working a lot with calculating user/device location via signal strength from iBeacons, and 90% of the time it feels like playing Russian Roulette with an Imperial Blaster. Here&#x27;s how I got rid of the guess work via optimizing data averaging.</span>
+					</header>					<p>It&#39;s no real secret that beacons are most certainly still an &quot;emerging technology&quot; with some growing pains. Unfortunately when you&#39;re working on a hybrid app that depends on them, you kind of have to figure out a way to make things work. In this instance, it&#39;s trying to weed-out the distance/signal strength inconsistencies so user location can be calculated correctly and accurately. </p>
 <h2 id="the-problem">The problem</h2>
 <p>When you&#39;re detecting your beacons via an app that&#39;s listening for them (using the <a href="https://github.com/petermetz/cordova-plugin-ibeacon">Proximity Beacon Plugin</a> for <a href="https://cordova.apache.org/">Cordova</a>/<a href="http://ionicframework.com/">Ionic</a>, for example) you receive a constant bombardment of objects representing that beacon that you can do with as you please, including an estimated distance <em>(referred to as Accuracy)</em>. Here&#39;s an example object you could expect to see back:</p>
 <pre><code class="hljs javascript"><span class="hljs-comment">// Example beacon object</span>
@@ -292,6 +293,7 @@ Optimized average: 2.22
 </code></pre><p>You can view the full file <a href="https://github.com/aesinv/optimized-averages/blob/master/optimizedAverages.js">on GitHub</a>, with full comments and ready to roll. You can also play around with it on <a href="https://tonicdev.com/npm/optimized-averages">Tonic</a>.</p>
 <p>Cheers!</p>
 
+				</article>
 			</div>
 		</main>
 

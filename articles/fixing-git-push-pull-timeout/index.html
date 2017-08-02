@@ -101,10 +101,11 @@
 		</header>
 		<main class="main-wrapper">
 			<div class="container">
-				<section class="intro-text">
-					<h1 class="headline">Fixing git push/pull timing out</h1>
-						<span class="subtitle">Here&#x27;s what I did to fix a random git timeout that prevented me from pushing or pulling code for hours.</span>
-				</section>				<p>There&#39;s nothing worse than losing precious development time thanks to some random sporadic tooling error. It&#39;s amazing how difficult it was to find an actual fix for this, although due to the network-related nature of the issue I can imagine there are at least 400 million different fixes and causes.</p>
+				<article class="post-body">
+					<header class="intro-text">
+						<h1 class="headline">Fixing git push/pull timing out</h1>
+							<span class="subtitle">Here&#x27;s what I did to fix a random git timeout that prevented me from pushing or pulling code for hours.</span>
+					</header>					<p>There&#39;s nothing worse than losing precious development time thanks to some random sporadic tooling error. It&#39;s amazing how difficult it was to find an actual fix for this, although due to the network-related nature of the issue I can imagine there are at least 400 million different fixes and causes.</p>
 <p>Out of the blue I was unable to pull or push to any repos. Since I use SSH with Github, I was able to circumvent the issue briefly by changing the origin to https then providing my user/pass when pushing and pulling but all of a sudden that stopped working completely as well. What gives?</p>
 <p>So first up, the error. After remaining idle for quite a while, the command would fail with the following:</p>
 <pre><code>$ git push
@@ -142,6 +143,7 @@ To git@github.<span class="hljs-keyword">com</span>:Organization/repo.git
 <p>I may have cried a tear of happiness.</p>
 <p>Hopefully this can help someone else who gets tormented by this awful issue. I still am not sure what exactly caused it as things were working just great yesterday, but I&#39;m glad I was able to find a fix. It took nearly 3 hours, but we can gloss over that.</p>
 
+				</article>
 			</div>
 		</main>
 

@@ -101,10 +101,11 @@
 		</header>
 		<main class="main-wrapper">
 			<div class="container">
-				<section class="intro-text">
-					<h1 class="headline">Switching from Jekyll to Metalsmith - Post Mortem</h1>
-						<span class="subtitle">I embarked on a journey to refactor my blog approximately 6 times. After finally landing on using Metalsmith, I kind of wish I didn&#x27;t bother.</span>
-				</section>				<p>Once I finished my <a href="http://jekyllrb.com/">Jekyll</a> blog I was super pleased with it. It took some MacGyvering to get things to work like I wanted (<a href="/articles/building-a-gulp-workflow-around-jekyll/">as evidenced by this post</a>), but it was easy to work on and write posts for, and thanks to it just being a static site was pretty quick. After a few months the honeymoon period sort of died out though--every time I came back to write something I had to give myself a refresher on how Jekyll worked, the deployment process became a bit of a pain if something went wrong and, by far the most infuriating, it would randomly break itself for no reason due to some random Ruby gem somehow getting updated at some point (even though I literally never work in Ruby and only had it on my machine for Jekyll).</p>
+				<article class="post-body">
+					<header class="intro-text">
+						<h1 class="headline">Switching from Jekyll to Metalsmith - Post Mortem</h1>
+							<span class="subtitle">I embarked on a journey to refactor my blog approximately 6 times. After finally landing on using Metalsmith, I kind of wish I didn&#x27;t bother.</span>
+					</header>					<p>Once I finished my <a href="http://jekyllrb.com/">Jekyll</a> blog I was super pleased with it. It took some MacGyvering to get things to work like I wanted (<a href="/articles/building-a-gulp-workflow-around-jekyll/">as evidenced by this post</a>), but it was easy to work on and write posts for, and thanks to it just being a static site was pretty quick. After a few months the honeymoon period sort of died out though--every time I came back to write something I had to give myself a refresher on how Jekyll worked, the deployment process became a bit of a pain if something went wrong and, by far the most infuriating, it would randomly break itself for no reason due to some random Ruby gem somehow getting updated at some point (even though I literally never work in Ruby and only had it on my machine for Jekyll).</p>
 <h2 id="jekyll-to-metalsmith-the-journey">Jekyll to Metalsmith, the journey</h2>
 <p>It was around then that I stopped writing articles and embarked on a massive blog rebuild journey, which has finally ended with the launch of this <a href="http://www.metalsmith.io/">Metalsmith</a>-powered incarnation. On the journey from Jekyll to Metalsmith I passed by numerous other setups:</p>
 <ul>
@@ -287,6 +288,7 @@ git push origin master</code></pre>
 <h2 id="wrap-up">Wrap-up</h2>
 <p>While Metalsmith is kind of cool and useful for some projects, in this particular implementation it may have been better for me to look into my environment set up rather than switching platforms. That said, with some creative thinking you can work around some of the pitfalls of the Metalsmith and create some really complex projects with it.</p>
 
+				</article>
 			</div>
 		</main>
 

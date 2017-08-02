@@ -101,10 +101,11 @@
 		</header>
 		<main class="main-wrapper">
 			<div class="container">
-				<section class="intro-text">
-					<h1 class="headline">Different ways to pass data from AEM6 to Javascript</h1>
-						<span class="subtitle">As dynamic experiences become more popular, data will need to find its way from AEM to front end Javascript. Here are some good options for passing data along without headaches.</span>
-				</section>				<h2 id="tl-dr">Tl;dr</h2>
+				<article class="post-body">
+					<header class="intro-text">
+						<h1 class="headline">Different ways to pass data from AEM6 to Javascript</h1>
+							<span class="subtitle">As dynamic experiences become more popular, data will need to find its way from AEM to front end Javascript. Here are some good options for passing data along without headaches.</span>
+					</header>					<h2 id="tl-dr">Tl;dr</h2>
 <blockquote>
 <ul>
 <li>Use <code>data-*</code> attributes to pass along information to JS, in some cases passing along a data URI so you can obtain data via AJAX.</li>
@@ -351,6 +352,7 @@ $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">'rea
 <p>The three methods included in this post are all unique in their own way and all have their own strengths and weaknesses. Data attributes work absolutely great for the majority of situations, but can be ugly and are not suitable what-so-ever for large amounts of JSON data; the component loader works great for all situations but can be incredibly heavy-handed and unnecessary for simple components; the component scraper, like the component loader, works great for when you have a large amount of JSON data that needs to get passed along to the Javascript but again is complete overkill for the majority of simple components.</p>
 <p>Which is the best solution? That depends fully on the project and the type of data that needs to be moved around, but hopefully these give you some ideas to build off of to come up with the perfect solution for your next project.</p>
 
+				</article>
 			</div>
 		</main>
 

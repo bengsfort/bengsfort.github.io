@@ -101,11 +101,12 @@
 		</header>
 		<main class="main-wrapper">
 			<div class="container">
-				<section class="intro-text">
-					<h1 class="headline">Down the ECS Rabbit Hole</h1>
-						<span class="subtitle">My unquenchable desire to refactor everything before it even begins kicked in.</span>
-						<span class="series">This post is part of an ongoing series about Flying is Hard.</span>
-				</section>				<p>In my last log I mentioned that I get bored of projects really easily. My computer is literally a graveyard of probably 15 or so prototypes in various forms of completion (maybe 75% of which are platformers) that don&#39;t get any love. Many of which include a different design pattern from the rest, in keeping with my tradition of &quot;try all the design patterns!&quot; Well, I had told myself I wasn&#39;t going to go down that road again but after seeing a GDC talk about ECS I was itching with intrigue and just HAD to try to implement it.</p>
+				<article class="post-body">
+					<header class="intro-text">
+						<h1 class="headline">Down the ECS Rabbit Hole</h1>
+							<span class="subtitle">My unquenchable desire to refactor everything before it even begins kicked in.</span>
+							<span class="series">This post is part of an ongoing series about Flying is Hard.</span>
+					</header>					<p>In my last log I mentioned that I get bored of projects really easily. My computer is literally a graveyard of probably 15 or so prototypes in various forms of completion (maybe 75% of which are platformers) that don&#39;t get any love. Many of which include a different design pattern from the rest, in keeping with my tradition of &quot;try all the design patterns!&quot; Well, I had told myself I wasn&#39;t going to go down that road again but after seeing a GDC talk about ECS I was itching with intrigue and just HAD to try to implement it.</p>
 <p>Since this is a <a href="https://unity3d.com">Unity</a> project (eagle-eyed readers may have noticed that the first prototype video I shared was SpriteKit tho!), when it comes to ECS the current go-to framework is <a href="https://github.com/sschmid/Entitas-CSharp">Entitas-CSharp</a> which is a ECS framework made specifically for C# / Unity by some of the guys at Wooga. It&#39;s some really interesting tech, that said after doing some tests and playing around with it I decided that it just wasn&#39;t for me. It felt too detached from the normal Unity workflow and I didn&#39;t like how certain things were handled as well as the fact that it mostly depends on generated code; it just felt like too much was out of my hands and controlled by some black box.</p>
 <p>I spent the next few weeks playing around with writing my own ECS framework with varying levels in intricacy; but after about 4 different versions I decided to settle on an extremely simplified version of the pattern that could potentially be considered an ECS/MVC pattern. It enforces the separation of data / logic but maintains the standard Unity workflow and keeps how things are working very transparent for easy debugging.</p>
 <h3 id="brief-overview-of-the-pattern-i-settled-on">Brief overview of the pattern I settled on</h3>
@@ -303,6 +304,7 @@ using FlyingIsHard.Assets.Bengsfort.Components.Core;
 <p>So far this setup has worked really well and has increased my productivity a lot. That said, I will likely tweak this in the future to contain an Entity manager so there will only be a single instance of any given System acting on entities based on a component identifier that will determine whether or not the system cares about a specific entity, but I&#39;ll leave that for another day.</p>
 <p>Stay tuned for more Flying is Hard logs, and maybe follow along on twitter <a href="https://twitter.com/bengsfort">@bengsfort</a>.</p>
 
+				</article>
 			</div>
 		</main>
 
