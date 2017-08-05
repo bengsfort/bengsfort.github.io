@@ -1,7 +1,7 @@
 ---
 layout: post.html
 title:  "Menus and Localisation"
-date: 2017-07-29T19:00:00Z
+date: 2017-08-01T19:00:00Z
 project: Flying is Hard
 category: Dev Logs
 description: Continuing on the gameplay coding hiatus with some menu creation and a dash of localisation.

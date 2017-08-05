@@ -1,7 +1,7 @@
 ---
 layout: post.html
 title:  "Finding an aesthetic"
-date: 2017-07-30T19:00:00Z
+date: 2017-08-03T19:00:00Z
 project: Flying is Hard
 category: Dev Logs
 description: 3D? 2D? Pixel art? Flat? SO MANY CHOICES.
