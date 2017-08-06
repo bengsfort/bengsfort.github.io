@@ -10,7 +10,7 @@
 	<meta name="description" content="{{ globals.description }}">
 	<meta property="og:type" content="website">
 	<meta property="og:title" content="{{ globals.title }}">
-	<meta property="og:url" content="http://aesinv.com/index.html">
+	<meta property="og:url" content="http://bengsfort.github.com/index.html">
 	<meta property="og:site_name" content="{{ globals.title }}">
 	<meta property="og:description" content="{{ globals.description }}">
 	<meta name="twitter:card" content="summary">
@@ -38,4 +38,7 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link href="/styles/main.css" rel="stylesheet">
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/atom-one-dark.min.css">
+
+	<!--// Structured Data //-->
+	{{> structured-data isPost=isPost}}
 </head>

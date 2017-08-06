@@ -1,0 +1,54 @@
+<script type="application/ld+json">
+{
+	"@context": "http://schema.org/",
+	"@type": "Blog",
+	"name": "{{ globals.title }}",
+	"about": "{{ globals.description }}"{{#unless isPost}},
+	"author": {
+		"@type": "Person",
+		"name": "{{ author.name }}",
+		"additionalName": "{{ author.github_id }}",
+		"gender": "Male",
+		"jobTitle": "{{ author.position }}",
+		"worksFor": {
+			"@type": "Organization",
+			"name": "{{ author.employer }}",
+			"legalName": "{{ author.employer }}",
+			"logo": "https://unity3d.com/profiles/unity3d/themes/unity/images/ui/ui/unity-logo-white.svg"
+		}
+	}{{/unless}}{{#if isPost}},
+	"blogPost": {
+		"@type": "BlogPosting",
+		"headline": "{{ title }}",
+		"datePublished": "{{ date }}",
+		"dateModified": "{{ date }}",
+		"description": "{{ description }}",
+		"articleSection": "{{#if project}}{{ project }}{{/if}}{{#unless project}}{{ category }}{{/unless}}",
+		"author": {
+			"@type": "Person",
+			"name": "{{ author.name }}",
+			"additionalName": "{{ author.github_id }}",
+			"gender": "Male",
+			"jobTitle": "{{ author.position }}",
+			"worksFor": {
+				"@type": "Organization",
+				"name": "{{ author.employer }}",
+				"legalName": "{{ author.employer }}",
+				"logo": "https://unity3d.com/profiles/unity3d/themes/unity/images/ui/ui/unity-logo-white.svg"
+			}
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "{{ author.name }}",
+			"logo": "https://bengsfort.github.io/assets/avatar.png"
+		},
+		"image": {
+			"@type": "ImageObject",
+			"url": "https://bengsfort.github.io/assets/avatar.png",
+			"height": 200,
+			"width": 200
+		}
+	}{{/if}}
+}
+</script>
+<!--// @todo: add category support + current URL to blog posts //-->

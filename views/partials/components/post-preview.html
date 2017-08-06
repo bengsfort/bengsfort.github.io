@@ -2,7 +2,7 @@
 	<a href="/{{ post.path }}/" class="latest-posts-title">{{ post.title }}</a>
 	<div class="latest-posts-meta">
 		{{#if post.project}}
-			<span class="latest-posts-project {{dashcase post.project}}">{{ post.project }}</span>
+			<span class="latest-posts-project {{{dashcase post.project}}}">{{ post.project }}</span>
 		{{/if}}
 		Posted on <span class="latest-posts-date">{{ post.date }}</span>
 		{{#unless isInCategory}}to <div class="latest-posts-category">{{ post.category }}</div>{{/unless}}
