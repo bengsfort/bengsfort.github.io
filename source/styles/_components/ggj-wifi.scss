@@ -1,0 +1,24 @@
+.ggj-wifi {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding-top: 100px;
+  background: #000;
+  text-align: center;
+  color: #f8f8f8;
+
+  .label {
+    text-transform: uppercase;
+    color: #ebebeb;
+  }
+
+  .network {
+    margin-top: 0;
+  }
+
+  .password {
+    margin-top: 0;
+  }
+}
