@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 <url> <loc>https://bengsfort.github.io/</loc> </url>
+<url> <loc>https://bengsfort.github.io/wifi-info/</loc> </url>
 <url> <loc>https://bengsfort.github.io/articles/</loc> </url>
 <url> <loc>https://bengsfort.github.io/dev-logs/</loc> </url>
 <url> <loc>https://bengsfort.github.io/pixel-art/</loc> </url>
 <url> <loc>https://bengsfort.github.io/development/2015/08/29/building-a-gulp-workflow-around-jekyll/</loc> </url>
 <url> <loc>https://bengsfort.github.io/development/2015/11/27/making-a-js-game-part-1-game-engine/</loc> </url>
 <url> <loc>https://bengsfort.github.io/development/2015/12/29/calculating-beacon-distances-with-optimized-averaging/</loc> </url>
-<url> <loc>https://bengsfort.github.io/development/2016/05/04/simplified-aem-frontend-sass/</loc> </url>
 <url> <loc>https://bengsfort.github.io/development/2016/05/15/passing-data-from-aem6-to-javascript/</loc> </url>
+<url> <loc>https://bengsfort.github.io/development/2016/05/04/simplified-aem-frontend-sass/</loc> </url>
 <url> <loc>https://bengsfort.github.io/development/2016/05/26/fixing-git-push-pull-timeout/</loc> </url>
 <url> <loc>https://bengsfort.github.io/about/</loc> </url>
 <url> <loc>https://bengsfort.github.io/articles/building-a-gulp-workflow-around-jekyll/</loc> </url>
