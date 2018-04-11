@@ -3,6 +3,7 @@ Thumbs.db
 *.log
 node_modules/
 .vscode/
+private
 
 # hexo
 db.json
